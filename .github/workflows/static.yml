@@ -1,15 +1,15 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Deploy the MMLA-org.github.io repository root to GitHub Pages.
+name: Deploy MMLA GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs when the published site is updated.
   push:
     branches: ["main"]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # Allows a manual redeploy from the Actions tab.
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Allow the workflow token to upload and deploy the Pages artifact.
 permissions:
   contents: read
   pages: write
@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  # A static site only needs one deployment job.
   deploy:
     environment:
       name: github-pages
@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
+          # The site is served from the repository root.
           path: '.'
       - name: Deploy to GitHub Pages
         id: deployment

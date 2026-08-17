@@ -54,11 +54,11 @@
               <span class="lang-en">MMLA is not another “memory store.” It specifies how an experience earns authority over the future: generation reads only old memory; retrospective review starts only after explicit closure; each candidate is built as a complete replacement for one old row; and the system either commits that whole row or preserves every bit of state.</span>
             </p>
             <div class="hero-actions">
-              <a class="button button-primary" href="papers/MMLA_arXiv_public.pdf">
-                <span class="lang-zh">阅读公开稿</span><span class="lang-en">Read the public paper</span><span class="arrow">↗</span>
+              <a class="button button-primary" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_arXiv_public.pdf" target="_blank" rel="noreferrer">
+                <span class="lang-zh">在 GitHub 阅读公开稿</span><span class="lang-en">Read on GitHub</span><span class="arrow">↗</span>
               </a>
-              <a class="button button-quiet" href="papers/MMLA_Technical_Report.pdf">
-                <span class="lang-zh">下载完整报告</span><span class="lang-en">Download the full report</span><span class="arrow">↗</span>
+              <a class="button button-quiet" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer">
+                <span class="lang-zh">在 GitHub 查看报告</span><span class="lang-en">View report on GitHub</span><span class="arrow">↗</span>
               </a>
             </div>
             <div class="hero-note">
@@ -154,7 +154,7 @@
                 <span class="micro-label"><span class="lang-zh">唯一的权威状态转移</span><span class="lang-en">THE ONE AUTHORITATIVE STATE TRANSITION</span></span>
                 <h3 id="core-contract-title"><span class="lang-zh">旧记忆只允许走向两种结果</span><span class="lang-en">Old memory is allowed only two outcomes</span></h3>
               </div>
-              <a class="text-link" href="papers/MMLA_Technical_Report.pdf"><span class="lang-zh">完整技术报告</span><span class="lang-en">Full technical report</span> ↗</a>
+              <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看完整报告</span><span class="lang-en">View full report on GitHub</span> ↗</a>
             </div>
 
             <div class="contract-pipeline" aria-label="The complete MMLA state transition">
@@ -346,7 +346,7 @@
               <header class="paper-core-head">
                 <div class="paper-core-mark">WHEN</div>
                 <div><p class="paper-core-kicker">Completed-Segment Bidirectional Consolidation</p><h3><span class="lang-zh">完成片段双向整理：允许回看，但永远不能改写过去</span><span class="lang-en">Completed-segment consolidation: review the past without rewriting it</span></h3><p><span class="lang-zh">它定义候选记忆什么时候才有资格出现，以及何时才可以影响后续生成。</span><span class="lang-en">It defines when a memory candidate may exist and when it may affect later generation.</span></p></div>
-                <a class="text-link" href="papers/Completed_Segment_Consolidation.pdf"><span class="lang-zh">打开论文</span><span class="lang-en">Open paper</span> ↗</a>
+                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
               </header>
               <div class="paper-contract-grid">
                 <div><span class="paper-field"><span class="lang-zh">它定义的对象</span><span class="lang-en">OBJECT DEFINED</span></span><p><span class="lang-zh">一个明确封口的有界片段、一组顺序稳定的事件，以及位于封口之后的公开时刻。生成轨迹和读取回执一旦产生就不可修改。</span><span class="lang-en">An explicitly closed bounded segment, a stably ordered event list, and an exposure point strictly after closure. Generated traces and read receipts are immutable.</span></p></div>
@@ -371,7 +371,7 @@
               <header class="paper-core-head">
                 <div class="paper-core-mark">WHAT</div>
                 <div><p class="paper-core-kicker">Atomic Memory Rows</p><h3><span class="lang-zh">原子记忆行：权威不是一个向量，而是一条完整、可验证、一次发布的记录</span><span class="lang-en">Atomic memory rows: authority is a complete, verifiable record published at once</span></h3><p><span class="lang-zh">它定义 MMLA 到底把什么当作“已经记住”，并把模型建议与系统权力严格分开。</span><span class="lang-en">It defines what MMLA counts as remembered and separates model proposals from system authority.</span></p></div>
-                <a class="text-link" href="papers/Atomic_Memory_Rows.pdf"><span class="lang-zh">打开论文</span><span class="lang-en">Open paper</span> ↗</a>
+                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Atomic_Memory_Rows.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
               </header>
               <div class="paper-contract-grid">
                 <div><span class="paper-field"><span class="lang-zh">什么叫“权威”</span><span class="lang-en">WHAT “AUTHORITATIVE” MEANS</span></span><p><span class="lang-zh">如果改动某个状态后，系统以后读到的对象、值、删除状态、权限或允许的下一次变化会不同，而且不需要重新验证当前行，那么这个状态就是权威状态。搜索索引、缓存和向量视图只能是可重建的派生物。</span><span class="lang-en">State is authoritative if changing it can alter the later-read object, value, deletion status, permissions, or allowed transition without revalidating the current row. Search indexes, caches, and vector views are reconstructible derivatives.</span></p></div>
@@ -396,7 +396,7 @@
               <header class="paper-core-head">
                 <div class="paper-core-mark">WHETHER</div>
                 <div><p class="paper-core-kicker">Predictive Memory Admission</p><h3><span class="lang-zh">预测式记忆准入：有界记忆里，每一次写入都必须战胜“保持原样”</span><span class="lang-en">Predictive admission: every bounded-memory write must beat leaving the state unchanged</span></h3><p><span class="lang-zh">它把“记不记、替换谁”写成同一个因果决定，而不是一个相似度阈值。</span><span class="lang-en">It treats “whether to remember and which row to replace” as one causal decision, not a similarity threshold.</span></p></div>
-                <a class="text-link" href="papers/Predictive_Memory_Admission.pdf"><span class="lang-zh">打开论文</span><span class="lang-en">Open paper</span> ↗</a>
+                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Predictive_Memory_Admission.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
               </header>
               <div class="paper-contract-grid">
                 <div><span class="paper-field"><span class="lang-zh">它比较的动作</span><span class="lang-en">ACTIONS COMPARED</span></span><p><span class="lang-zh">在同一个当前分支状态上，可行动作是零个或多个“把某条完整候选提交到某个目标行”，再加一个精确不写。如果所有候选都不合法，动作表里就只剩保持原样。</span><span class="lang-en">On one current branch state, feasible actions are zero or more target-specific complete-row commits plus exact NULL. If every candidate is illegal, preserving the state is the only action.</span></p></div>
@@ -421,7 +421,7 @@
               <header class="paper-core-head">
                 <div class="paper-core-mark">WHICH</div>
                 <div><p class="paper-core-kicker">MMLA–RTT Dual State</p><h3><span class="lang-zh">双状态：改变“怎么解题”和改变“以后能读到什么”，必须分账</span><span class="lang-en">Dual state: changing how to solve and what can be read later require separate ledgers</span></h3><p><span class="lang-zh">它把策略状态 Φ 与权威记忆 M 作为不同类型的状态载体，阻止两者互相冒充。</span><span class="lang-en">It types policy state Φ and authoritative memory M as distinct carriers that cannot impersonate each other.</span></p></div>
-                <a class="text-link" href="papers/MMLA_RTT_Dual_State.pdf"><span class="lang-zh">打开论文</span><span class="lang-en">Open paper</span> ↗</a>
+                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_RTT_Dual_State.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
               </header>
               <div class="paper-contract-grid">
                 <div><span class="paper-field">Φ / <span class="lang-zh">策略状态</span><span class="lang-en">POLICY STATE</span></span><p><span class="lang-zh">数值型、可训练，作用是改变后一次动作怎样产生。它由反馈驱动的策略更新写入，有自己的更新完成时刻、漂移限制、版本与回退。</span><span class="lang-en">Numerical and trainable, it changes how a later action is generated. A feedback-driven policy updater writes it, with its own completion time, drift limit, version, and rollback.</span></p></div>
@@ -446,7 +446,7 @@
               <header class="paper-core-head">
                 <div class="paper-core-mark">COUNTS?</div>
                 <div><p class="paper-core-kicker">RTT Foundations</p><h3><span class="lang-zh">推理时训练基础：后一次更好，不足以证明系统真的在同一道题里学了</span><span class="lang-en">RTT foundations: a better later attempt does not prove within-problem learning</span></h3><p><span class="lang-zh">它给“问题尚未结束时发生的学习”定义一个必须能从状态与事件记录中验证的证据链。</span><span class="lang-en">It defines a state-and-event witness for learning that occurs before one unresolved problem ends.</span></p></div>
-                <a class="text-link" href="papers/RTT_Foundations.pdf"><span class="lang-zh">打开论文</span><span class="lang-en">Open paper</span> ↗</a>
+                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/RTT_Foundations.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
               </header>
               <div class="rtt-witness" aria-label="Strict reasoning-time training witness">
                 <div><span><span class="lang-zh">同一道题仍未解决</span><span class="lang-en">SAME PROBLEM UNRESOLVED</span></span><p><span class="lang-zh">不是下一道题，也不是离线训练以后再测试。</span><span class="lang-en">Not a new problem or a later offline-training evaluation.</span></p></div>
@@ -577,8 +577,8 @@
               <span class="lang-en">Start with the idea,<br /><em>then follow the full record.</em></span>
             </h2>
             <p class="section-intro">
-              <span class="lang-zh">只想知道 MMLA 是什么，可以先读公开稿；想看完整推导、证据和限制，读完整技术报告；对某个机制感兴趣，再打开对应的理论文档。它们都随仓库提供，部署后可以直接打开。</span>
-              <span class="lang-en">Read the public paper for a quick understanding, the full technical report for derivations, evidence, and limits, and a theory document for a specific mechanism. All of them ship with the repository and open directly after deployment.</span>
+              <span class="lang-zh">只想知道 MMLA 是什么，可以先读公开稿；想看完整推导、证据和限制，读完整技术报告；对某个机制感兴趣，再打开对应的理论文档。公开 PDF 由 mmla-memory 仓库维护，本页所有入口都直达其 GitHub 页面。</span>
+              <span class="lang-en">Read the public paper for a quick understanding, the full technical report for derivations, evidence, and limits, and a theory document for a specific mechanism. Public PDFs are maintained in the mmla-memory repository, and every entry here opens its GitHub page.</span>
             </p>
           </div>
 
@@ -594,7 +594,7 @@
               <h3><span class="lang-zh">MMLA: How Memory Lets the Past Shape the Future</span><span class="lang-en">MMLA: How Memory Lets the Past Shape the Future</span></h3>
               <p><span class="lang-zh">面向快速阅读的公开版本：先解释为什么需要记忆，再介绍 MMLA 怎样限制记忆、怎样面对目前还没有解决的问题。</span><span class="lang-en">A readable public version: why memory is needed, how MMLA keeps it bounded, and which problems remain open.</span></p>
               <div class="doc-meta"><span>16 pages</span><span>·</span><span class="lang-zh">快速入门</span><span class="lang-en">quick start</span></div>
-              <div class="doc-actions"><a class="button button-small button-primary" href="papers/MMLA_arXiv_public.pdf"><span class="lang-zh">下载 PDF</span><span class="lang-en">Download PDF</span> ↗</a><a class="text-link" href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a></div>
+              <div class="doc-actions"><a class="button button-small button-primary" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_arXiv_public.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a><a class="text-link" href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a></div>
             </article>
 
             <article class="doc-card doc-card-report reveal delay-1" data-category="core">
@@ -602,38 +602,38 @@
               <h3><span class="lang-zh">MMLA 正式技术报告</span><span class="lang-en">The formal MMLA technical report</span></h3>
               <p><span class="lang-zh">这是当前最完整的一份记录：它把架构、实现规则、证据、失败、限制和五个理论方向放在一起，也明确说明理论方案还不等于真实系统效果。</span><span class="lang-en">This is the most complete record: architecture, implementation rules, evidence, failures, limits, and five theory directions, with a clear distinction between a proposed method and a demonstrated system effect.</span></p>
               <div class="doc-meta"><span>196 pages</span><span>·</span><span class="lang-zh">完整技术记录</span><span class="lang-en">complete technical record</span></div>
-              <div class="doc-actions"><a class="button button-small button-outline" href="papers/MMLA_Technical_Report.pdf"><span class="lang-zh">下载报告</span><span class="lang-en">Download report</span> ↗</a><span class="doc-state"><span class="lang-zh">正式报告</span><span class="lang-en">official report</span></span></div>
+              <div class="doc-actions"><a class="button button-small button-outline" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看报告</span><span class="lang-en">View report on GitHub</span> ↗</a><span class="doc-state"><span class="lang-zh">正式报告</span><span class="lang-en">official report</span></span></div>
             </article>
 
             <article class="doc-card reveal" data-category="formal">
               <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
               <h3><span class="lang-zh">RTT Foundations</span><span class="lang-en">RTT Foundations</span></h3>
               <p><span class="lang-zh">它先把“同一道还没解决的问题里学到了”定义清楚：反馈要改变声明的策略状态，后一次新尝试还要在问题结束前读到这次改变；普通重试、搜索或记忆变化不能冒充 RTT。</span><span class="lang-en">It defines learning inside one unresolved problem: feedback must change a declared policy state, and a later fresh attempt must read that change before the problem ends. Ordinary retries, search, or memory edits do not qualify.</span></p>
-              <div class="doc-actions"><a class="text-link" href="papers/RTT_Foundations.pdf"><span class="lang-zh">打开 PDF</span><span class="lang-en">Open PDF</span> ↗</a></div>
+              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/RTT_Foundations.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
             </article>
             <article class="doc-card reveal delay-1" data-category="formal">
               <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
               <h3><span class="lang-zh">Atomic Memory Rows</span><span class="lang-en">Atomic Memory Rows</span></h3>
               <p><span class="lang-zh">它规定一条记忆必须连同身份、版本、权限、来源和状态一起成为完整记录；模型只能提议内容，系统负责可信装配，最后整行替换或精确不写。</span><span class="lang-en">It makes identity, version, permissions, provenance, and status part of one complete record. The model proposes content; trusted assembly owns the system fields; the result replaces a whole row or writes nothing.</span></p>
-              <div class="doc-actions"><a class="text-link" href="papers/Atomic_Memory_Rows.pdf"><span class="lang-zh">打开 PDF</span><span class="lang-en">Open PDF</span> ↗</a></div>
+              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Atomic_Memory_Rows.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
             </article>
             <article class="doc-card reveal delay-2" data-category="formal">
               <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
               <h3><span class="lang-zh">Predictive Memory Admission</span><span class="lang-en">Predictive Memory Admission</span></h3>
               <p><span class="lang-zh">它把保存、替换和不写放在同一张决定表里，比较未来风险、旧记忆被挤掉的损害和资源成本；部署时只能依据当下信息，证据不足就保留原状。</span><span class="lang-en">It compares save, replace, and write-nothing actions using future risk, displacement damage, and resource cost. Deployment can use only current information; weak evidence leaves the current state unchanged.</span></p>
-              <div class="doc-actions"><a class="text-link" href="papers/Predictive_Memory_Admission.pdf"><span class="lang-zh">打开 PDF</span><span class="lang-en">Open PDF</span> ↗</a></div>
+              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Predictive_Memory_Admission.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
             </article>
             <article class="doc-card reveal" data-category="formal">
               <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
               <h3><span class="lang-zh">MMLA-RTT Dual State</span><span class="lang-en">MMLA-RTT Dual State</span></h3>
               <p><span class="lang-zh">它把会改变当前解题策略的状态 Φ，和以后可读取的权威记忆 M 分开；两边有不同的写入者、版本线、回退方式和影响记录。</span><span class="lang-en">It separates policy carrier Φ, which changes the current strategy, from authoritative memory M, which can be read later. They have different writers, version lines, rollback rules, and receipts.</span></p>
-              <div class="doc-actions"><a class="text-link" href="papers/MMLA_RTT_Dual_State.pdf"><span class="lang-zh">打开 PDF</span><span class="lang-en">Open PDF</span> ↗</a></div>
+              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_RTT_Dual_State.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
             </article>
             <article class="doc-card reveal delay-1" data-category="formal">
               <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
               <h3><span class="lang-zh">Completed-Segment Consolidation</span><span class="lang-en">Completed-Segment Consolidation</span></h3>
               <p><span class="lang-zh">它把逐 token 生成和结束后的双向回看放在边界两侧：片段封口后才能整理事件，新的记忆版本只能影响后来的尝试，不能回写已经发出的文字。</span><span class="lang-en">It puts left-to-right generation and after-closure bidirectional review on opposite sides of a boundary. Events are consolidated only after closure, and new memory versions affect later attempts without rewriting emitted text.</span></p>
-              <div class="doc-actions"><a class="text-link" href="papers/Completed_Segment_Consolidation.pdf"><span class="lang-zh">打开 PDF</span><span class="lang-en">Open PDF</span> ↗</a></div>
+              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
             </article>
           </div>
         </section>
@@ -730,7 +730,7 @@
       <footer class="footer section-shell">
         <div class="footer-brand"><img src="assets/mmla-mark.svg" alt="" /><span>MMLA</span></div>
         <p><span class="lang-zh">有界记忆，公开证据，持续修订。</span><span class="lang-en">Bounded memory. Public evidence. Continuous revision.</span></p>
-        <div class="footer-links"><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noreferrer">GitHub ↗</a><a href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a><span>2026.08.17</span></div>
+        <div class="footer-links"><a href="https://github.com/MMLA-org/MMLA-org.github.io" target="_blank" rel="noreferrer">GitHub ↗</a><a href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a><span>2026.08.17</span></div>
       </footer>
     </div>
     <script src="script.js"></script>
