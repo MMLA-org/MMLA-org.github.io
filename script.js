@@ -1,4 +1,7 @@
 (() => {
+  const initialAnchorId = window.location.hash.slice(1);
+  const initialAnchorTarget = initialAnchorId ? document.getElementById(initialAnchorId) : null;
+  if (initialAnchorTarget) document.documentElement.classList.add("anchor-load");
   document.documentElement.classList.add("js-ready");
 
   const body = document.body;
@@ -91,6 +94,11 @@
       });
     }, { threshold: 0.08 });
     document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+
+    // A direct section link should never land on content that is still hidden for animation.
+    if (initialAnchorTarget) {
+      initialAnchorTarget.querySelectorAll(".reveal").forEach((element) => element.classList.add("is-visible"));
+    }
   } else {
     document.querySelectorAll(".reveal").forEach((element) => element.classList.add("is-visible"));
   }
