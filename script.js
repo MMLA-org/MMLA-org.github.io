@@ -5,9 +5,17 @@
   document.documentElement.classList.add("js-ready");
 
   const body = document.body;
+  const topbar = document.querySelector(".topbar");
   const languageToggle = document.querySelector("[data-language-toggle]");
   const menuToggle = document.querySelector(".menu-toggle");
   const siteNav = document.querySelector(".site-nav");
+  const navLinks = siteNav ? [...siteNav.querySelectorAll('a[href^="#"]')] : [];
+  const sectionIds = navLinks
+    .map((link) => link.getAttribute("href").slice(1))
+    .filter(Boolean);
+  const navSections = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
   const setLanguage = (language) => {
     const nextLanguage = language === "en" ? "en" : "zh";
@@ -46,6 +54,7 @@
     });
   }
 
+  const documentGrid = document.querySelector(".document-grid");
   document.querySelectorAll("[data-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.dataset.filter;
@@ -54,9 +63,21 @@
         item.classList.toggle("is-active", active);
         item.setAttribute("aria-pressed", String(active));
       });
+
+      if (documentGrid) documentGrid.classList.add("is-filtering");
       document.querySelectorAll(".doc-card").forEach((card) => {
-        card.hidden = filter !== "all" && card.dataset.category !== filter;
+        const shouldShow = filter === "all" || card.dataset.category === filter;
+        card.classList.toggle("is-hiding", !shouldShow);
       });
+
+      window.setTimeout(() => {
+        document.querySelectorAll(".doc-card").forEach((card) => {
+          const shouldShow = filter === "all" || card.dataset.category === filter;
+          card.hidden = !shouldShow;
+          card.classList.remove("is-hiding");
+        });
+        if (documentGrid) documentGrid.classList.remove("is-filtering");
+      }, 220);
     });
   });
 
@@ -84,22 +105,139 @@
     });
   }
 
+  const markVisible = (element) => {
+    element.classList.add("is-visible");
+  };
+
   if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver((entries, instance) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
+          markVisible(entry.target);
           instance.unobserve(entry.target);
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
 
-    // A direct section link should never land on content that is still hidden for animation.
+    document.querySelectorAll(".reveal, .reveal-stagger").forEach((element) => observer.observe(element));
+
     if (initialAnchorTarget) {
-      initialAnchorTarget.querySelectorAll(".reveal").forEach((element) => element.classList.add("is-visible"));
+      initialAnchorTarget.querySelectorAll(".reveal, .reveal-stagger").forEach(markVisible);
     }
   } else {
-    document.querySelectorAll(".reveal").forEach((element) => element.classList.add("is-visible"));
+    document.querySelectorAll(".reveal, .reveal-stagger").forEach(markVisible);
+  }
+
+  const setActiveNav = (id) => {
+    navLinks.forEach((link) => {
+      link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
+    });
+  };
+
+  const updateScrollUi = () => {
+    if (topbar) topbar.classList.toggle("is-scrolled", window.scrollY > 12);
+
+    if (!navSections.length) return;
+    const offset = window.scrollY + 120;
+    let currentId = sectionIds[0];
+
+    navSections.forEach((section, index) => {
+      if (section.offsetTop <= offset) currentId = sectionIds[index];
+    });
+
+    setActiveNav(currentId);
+  };
+
+  let scrollTicking = false;
+  window.addEventListener("scroll", () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    window.requestAnimationFrame(() => {
+      updateScrollUi();
+      scrollTicking = false;
+    });
+  }, { passive: true });
+
+  updateScrollUi();
+
+  const flowSequences = {
+    contract: [
+      { step: "source", duration: 920 },
+      { step: "arrow-1", duration: 480 },
+      { step: "process", duration: 920 },
+      { step: "arrow-2", duration: 480 },
+      { step: "commit", duration: 780 },
+      { step: "null", duration: 780 },
+      { step: "arrow-3", duration: 480 },
+      { step: "future", duration: 920 },
+    ],
+    loop: [
+      { step: "0", duration: 720 },
+      { step: "1", duration: 720 },
+      { step: "2", duration: 720 },
+      { step: "3", duration: 820 },
+      { step: "4", duration: 720 },
+      { step: "5", duration: 720 },
+      { step: "6", duration: 720 },
+      { step: "7", duration: 920 },
+    ],
+  };
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const startFlowDiagram = (diagram) => {
+    const kind = diagram.dataset.flowDiagram;
+    const sequence = flowSequences[kind];
+    if (!sequence || prefersReducedMotion || diagram.dataset.flowRunning === "true") return;
+
+    diagram.dataset.flowRunning = "true";
+    diagram.classList.add("is-live");
+    let index = 0;
+    let timerId = 0;
+    let paused = false;
+
+    const runStep = () => {
+      if (paused) return;
+      const current = sequence[index];
+      diagram.dataset.flowStep = current.step;
+      index = (index + 1) % sequence.length;
+      timerId = window.setTimeout(runStep, current.duration);
+    };
+
+    diagram._flowPause = () => {
+      paused = true;
+      window.clearTimeout(timerId);
+    };
+
+    diagram._flowResume = () => {
+      if (!paused) return;
+      paused = false;
+      runStep();
+    };
+
+    runStep();
+  };
+
+  if ("IntersectionObserver" in window && !prefersReducedMotion) {
+    const flowObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const diagram = entry.target;
+        if (entry.isIntersecting) {
+          startFlowDiagram(diagram);
+          if (diagram._flowResume) diagram._flowResume();
+        } else if (diagram._flowPause) {
+          diagram._flowPause();
+        }
+      });
+    }, { threshold: 0.28 });
+
+    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => flowObserver.observe(diagram));
+  } else {
+    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => {
+      diagram.classList.add("is-live");
+      const kind = diagram.dataset.flowDiagram;
+      const sequence = flowSequences[kind];
+      if (sequence) diagram.dataset.flowStep = sequence[0].step;
+    });
   }
 })();

@@ -61,7 +61,7 @@
                 <span class="lang-zh">在 GitHub 查看报告</span><span class="lang-en">View report on GitHub</span><span class="arrow">↗</span>
               </a>
             </div>
-            <div class="hero-signals" aria-label="MMLA design principles">
+            <div class="hero-signals reveal-stagger" aria-label="MMLA design principles">
               <div>
                 <span class="signal-index">01</span>
                 <strong><span class="lang-zh">先做完再整理</span><span class="lang-en">Finish, then review</span></strong>
@@ -136,7 +136,7 @@
           </div>
         </section>
 
-        <section class="metric-strip section-shell reveal" aria-label="MMLA at a glance">
+        <section class="metric-strip section-shell reveal reveal-stagger" aria-label="MMLA at a glance">
           <div class="metric">
             <span class="metric-index">01</span>
             <strong><span class="lang-zh">先完成</span><span class="lang-en">Finish first</span></strong>
@@ -212,19 +212,19 @@
               <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看完整报告</span><span class="lang-en">View full report on GitHub</span> ↗</a>
             </div>
 
-            <div class="contract-pipeline" aria-label="The complete MMLA state transition">
+            <div class="contract-pipeline flow-diagram" data-flow-diagram="contract" aria-label="The complete MMLA state transition">
               <div class="contract-stage contract-stage-source">
                 <span class="contract-symbol">M<sub>旧</sub></span>
                 <strong><span class="lang-zh">现有记忆</span><span class="lang-en">current memory</span></strong>
                 <small><span class="lang-zh">数量有限，可以查看和更新</span><span class="lang-en">limited, inspectable, and editable</span></small>
               </div>
-              <span class="contract-arrow">→</span>
+              <span class="contract-arrow" aria-hidden="true"></span>
               <div class="contract-stage contract-stage-process">
                 <span class="contract-symbol">e</span>
                 <strong><span class="lang-zh">一小段任务已经结束</span><span class="lang-en">a task segment has finished</span></strong>
                 <small><span class="lang-zh">只依据已经发生的内容</span><span class="lang-en">use only what has already happened</span></small>
               </div>
-              <span class="contract-arrow">→</span>
+              <span class="contract-arrow" aria-hidden="true"></span>
               <div class="contract-choice">
                 <div class="contract-choice-row contract-choice-commit">
                   <span class="contract-symbol">替换</span>
@@ -236,7 +236,7 @@
                   <div><strong><span class="lang-zh">保留全部现有记忆</span><span class="lang-en">keep all current memory</span></strong><small><span class="lang-zh">不清空、不删除、不留下半成品</span><span class="lang-en">no clearing, deletion, or partial change</span></small></div>
                 </div>
               </div>
-              <span class="contract-arrow">→</span>
+              <span class="contract-arrow" aria-hidden="true"></span>
               <div class="contract-stage contract-stage-future">
                 <span class="contract-symbol">M<sub>新</sub></span>
                 <strong><span class="lang-zh">给之后的回答使用</span><span class="lang-en">available to later answers</span></strong>
@@ -296,7 +296,7 @@
               <p><span class="lang-zh">顺序不能乱：先完成当前回答，再检查和更新记忆。这样新信息不会影响已经发生的回答。</span><span class="lang-en">The order matters: finish the current answer, then check and update memory. This keeps new information from affecting an answer already given.</span></p>
             </div>
 
-            <div class="core-loop">
+            <div class="core-loop flow-diagram" data-flow-diagram="loop">
               <article class="core-step">
                 <span class="core-step-phase"><span class="lang-zh">生成中</span><span class="lang-en">GENERATE</span></span>
                 <h4><span class="lang-zh">先用已有记忆回答</span><span class="lang-en">Answer using existing memory</span></h4>
