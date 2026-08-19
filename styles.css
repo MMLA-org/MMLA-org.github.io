@@ -329,7 +329,7 @@ code { padding: 2px 5px; border-radius: 5px; background: rgba(16, 26, 46, 0.08);
 .core-contract-head .text-link { flex-shrink: 0; color: var(--mint); }
 .core-contract-head .text-link:hover { color: var(--paper); }
 .contract-pipeline { display: grid; grid-template-columns: minmax(135px, 0.82fr) auto minmax(160px, 1fr) auto minmax(275px, 1.65fr) auto minmax(145px, 0.9fr); gap: 12px; align-items: stretch; margin: 36px 0 20px; }
-.contract-stage { display: flex; min-height: 175px; flex-direction: column; padding: 19px; border: 1px solid rgba(255, 253, 248, 0.15); border-radius: 17px; background: rgba(255, 253, 248, 0.055); }
+.contract-stage { position: relative; display: flex; min-height: 175px; flex-direction: column; padding: 19px; border: 1px solid rgba(255, 253, 248, 0.15); border-radius: 17px; background: rgba(255, 253, 248, 0.055); transition: border-color 280ms ease, box-shadow 280ms ease, background 280ms ease; }
 .contract-stage-source { border-color: rgba(170, 164, 238, 0.55); background: rgba(170, 164, 238, 0.1); }
 .contract-stage-process { border-color: rgba(244, 215, 127, 0.55); background: rgba(244, 215, 127, 0.08); }
 .contract-stage-future { border-color: rgba(159, 224, 193, 0.55); background: rgba(159, 224, 193, 0.1); }
@@ -337,9 +337,43 @@ code { padding: 2px 5px; border-radius: 5px; background: rgba(16, 26, 46, 0.08);
 .contract-stage-process .contract-symbol { color: var(--yellow); }
 .contract-stage strong { display: block; margin-top: auto; font-size: 0.82rem; line-height: 1.35; }
 .contract-stage small { display: block; margin-top: 8px; color: rgba(255, 253, 248, 0.55); font-size: 0.67rem; line-height: 1.45; }
-.contract-arrow { align-self: center; color: rgba(255, 253, 248, 0.38); font-size: 1.25rem; }
-.contract-choice { display: grid; grid-template-columns: 1fr; gap: 7px; }
-.contract-choice-row { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 16px; border: 1px solid rgba(255, 253, 248, 0.16); border-radius: 15px; }
+.contract-arrow {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  overflow: hidden;
+  width: 24px;
+  height: 1px;
+  font-size: 0;
+  color: transparent;
+  background: rgba(255, 253, 248, 0.22);
+}
+
+.contract-arrow::before {
+  position: absolute;
+  top: 0;
+  left: -32%;
+  width: 32%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, var(--mint), transparent);
+  content: "";
+  opacity: 0;
+}
+
+.contract-arrow::after {
+  position: absolute;
+  top: -3px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid rgba(255, 253, 248, 0.45);
+  border-right: 1px solid rgba(255, 253, 248, 0.45);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.contract-choice-row { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 16px; border: 1px solid rgba(255, 253, 248, 0.16); border-radius: 15px; transition: border-color 280ms ease, box-shadow 280ms ease, background 280ms ease; }
 .contract-choice-row .contract-symbol { margin: 0; white-space: nowrap; }
 .contract-choice-row strong, .contract-choice-row small { display: block; }
 .contract-choice-row strong { font-size: 0.77rem; line-height: 1.35; }
@@ -359,6 +393,130 @@ code { padding: 2px 5px; border-radius: 5px; background: rgba(16, 26, 46, 0.08);
 .contract-prohibitions strong, .contract-prohibitions small { display: block; }
 .contract-prohibitions strong { font-size: 0.72rem; }
 .contract-prohibitions small { margin-top: 6px; color: rgba(255, 253, 248, 0.52); font-size: 0.63rem; line-height: 1.5; }
+
+.flow-diagram.is-live[data-flow-step="source"] .contract-stage-source,
+.flow-diagram.is-live[data-flow-step="process"] .contract-stage-process,
+.flow-diagram.is-live[data-flow-step="future"] .contract-stage-future {
+  border-color: rgba(181, 232, 209, 0.82);
+  box-shadow: 0 0 0 1px rgba(181, 232, 209, 0.32), 0 0 28px rgba(181, 232, 209, 0.16);
+}
+
+.flow-diagram.is-live[data-flow-step="source"] .contract-stage-source { background: rgba(170, 164, 238, 0.16); }
+.flow-diagram.is-live[data-flow-step="process"] .contract-stage-process { background: rgba(244, 215, 127, 0.14); }
+.flow-diagram.is-live[data-flow-step="future"] .contract-stage-future { background: rgba(159, 224, 193, 0.16); }
+
+.flow-diagram.is-live[data-flow-step="commit"] .contract-choice-commit {
+  border-color: rgba(159, 224, 193, 0.72);
+  box-shadow: 0 0 0 1px rgba(159, 224, 193, 0.28), 0 0 24px rgba(159, 224, 193, 0.14);
+}
+
+.flow-diagram.is-live[data-flow-step="null"] .contract-choice-null {
+  border-color: rgba(232, 111, 95, 0.72);
+  box-shadow: 0 0 0 1px rgba(232, 111, 95, 0.28), 0 0 24px rgba(232, 111, 95, 0.12);
+}
+
+.flow-diagram.is-live[data-flow-step="arrow-1"] > .contract-arrow:nth-child(2)::before,
+.flow-diagram.is-live[data-flow-step="arrow-2"] > .contract-arrow:nth-child(4)::before,
+.flow-diagram.is-live[data-flow-step="arrow-3"] > .contract-arrow:nth-child(6)::before {
+  animation: flow-cursor-travel 460ms ease-in-out;
+}
+
+.contract-stage::after,
+.contract-choice-row::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 0 4px rgba(181, 232, 209, 0.18), 0 0 14px rgba(181, 232, 209, 0.42);
+  content: "";
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.contract-choice-null::after { background: var(--coral); box-shadow: 0 0 0 4px rgba(232, 111, 95, 0.16), 0 0 14px rgba(232, 111, 95, 0.34); }
+
+.flow-diagram.is-live[data-flow-step="source"] .contract-stage-source::after,
+.flow-diagram.is-live[data-flow-step="process"] .contract-stage-process::after,
+.flow-diagram.is-live[data-flow-step="future"] .contract-stage-future::after,
+.flow-diagram.is-live[data-flow-step="commit"] .contract-choice-commit::after,
+.flow-diagram.is-live[data-flow-step="null"] .contract-choice-null::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+.core-contract.is-visible .contract-pipeline.is-live .contract-stage,
+.core-contract.is-visible .contract-pipeline.is-live .contract-choice {
+  animation: flow-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.core-contract.is-visible .contract-pipeline.is-live > .contract-stage-source { animation-delay: 40ms; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-arrow:nth-child(2) { animation: flow-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-stage-process { animation-delay: 200ms; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-arrow:nth-child(4) { animation: flow-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) 280ms both; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-choice { animation-delay: 360ms; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-arrow:nth-child(6) { animation: flow-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) 440ms both; }
+.core-contract.is-visible .contract-pipeline.is-live > .contract-stage-future { animation-delay: 520ms; }
+
+.core-loop.is-live .core-step {
+  transition: border-color 280ms ease, box-shadow 280ms ease, transform 280ms ease, background 280ms ease;
+}
+
+.core-loop.is-live[data-flow-step="0"] .core-step:nth-child(1),
+.core-loop.is-live[data-flow-step="1"] .core-step:nth-child(2),
+.core-loop.is-live[data-flow-step="2"] .core-step:nth-child(3),
+.core-loop.is-live[data-flow-step="3"] .core-step:nth-child(4),
+.core-loop.is-live[data-flow-step="4"] .core-step:nth-child(5),
+.core-loop.is-live[data-flow-step="5"] .core-step:nth-child(6),
+.core-loop.is-live[data-flow-step="6"] .core-step:nth-child(7),
+.core-loop.is-live[data-flow-step="7"] .core-step:nth-child(8) {
+  border-color: rgba(22, 124, 103, 0.42);
+  background: #edf8f2;
+  box-shadow: 0 0 0 1px rgba(22, 124, 103, 0.16), 0 14px 28px rgba(16, 33, 49, 0.07);
+  transform: translateY(-2px);
+}
+
+.core-loop.is-live[data-flow-step="3"] .core-step:nth-child(4) { background: #e5f6ee; }
+.core-loop.is-live[data-flow-step="7"] .core-step:nth-child(8) { border-color: rgba(232, 111, 95, 0.42); background: #fff1ed; }
+
+.core-loop.is-live .core-step::after {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mint-deep);
+  box-shadow: 0 0 0 4px rgba(22, 124, 103, 0.14), 0 0 14px rgba(22, 124, 103, 0.28);
+  content: "";
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.core-loop.is-live[data-flow-step="0"] .core-step:nth-child(1)::after,
+.core-loop.is-live[data-flow-step="1"] .core-step:nth-child(2)::after,
+.core-loop.is-live[data-flow-step="2"] .core-step:nth-child(3)::after,
+.core-loop.is-live[data-flow-step="3"] .core-step:nth-child(4)::after,
+.core-loop.is-live[data-flow-step="4"] .core-step:nth-child(5)::after,
+.core-loop.is-live[data-flow-step="5"] .core-step:nth-child(6)::after,
+.core-loop.is-live[data-flow-step="6"] .core-step:nth-child(7)::after,
+.core-loop.is-live[data-flow-step="7"] .core-step:nth-child(8)::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+.core-loop.is-live[data-flow-step="7"] .core-step:nth-child(8)::after {
+  background: var(--coral);
+  box-shadow: 0 0 0 4px rgba(232, 111, 95, 0.14), 0 0 14px rgba(232, 111, 95, 0.28);
+}
+
+.contract-choice { display: grid; grid-template-columns: 1fr; gap: 7px; }
 
 .state-model, .core-loop-section, .teacher-section, .worked-example { margin-top: 18px; padding: 34px; border: 1px solid rgba(16, 26, 46, 0.11); border-radius: var(--radius-lg); }
 .state-model { background: #ece9fc; }
@@ -600,6 +758,25 @@ code { padding: 2px 5px; border-radius: 5px; background: rgba(16, 26, 46, 0.08);
   8% { box-shadow: 0 0 0 1px rgba(181, 232, 209, 0.35), 0 0 22px rgba(181, 232, 209, 0.2); border-color: rgba(181, 232, 209, 0.95); }
 }
 
+@keyframes flow-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes flow-cursor-travel {
+  0% { left: -32%; opacity: 0; }
+  18% { opacity: 1; }
+  82% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@keyframes flow-cursor-travel-vertical {
+  0% { top: -32%; opacity: 0; }
+  18% { opacity: 1; }
+  82% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
 @keyframes ambient-drift {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
   50% { transform: translate3d(2%, -1.5%, 0) scale(1.04); }
@@ -654,7 +831,32 @@ body::after {
   .split-section { gap: 50px; }
   .contract-pipeline { grid-template-columns: 1fr; }
   .contract-stage { min-height: 0; }
-  .contract-arrow { justify-self: center; transform: rotate(90deg); }
+  .contract-arrow {
+    width: 1px;
+    height: 22px;
+    transform: none;
+  }
+
+  .contract-arrow::before {
+    top: -32%;
+    left: 0;
+    width: 100%;
+    height: 32%;
+    background: linear-gradient(180deg, transparent, var(--mint), transparent);
+  }
+
+  .contract-arrow::after {
+    top: auto;
+    right: -3px;
+    bottom: -1px;
+    transform: rotate(135deg);
+  }
+
+  .flow-diagram.is-live[data-flow-step="arrow-1"] > .contract-arrow:nth-child(2)::before,
+  .flow-diagram.is-live[data-flow-step="arrow-2"] > .contract-arrow:nth-child(4)::before,
+  .flow-diagram.is-live[data-flow-step="arrow-3"] > .contract-arrow:nth-child(6)::before {
+    animation-name: flow-cursor-travel-vertical;
+  }
   .contract-prohibitions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .worked-example { grid-template-columns: 1fr; }
   .example-timeline { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -806,4 +1008,10 @@ body::after {
   .hero-visual.is-visible .visual-node { animation: none !important; }
   .visual-connector::before { animation: none; }
   .status-dot, .visual-live i { animation: none; }
+  .flow-diagram.is-live[data-flow-step] .contract-stage::after,
+  .flow-diagram.is-live[data-flow-step] .contract-choice-row::after,
+  .flow-diagram.is-live[data-flow-step] .core-step::after { animation: none; }
+  .flow-diagram.is-live[data-flow-step="arrow-1"] > .contract-arrow:nth-child(2)::before,
+  .flow-diagram.is-live[data-flow-step="arrow-2"] > .contract-arrow:nth-child(4)::before,
+  .flow-diagram.is-live[data-flow-step="arrow-3"] > .contract-arrow:nth-child(6)::before { animation: none; }
 }

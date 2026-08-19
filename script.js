@@ -159,4 +159,85 @@
   }, { passive: true });
 
   updateScrollUi();
+
+  const flowSequences = {
+    contract: [
+      { step: "source", duration: 920 },
+      { step: "arrow-1", duration: 480 },
+      { step: "process", duration: 920 },
+      { step: "arrow-2", duration: 480 },
+      { step: "commit", duration: 780 },
+      { step: "null", duration: 780 },
+      { step: "arrow-3", duration: 480 },
+      { step: "future", duration: 920 },
+    ],
+    loop: [
+      { step: "0", duration: 720 },
+      { step: "1", duration: 720 },
+      { step: "2", duration: 720 },
+      { step: "3", duration: 820 },
+      { step: "4", duration: 720 },
+      { step: "5", duration: 720 },
+      { step: "6", duration: 720 },
+      { step: "7", duration: 920 },
+    ],
+  };
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const startFlowDiagram = (diagram) => {
+    const kind = diagram.dataset.flowDiagram;
+    const sequence = flowSequences[kind];
+    if (!sequence || prefersReducedMotion || diagram.dataset.flowRunning === "true") return;
+
+    diagram.dataset.flowRunning = "true";
+    diagram.classList.add("is-live");
+    let index = 0;
+    let timerId = 0;
+    let paused = false;
+
+    const runStep = () => {
+      if (paused) return;
+      const current = sequence[index];
+      diagram.dataset.flowStep = current.step;
+      index = (index + 1) % sequence.length;
+      timerId = window.setTimeout(runStep, current.duration);
+    };
+
+    diagram._flowPause = () => {
+      paused = true;
+      window.clearTimeout(timerId);
+    };
+
+    diagram._flowResume = () => {
+      if (!paused) return;
+      paused = false;
+      runStep();
+    };
+
+    runStep();
+  };
+
+  if ("IntersectionObserver" in window && !prefersReducedMotion) {
+    const flowObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const diagram = entry.target;
+        if (entry.isIntersecting) {
+          startFlowDiagram(diagram);
+          if (diagram._flowResume) diagram._flowResume();
+        } else if (diagram._flowPause) {
+          diagram._flowPause();
+        }
+      });
+    }, { threshold: 0.28 });
+
+    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => flowObserver.observe(diagram));
+  } else {
+    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => {
+      diagram.classList.add("is-live");
+      const kind = diagram.dataset.flowDiagram;
+      const sequence = flowSequences[kind];
+      if (sequence) diagram.dataset.flowStep = sequence[0].step;
+    });
+  }
 })();
