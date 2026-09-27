@@ -8,7 +8,7 @@ window.MMLA_GUIDE_PARTS.push(
       zh: "RTT 把同一道尚未解决的问题中，反馈驱动的策略状态更新与后续实际使用定义为一个可核查的过程。任务表现由独立的因果设计评估。",
       en: "RTT defines a checkable process in which feedback updates policy state while the same problem remains unresolved, and a later attempt actually uses that state. Task outcomes are evaluated with a separate causal design."
     },
-    source: { file: "assets/papers/RTT_Foundations.pdf", label: "Reasoning-Time Training", page: 1 },
+    source: { file: "https://github.com/MMLA-org/mmla-memory/raw/main/RTT_Foundations.pdf", label: "Reasoning-Time Training", page: 1 },
     sections: [
       {
         id: "rtt-witness",
@@ -109,7 +109,7 @@ window.MMLA_GUIDE_PARTS.push(
     lead: {
       zh: "双状态架构让有界数值策略状态 Φ 在问题仍活动时吸收反馈，同时由可信生命周期独立提交一条完整类型化记忆行或精确 NULL。后续计算可以读取两者，但写入者、版本、重置、回滚和账本保持分立。",
       en: "The dual-state architecture lets bounded numerical policy state Φ absorb feedback while a problem remains active, while a trusted lifecycle independently commits one complete typed memory row or exact NULL. Later computation may read both, but their writers, versions, resets, rollback domains, and ledgers remain separate." },
-    source: { file: "assets/papers/MMLA_RTT_Dual_State.pdf", label: "R02", page: 1 },
+    source: { file: "https://github.com/MMLA-org/mmla-memory/raw/main/MMLA_RTT_Dual_State.pdf", label: "R02", page: 1 },
     sections: [
       {
         id: "dual-carriers",
@@ -210,7 +210,7 @@ window.MMLA_GUIDE_PARTS.push(
     lead: {
       zh: "CSBC 在一个片段完整结束后，才允许对该片段做局部双向回顾并提出记忆事件；部署输出仍必须遵循因果前缀，权威写入则逐事件递归提交。分段边界、重叠、携带状态、教师监督、队列和可信提交都是协议的一部分。",
       en: "CSBC allows local bidirectional retrospective processing only after a segment is complete; deployment outputs must still follow the causal prefix, while authoritative writes commit recursively event by event. Boundaries, overlap, carry, teacher supervision, queues, and trusted commit all belong to the protocol." },
-    source: { file: "assets/papers/Completed_Segment_Consolidation.pdf", label: "Completed Segment Consolidation", page: 1 },
+    source: { file: "https://github.com/MMLA-org/mmla-memory/raw/main/Completed_Segment_Consolidation.pdf", label: "Completed Segment Consolidation", page: 1 },
     sections: [
       {
         id: "csbc-five-clocks",

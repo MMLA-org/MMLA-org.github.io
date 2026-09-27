@@ -227,7 +227,7 @@
     scope.append(bilingual("span", "scope-label", { zh: "适用范围", en: "Scope" }), bilingual("p", "", section.boundary));
     body.append(scope);
     const references = element("div", "entry-references");
-    references.append(sourceLink("assets/papers/2606.28876v4.pdf", section.reference.page, section.reference.label));
+    references.append(sourceLink("https://github.com/MMLA-org/mmla-memory/raw/main/2606.28876v4.pdf", section.reference.page, section.reference.label));
     const permalink = bilingual("a", "guide-permalink", { zh: "本节链接", en: "Link to section" });
     permalink.href = "#" + section.id;
     references.append(permalink);

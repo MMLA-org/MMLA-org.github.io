@@ -7,7 +7,7 @@ window.MMLA_GUIDE_PARTS.push({
     zh: 'MMLA 用两种状态承接推理中获得的信息。数值策略状态 Φ 根据反馈调整后续生成，记忆表 M 保存片段结束后筛选出的记录。v4 统一规定它们的更新、读取和协作方式，并展开记忆检索、关系绑定与潜在表示读出等组件。',
     en: 'MMLA uses two states to carry information gained during reasoning. Numerical policy state Φ adapts later generation from feedback; memory table M retains selected records after segments close. v4 defines how they update, read, and work together, alongside retrieval, relational binding, and latent readout components.'
   },
-  source: { file: 'assets/papers/2606.28876v4.pdf', label: 'MMLAv4', page: 7 },
+  source: { file: 'https://github.com/MMLA-org/mmla-memory/raw/main/2606.28876v4.pdf', label: 'MMLAv4', page: 7 },
   sections: [
     {
       id: 'v4-five-states',

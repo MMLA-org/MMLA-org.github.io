@@ -8,7 +8,7 @@ window.MMLA_GUIDE_PARTS.push(
       zh: 'Atomic Memory Rows（AMR）规定一条记录如何成为系统当前采信的状态。权威记忆是唯一能决定系统当前认可哪条记录及其内容的常驻状态。每行同时保存规范内容（规范化、便于人读和精确比较的字段）与神经表示（供模型或检索使用的数值编码）；固定长度的完整行是发布单位。模型只能提出候选，受信任的组装器校验并构造完整候选行，事务控制器再原子发布整行。行内收据是绑定内容、版本和检查结果的固定大小校验记录；事实真伪需结合来源和语义任务另行评估。',
       en: 'Atomic Memory Rows (AMR) specifies how a record becomes the state a system currently accepts. Authoritative memory is the resident state that alone determines which record and content the system currently recognizes. Each row holds canonical content (normalized fields that people can read and compare exactly) and a neural representation (numeric encoding for a model or retrieval); the fixed-length complete row is the publication unit. The model may only propose a candidate: a trusted assembler validates and constructs the complete candidate row, then a transaction controller atomically publishes it. A row receipt is a fixed-size verification record binding content, version, and checks; fact truth is assessed separately through provenance and semantic task evaluation.'
     },
-    source: { file: 'assets/papers/Atomic_Memory_Rows.pdf', label: 'Atomic Memory Rows / R02', page: 1 },
+    source: { file: 'https://github.com/MMLA-org/mmla-memory/raw/main/Atomic_Memory_Rows.pdf', label: 'Atomic Memory Rows / R02', page: 1 },
     sections: [
       {
         id: 'rows-authority',
@@ -110,7 +110,7 @@ window.MMLA_GUIDE_PARTS.push(
       zh: 'Predictive Memory Admission（PMA）研究一次记忆写入对后续任务的期望影响。这里的权威记忆指系统唯一采信、能决定当前记录内容的常驻状态。对每个可行动作，研究从同一状态快照出发，在多个有来源记录的未来分支上重放，并比较整段损失。v4 定义了期望风险决策、当前风险比较、未来盲值模型与保守选择规则，并给出依赖明确假设的理论结果和实证核验协议。',
       en: 'Predictive Memory Admission (PMA) studies the expected effect of a memory write on later tasks. Here, authoritative memory means the resident state the system alone trusts to determine current record contents. For each feasible action, the method replays from the same state snapshot across multiple provenance-tracked future branches and compares horizon loss. v4 defines expected-risk decisions, a current-risk comparison, a future-blind value model, and conservative selection rules, and gives theoretical results under stated assumptions together with empirical evaluation protocols.'
     },
-    source: { file: 'assets/papers/Predictive_Memory_Admission.pdf', label: 'Predictive Memory Admission / R02', page: 1 },
+    source: { file: 'https://github.com/MMLA-org/mmla-memory/raw/main/Predictive_Memory_Admission.pdf', label: 'Predictive Memory Admission / R02', page: 1 },
     sections: [
       {
         id: 'admission-state',
