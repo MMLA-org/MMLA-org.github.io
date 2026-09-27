@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
   <title id="title">MMLAv4：记忆介导学习架构</title>
-  <desc id="desc">MMLAv4 架构，依据 arXiv:2606.28876v4 第 2、3 节及图 3。五类状态分别规定写入权限、生命周期和回滚规则。每次推理读取兼容且固定版本的策略与记忆。在同一问题求解期间，反馈可触发有界策略更新或精确无操作。片段结束后，系统按顺序处理事件：神经模型根据目标槽位生成候选内容，可信模块组装完整记忆行，校验后由控制器选择槽位或精确 NULL。控制器只使用已经获得的信息。每次提交替换完整一行，NULL 不改变任何状态。新状态仅供后续推理读取。同一前缀下多个后续分支的结果只用于离线训练。所提 PDSA 架构的端到端效果仍待验证。</desc>
+  <desc id="desc">MMLAv4 架构，依据 arXiv:2606.28876v4 第 2、3 节及图 3。五类状态分别规定写入权限、生命周期和回滚规则。每次推理读取兼容且固定版本的策略与记忆。在同一问题求解期间，反馈可触发有界策略更新或精确无操作。片段结束后，系统按顺序处理事件：神经模型根据目标槽位生成候选内容，可信模块组装完整记忆行，校验后由控制器选择槽位或精确 NULL。控制器只使用已经获得的信息。每次提交替换完整一行，NULL 不改变任何状态。新状态仅供后续推理读取。同一前缀下多个后续分支的结果只用于离线训练。图示架构与训练信息流，依据 v4 第 2–3 节。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#647168" stroke-width="1.6"/></marker>
     <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#4168a0" stroke-width="1.6"/></marker>
@@ -148,11 +148,11 @@
   <text x="438" y="1102" class="node-sub">逐事件比较已注册的可行动作</text>
   <rect x="808" y="1040" width="342" height="84" rx="6" class="teacher-box"/>
   <text x="830" y="1074" class="node-title">期望风险 oracle</text>
-  <text x="830" y="1102" class="node-sub coral">尚未证实优于基线</text>
+  <text x="830" y="1102" class="node-sub coral">同前缀分支的期望风险</text>
   <rect x="1200" y="1040" width="342" height="84" rx="6" class="teacher-box"/>
   <text x="1222" y="1074" class="node-title">训练因果价值模型 Qψ</text>
-  <text x="1222" y="1102" class="node-sub">确认 oracle 优于基线后训练</text>
+  <text x="1222" y="1102" class="node-sub">仅用因果历史预测动作风险</text>
 
   <text x="56" y="1176" class="small-sub">依据 arXiv:2606.28876v4 第 2–3 节及图 3</text>
-  <text x="1542" y="1176" text-anchor="end" class="small-title">架构方案；完整系统的端到端效果待验证</text>
+  <text x="1542" y="1176" text-anchor="end" class="small-title">架构与训练信息流 · 依据 v4 第 2–3 节</text>
 </svg>

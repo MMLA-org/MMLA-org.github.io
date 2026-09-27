@@ -5,7 +5,8 @@
   const languageButtons = [...document.querySelectorAll("[data-language]")];
   const menuToggle = document.querySelector("#menu-toggle");
   const siteNav = document.querySelector("#site-nav");
-  const navLinks = siteNav ? [...siteNav.querySelectorAll('a[href^="#"]')] : [];
+  const siteLinks = siteNav ? [...siteNav.querySelectorAll('a[href]')] : [];
+  const navLinks = siteLinks.filter(link => link.getAttribute("href").startsWith("#"));
   const diagram = document.querySelector("#diagram-dialog");
   const stage = document.querySelector("#diagram-stage");
   const fullImage = document.querySelector("#diagram-full-image");
@@ -22,17 +23,10 @@
   let previousOverflow = "";
   let copyOutcome = "";
   let selectedModel = "qwen";
-  let selectedLength = "extended";
 
   const results = {
-    qwen: {
-      extended: { full: [0.715, 12646], dense: [0.753, 1338], bm25: [0.771, 1330], mmla: [[0.813, 0.830], 1368] },
-      natural: { full: [0.805, 1521], dense: [0.594, 425], bm25: [0.701, 430], mmla: [[0.755, 0.760], 428] },
-    },
-    llama: {
-      extended: { full: [0.666, 12024], dense: [0.621, 1300], bm25: [0.636, 1293], mmla: [[0.677, 0.684], 1325] },
-      natural: { full: [0.714, 1477], dense: [0.516, 432], bm25: [0.601, 437], mmla: [[0.659, 0.663], 434] },
-    },
+    qwen: { full: [0.715, 12646], dense: [0.753, 1338], bm25: [0.771, 1330], mmla: [[0.813, 0.830], 1368] },
+    llama: { full: [0.666, 12024], dense: [0.621, 1300], bm25: [0.636, 1293], mmla: [[0.677, 0.684], 1325] },
   };
 
   const isEnglish = () => body.dataset.lang === "en";
@@ -46,7 +40,7 @@
   }
 
   function updateResults(announce = false) {
-    const current = results[selectedModel][selectedLength];
+    const current = results[selectedModel];
     const formatter = new Intl.NumberFormat(isEnglish() ? "en-US" : "zh-CN");
     document.querySelectorAll("#results-body [data-method]").forEach((row) => {
       const entry = current[row.dataset.method];
@@ -60,18 +54,15 @@
       if (score) score.textContent = values.map((value) => value.toFixed(3)).join("\u2013");
       if (tokenCount) tokenCount.textContent = formatter.format(tokens);
       if (fill) fill.style.width = `${mean * 100}%`;
+      if (announce) window.MMLAMotion?.enter([score, tokenCount].filter(Boolean), { distance: 3, stagger: 0, duration: 250 });
     });
-    document.querySelectorAll("[data-model], [data-length]").forEach((button) => {
-      const active = button.hasAttribute("data-model")
-        ? button.dataset.model === selectedModel
-        : button.dataset.length === selectedLength;
+    document.querySelectorAll("[data-model]").forEach((button) => {
+      const active = button.dataset.model === selectedModel;
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
     });
     const model = selectedModel === "qwen" ? "Qwen2.5-14B" : "Llama-3.1-8B";
-    const context = selectedLength === "extended"
-      ? (isEnglish() ? "Extended context (8.2k words)" : "\u6269\u5c55\u4e0a\u4e0b\u6587\uff08\u7ea6 8,200 \u8bcd\uff09")
-      : (isEnglish() ? "Natural context" : "\u81ea\u7136\u4e0a\u4e0b\u6587");
+    const context = isEnglish() ? "Extended context (8.2k words)" : "扩展上下文（约 8,200 词）";
     const caption = `${model} \u00b7 ${context}`;
     const captionElement = document.querySelector("#results-caption");
     const status = document.querySelector("#results-status");
@@ -94,8 +85,8 @@
     body.dataset.lang = language;
     document.documentElement.lang = language === "en" ? "en" : "zh-CN";
     document.title = language === "en"
-      ? "MMLAv4 | Memory-Mediated Learning Architecture"
-      : "MMLAv4 | \u8bb0\u5fc6\u4ecb\u5bfc\u5b66\u4e60\u67b6\u6784";
+      ? (body.dataset.titleEn || "MMLAv4 | Memory-Mediated Learning Architecture")
+      : (body.dataset.titleZh || "MMLAv4 | \u8bb0\u5fc6\u4ecb\u5bfc\u5b66\u4e60\u67b6\u6784");
     languageButtons.forEach((button) => {
       const active = button.dataset.language === language;
       button.setAttribute("aria-pressed", String(active));
@@ -106,6 +97,12 @@
       element.setAttribute("aria-label", label);
       element.setAttribute("title", label);
       if (element.tagName === "IMG") element.alt = label;
+    });
+    document.querySelectorAll("[data-placeholder-zh][data-placeholder-en]").forEach((element) => {
+      element.placeholder = language === "en" ? element.dataset.placeholderEn : element.dataset.placeholderZh;
+    });
+    document.querySelectorAll("[data-text-zh][data-text-en]").forEach((element) => {
+      element.textContent = language === "en" ? element.dataset.textEn : element.dataset.textZh;
     });
     document.querySelectorAll("#architecture-image, #diagram-full-image").forEach((image) => {
       image.src = `assets/mmla-v4-architecture-${language}.png`;
@@ -131,6 +128,7 @@
     }
     updateResults();
     updateCopyStatus();
+    document.dispatchEvent(new CustomEvent("mmla:languagechange", { detail: { language } }));
     requestAnimationFrame(updateNavigation);
   }
 
@@ -149,7 +147,7 @@
   const flowSteps = ["read", "adapt", "consolidate", "publish"];
   if (flowRoot && flowPanel && flowTabs.length) {
     const tabsByStep = new Map(flowTabs.map((tab) => [tab.dataset.flowStep, tab]));
-    const activateFlowStep = (step) => {
+    const activateFlowStep = (step, animate = true) => {
       const index = flowSteps.indexOf(step);
       if (index < 0 || !tabsByStep.has(step)) return;
       const focusedElement = document.activeElement;
@@ -160,13 +158,20 @@
         tab.tabIndex = selected ? 0 : -1;
       });
       flowPanel.setAttribute("aria-labelledby", tabsByStep.get(step).id);
-      flowCopies.forEach((copy) => { copy.hidden = copy.dataset.flowCopy !== step; });
-      flowScenes.forEach((scene) => { scene.hidden = scene.dataset.flowScene !== step; });
+      flowCopies.forEach((copy) => {
+        copy.hidden = copy.dataset.flowCopy !== step;
+        copy.inert = copy.hidden;
+      });
+      flowScenes.forEach((scene) => {
+        scene.hidden = scene.dataset.flowScene !== step;
+        scene.inert = scene.hidden;
+      });
       if (flowCounter) flowCounter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(flowSteps.length).padStart(2, "0")}`;
       if (flowPrevious) flowPrevious.disabled = index === 0;
       if (flowNext) flowNext.disabled = index === flowSteps.length - 1;
       if (focusedElement === flowPrevious && flowPrevious?.disabled) flowNext?.focus({ preventScroll: true });
       if (focusedElement === flowNext && flowNext?.disabled) flowPrevious?.focus({ preventScroll: true });
+      document.dispatchEvent(new CustomEvent("mmla:flowchange", { detail: { step, animate } }));
     };
     flowTabs.forEach((tab) => {
       tab.addEventListener("click", () => activateFlowStep(tab.dataset.flowStep));
@@ -195,12 +200,12 @@
       const index = flowSteps.indexOf(flowRoot.dataset.step);
       if (index >= 0 && index < flowSteps.length - 1) activateFlowStep(flowSteps[index + 1]);
     });
-    activateFlowStep(flowSteps.includes(flowRoot.dataset.step) ? flowRoot.dataset.step : "read");
+    activateFlowStep(flowSteps.includes(flowRoot.dataset.step) ? flowRoot.dataset.step : "read", false);
   }
 
   const memoryOutcomeButtons = flowRoot ? [...flowRoot.querySelectorAll("[data-memory-outcome]")] : [];
   if (flowRoot && memoryOutcomeButtons.length) {
-    const updateMemoryOutcome = (outcome) => {
+    const updateMemoryOutcome = (outcome, animate = true) => {
       if (outcome !== "write" && outcome !== "null") return;
       flowRoot.dataset.outcome = outcome;
       memoryOutcomeButtons.forEach((button) => {
@@ -211,11 +216,12 @@
       flowRoot.querySelectorAll("[data-outcome-copy]").forEach((copy) => {
         copy.hidden = copy.dataset.outcomeCopy !== outcome;
       });
+      document.dispatchEvent(new CustomEvent("mmla:outcomechange", { detail: { outcome, animate } }));
     };
     memoryOutcomeButtons.forEach((button) => {
       button.addEventListener("click", () => updateMemoryOutcome(button.dataset.memoryOutcome));
     });
-    updateMemoryOutcome(flowRoot.dataset.outcome === "null" ? "null" : "write");
+    updateMemoryOutcome(flowRoot.dataset.outcome === "null" ? "null" : "write", false);
   }
 
   if (menuToggle && siteNav) {
@@ -223,13 +229,13 @@
       const open = !siteNav.classList.contains("is-open");
       siteNav.classList.toggle("is-open", open);
       menuToggle.setAttribute("aria-expanded", String(open));
-      if (open) navLinks[0]?.focus();
+      if (open) siteLinks[0]?.focus();
     });
-    navLinks.forEach((link) => {
+    siteLinks.forEach((link) => {
       link.addEventListener("click", () => {
         const wasOpen = siteNav.classList.contains("is-open");
         closeMenu();
-        const target = document.getElementById(link.hash.slice(1));
+        const target = navLinks.includes(link) && document.getElementById(link.hash.slice(1));
         if (wasOpen && target) {
           if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
           target.focus({ preventScroll: true });
@@ -330,14 +336,6 @@
       updateResults(true);
     });
   });
-  document.querySelectorAll("[data-length]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!Object.hasOwn(results[selectedModel], button.dataset.length)) return;
-      selectedLength = button.dataset.length;
-      updateResults(true);
-    });
-  });
-
   function fallbackCopy(value) {
     const focused = document.activeElement;
     const selection = window.getSelection();

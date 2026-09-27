@@ -1,0 +1,40 @@
+.diagram-dialog.diagram-interaction-ready {
+  opacity: 0;
+  transform: scale(.985);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.diagram-dialog.diagram-interaction-ready.diagram-interaction-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.diagram-dialog::backdrop {
+  transition: background-color 180ms ease;
+}
+
+.diagram-stage:focus-visible {
+  outline: 2px solid var(--green, #27634b);
+  outline-offset: -3px;
+}
+
+.diagram-stage img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.diagram-stage.diagram-pan-ready img {
+  cursor: grab;
+}
+
+.diagram-stage.diagram-panning,
+.diagram-stage.diagram-panning img {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagram-dialog.diagram-interaction-ready,
+  .diagram-dialog::backdrop {
+    transition: none;
+  }
+}

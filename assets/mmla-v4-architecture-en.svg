@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
   <title id="title">MMLAv4: Memory-Mediated Learning Architecture</title>
-  <desc id="desc">MMLAv4 architecture, based on sections 2 and 3 and Figure 3 of arXiv:2606.28876v4. Five state layers have separate writers, lifetimes and rollback rules. Each causal attempt reads compatible, fixed versions of the policy and memory. Feedback can trigger a bounded policy update or an exact no-op while the same problem is being solved. After a segment ends, its events are processed in order. A neural model proposes content for a target slot, a trusted module assembles a complete row, and a controller selects a valid row or exact NULL using only available information. Each commit replaces one complete row; NULL changes nothing. Updated states are available only to later attempts. Outcomes from multiple continuations of the same prefix provide offline training targets. End-to-end evaluation of the proposed PDSA architecture remains pending.</desc>
+  <desc id="desc">MMLAv4 architecture, based on sections 2 and 3 and Figure 3 of arXiv:2606.28876v4. Five state layers have separate writers, lifetimes and rollback rules. Each causal attempt reads compatible, fixed versions of the policy and memory. Feedback can trigger a bounded policy update or an exact no-op while the same problem is being solved. After a segment ends, its events are processed in order. A neural model proposes content for a target slot, a trusted module assembles a complete row, and a controller selects a valid row or exact NULL using only available information. Each commit replaces one complete row; NULL changes nothing. Updated states are available only to later attempts. Outcomes from multiple continuations of the same prefix provide offline training targets. Architecture and training information flow shown here are based on sections 2–3 of v4.</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#647168" stroke-width="1.6"/></marker>
     <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#4168a0" stroke-width="1.6"/></marker>
@@ -148,11 +148,11 @@
   <text x="438" y="1102" class="node-sub">Compare feasible actions for each event</text>
   <rect x="808" y="1040" width="342" height="84" rx="6" class="teacher-box"/>
   <text x="830" y="1074" class="node-title">Expected-risk oracle</text>
-  <text x="830" y="1102" class="node-sub coral">Advantage over baselines unproven</text>
+  <text x="830" y="1102" class="node-sub coral">Expected risk over same-prefix futures</text>
   <rect x="1200" y="1040" width="342" height="84" rx="6" class="teacher-box"/>
   <text x="1222" y="1074" class="node-title">Train causal value model Qψ</text>
-  <text x="1222" y="1102" class="node-sub">Requires a positive oracle margin</text>
+  <text x="1222" y="1102" class="node-sub">Predict action risk from causal history</text>
 
   <text x="56" y="1176" class="small-sub">Source: arXiv:2606.28876v4, §§ 2–3, Fig. 3</text>
-  <text x="1542" y="1176" text-anchor="end" class="small-title">Proposed architecture; end-to-end evaluation pending</text>
+  <text x="1542" y="1176" text-anchor="end" class="small-title">Architecture and training flow · based on v4 §§ 2–3</text>
 </svg>
