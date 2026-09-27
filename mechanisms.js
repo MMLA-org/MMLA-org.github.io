@@ -358,6 +358,9 @@
   content.addEventListener("toggle", event => {
     const entry = event.target;
     if (!(entry instanceof HTMLDetailsElement) || !entry.classList.contains("mechanism-entry") || entry._targetOpen === undefined) return;
+    // The panel stays open while its height animates. A queued native toggle
+    // from an earlier expansion must not override the latest requested state.
+    if (entryAnimations.has(entry)) return;
     if (entry.open !== entry._targetOpen) setEntryOpen(entry, entry.open);
   }, true);
 

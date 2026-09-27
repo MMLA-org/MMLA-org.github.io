@@ -2,12 +2,12 @@
   "use strict";
   const preference = matchMedia("(prefers-reduced-motion: reduce)");
   const running = new Map();
-  const ease = "cubic-bezier(.22, 1, .36, 1)";
+  const ease = "cubic-bezier(.16, 1, .3, 1)";
 
   function animate(node, frames, options = {}) {
     if (!node) return null;
     running.get(node)?.cancel();
-    if (preference.matches || !node.animate) return null;
+    if (preference.matches || document.hidden || !node.animate) return null;
     const animation = node.animate(frames, { duration: 360, easing: ease, ...options });
     running.set(node, animation);
     const release = () => { if (running.get(node) === animation) running.delete(node); };
@@ -15,21 +15,33 @@
     return animation;
   }
 
-  function enter(nodes, { distance = 10, stagger = 35, duration = 380 } = {}) {
-    [...nodes].forEach((node, i) => animate(node,
+  function enter(nodes, { distance = 8, stagger = 40, duration = 480, delay = 0 } = {}) {
+    [...nodes].filter(Boolean).forEach((node, i) => animate(node,
       [{ opacity: 0, transform: "translateY(" + distance + "px)" }, { opacity: 1, transform: "translateY(0)" }],
-      { duration, delay: i * stagger, fill: "backwards" }));
+      { duration, delay: delay + Math.min(i * stagger, 180), fill: "backwards" }));
+  }
+
+  function cancelWithin(root) {
+    if (!root) return;
+    running.forEach((animation, node) => {
+      if (node === root || root.contains(node)) animation.cancel();
+    });
+  }
+
+  function cancelAll() {
+    running.forEach(animation => animation.cancel());
+    running.clear();
   }
 
   window.MMLAMotion = { animate, enter, get reduced() { return preference.matches; } };
   preference.addEventListener("change", () => {
-    if (preference.matches) running.forEach(animation => animation.cancel());
+    if (preference.matches) cancelAll();
   });
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) running.forEach(animation => animation.cancel());
+    if (document.hidden) cancelAll();
   });
   document.addEventListener("mmla:languagechange", () => {
-    running.forEach(animation => animation.cancel());
+    cancelAll();
   });
 
   const header = document.querySelector(".site-header");
@@ -61,12 +73,18 @@
       reveal.unobserve(entry.target);
       pendingReveal.delete(entry.target);
       const node = entry.target;
-      if (node.matches(".state-study")) playStudy();
+      if (node.matches(".state-study")) {
+        // Reveal the complete diagram once. Only the selected path then moves.
+        enter([node], { distance: 14, duration: 720 });
+        playStudy(140);
+      }
       else if (node.matches(".mechanism-figure")) {
         enter(node.querySelectorAll(".mf-lane, .mf-node, .mf-row-part, .mf-admission-grid, .mf-dual-wrap"),
-          { distance: 7, stagger: 60, duration: 440 });
+          { distance: 6, stagger: 45, duration: 480 });
+      } else if (node.matches(".state-definitions, .architecture-principles, .evidence-stats, .paper-guide-topics")) {
+        enter(node.children, { distance: 12, stagger: 65, duration: 640 });
       } else {
-        enter([node], { distance: 12, duration: 500 });
+        enter([node], { distance: 12, duration: 640 });
         node.querySelectorAll(".result-fill").forEach(bar => animate(bar,
           [{ transform: "scaleX(0)", transformOrigin: "left" }, { transform: "scaleX(1)", transformOrigin: "left" }],
           { duration: 600 }));
@@ -91,41 +109,46 @@
 
   const study = document.querySelector(".state-study");
   const studyButtons = [...document.querySelectorAll("[data-study-path]")];
-  function playStudy() {
+  function playStudy(delay = 0) {
     if (!study) return;
-    study.querySelectorAll("*").forEach(node => running.get(node)?.cancel());
+    // Keep the outer entrance in place when the visitor tries either path.
+    running.forEach((animation, node) => {
+      if (node !== study && study.contains(node)) animation.cancel();
+    });
     const path = study.dataset.path;
+    if (path !== "policy" && path !== "memory") return;
     const lane = ".study-" + path;
     const input = study.querySelector(lane + ".study-input-wire i");
     const output = study.querySelector(lane + ".study-output-wire i");
     animate(input, [{ transform: "scaleX(0)", opacity: 1, offset: 0 }, { transform: "scaleX(1)", opacity: 1, offset: .6 }, { transform: "scaleX(1)", opacity: 0, offset: 1 }],
-      { duration: 700 });
+      { duration: 480, delay, fill: "backwards" });
     animate(study.querySelector(lane + ".study-trigger .study-point"),
-      [{ boxShadow: "0 0 0 0px transparent" }, { boxShadow: "0 0 0 5px " + (path === "policy" ? "#4168a020" : "#27634b20") }, { boxShadow: "0 0 0 0px transparent" }],
-      { duration: 700 });
+      [{ opacity: .5, transform: "scale(.8)" }, { opacity: 1, transform: "scale(1.35)" }, { opacity: 1, transform: "scale(1)" }],
+      { duration: 480, delay, fill: "backwards" });
     if (path === "policy") {
       study.querySelectorAll(".study-values i").forEach((bar, i) => animate(bar,
-        [{ transform: "scaleY(.35)" }, { transform: "scaleY(" + (.6 + (i % 3) * .2) + ")" }, { transform: "scaleY(1)" }],
-        { duration: 500, delay: 240 + i * 28, fill: "backwards" }));
+        [{ opacity: .5, transform: "scaleY(" + (.45 + (i % 3) * .16) + ")" }, { opacity: 1, transform: "scaleY(1)" }],
+        { duration: 460, delay: delay + 160 + i * 18, fill: "backwards" }));
     } else {
       animate(study.querySelector(".study-write-row"),
-        [{ backgroundColor: "#eef2ef", transform: "translateX(-5px)" }, { backgroundColor: "#aecdbb", transform: "translateX(0)" }, { backgroundColor: "#dae9e0", transform: "translateX(0)" }],
-        { duration: 600, delay: 260, fill: "backwards" });
+        [{ opacity: .25, transform: "translateX(-4px)" }, { opacity: 1, transform: "translateX(0)" }],
+        { duration: 480, delay: delay + 180, fill: "backwards" });
     }
     animate(output, [{ transform: "scaleX(0)", opacity: 1 }, { transform: "scaleX(1)", opacity: 1 }, { transform: "scaleX(1)", opacity: 0 }],
-      { duration: 600, delay: 610, fill: "backwards" });
+      { duration: 440, delay: delay + 450, fill: "backwards" });
     animate(study.querySelector(".study-reader-symbol"),
       [{ opacity: .45, transform: "translateY(3px)" }, { opacity: 1, transform: "translateY(0)" }],
-      { duration: 400, delay: 820, fill: "backwards" });
+      { duration: 360, delay: delay + 630, fill: "backwards" });
   }
   studyButtons.forEach(button => button.addEventListener("click", () => {
+    if (!study) return;
     study.dataset.path = button.dataset.studyPath;
     studyButtons.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
     study.querySelectorAll("[data-study-copy]").forEach(copy => { copy.hidden = copy.dataset.studyCopy !== study.dataset.path; });
     playStudy();
     enter(study.querySelectorAll("[data-study-copy]:not([hidden])"), { distance: 4, duration: 260 });
   }));
-  document.querySelector("#study-replay")?.addEventListener("click", playStudy);
+  document.querySelector("#study-replay")?.addEventListener("click", () => playStudy());
 
   // Give the tab underline a single moving element across all four stages.
   const tabs = document.querySelector(".flow-tabs");
@@ -143,28 +166,34 @@
     const { step } = event.detail;
     const copy = document.querySelector('[data-flow-copy="' + step + '"]');
     const scene = document.querySelector('[data-flow-scene="' + step + '"]');
-    document.querySelectorAll("[data-flow-copy], [data-flow-scene] *").forEach(node => running.get(node)?.cancel());
-    enter([copy], { distance: 7, duration: 280 });
+    cancelWithin(document.querySelector("#flow-panel"));
+    enter([copy], { distance: 5, duration: 300 });
     const parts = {
       read: ".read-pair, .merge-connector, .reasoning-node, .scene-caption",
       adapt: ".feedback-source, .vertical-arrow, .policy-update, .unchanged-states, .scene-caption",
       consolidate: ".completed-segment, .candidate-fields > div, .scene-caption",
       publish: ".memory-choice, .memory-ledger, .scene-caption:not([hidden]), .later-read:not([hidden])",
     };
-    enter(scene.querySelectorAll(parts[step]), { distance: 7, stagger: 38, duration: 340 });
+    if (scene && parts[step]) enter(scene.querySelectorAll(parts[step]), { distance: 6, stagger: 35, duration: 360 });
   });
   document.addEventListener("mmla:outcomechange", event => {
     if (!event.detail.animate) return;
     const root = document.querySelector("#mechanism-explorer");
+    if (!root) return;
     const row = root.querySelector(".target-row");
     animate(row, [{ opacity: .45 }, { opacity: 1 }], { duration: 280 });
     enter(root.querySelectorAll('.later-read:not([hidden])'), { distance: 4, duration: 240 });
   });
   addEventListener("resize", positionMarker);
   document.addEventListener("mmla:languagechange", () => requestAnimationFrame(positionMarker));
-  document.addEventListener("DOMContentLoaded", () => {
-    if (!location.hash) enter(document.querySelectorAll(".lead-topline, .lead-heading, .lead-description, .lead-actions, .guide-masthead"), { distance: 10, stagger: 55, duration: 550 });
+  function initialize() {
+    if (!location.hash) {
+      enter(document.querySelectorAll(".lead-topline, .lead-heading, .lead-description, .lead-actions, .guide-masthead"),
+        { distance: 14, stagger: 50, duration: 700 });
+    }
     observeContent();
     positionMarker();
-  });
+  }
+  if (document.readyState === "complete") initialize();
+  else document.addEventListener("DOMContentLoaded", initialize, { once: true });
 })();

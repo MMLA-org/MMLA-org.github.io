@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f8f9f7" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="MMLAv4 研究推理过程中的策略更新与记忆管理。本页收录系统架构、实验结果及 arXiv:2606.28876v4 技术报告。" />
     <meta property="og:title" content="MMLAv4 | Memory-Mediated Learning Architecture" />
     <meta property="og:description" content="MMLAv4 studies policy adaptation and memory management during reasoning. Architecture, experimental results, and the v4 technical report." />
@@ -47,20 +47,16 @@
 
     <main id="main">
       <section id="overview" class="lead-section page-width" aria-labelledby="page-title">
-        <div class="lead-topline">
-          <p class="eyebrow"><span class="edition-dot"></span><span class="lang-zh">综合技术报告</span><span class="lang-en">Integrated technical report</span><span class="eyebrow-divider">/</span> 2026</p>
-          <a href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">ARXIV:2606.28876V4 <img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-        </div>
         <div class="lead-composition">
         <div class="lead-copy">
+        <p class="lead-product">MMLA<span>v4</span></p>
         <div class="lead-heading">
-          <h1 id="page-title">MMLA<span>v4</span></h1>
-          <div><p class="lead-title"><span class="lang-zh">记忆介导学习架构</span><span class="lang-en">Memory-Mediated <br />Learning Architecture</span></p><p class="lead-subtitle"><span class="lang-zh">预测式双状态适应</span><span class="lang-en">Predictive Dual-State Adaptation</span></p></div>
+          <h1 id="page-title"><span class="lang-zh">在推理中，<br /><span class="hero-accent">更新策略与记忆。</span></span><span class="lang-en">Adapt the policy.<br /><span class="hero-accent">Update the memory.</span></span></h1>
         </div>
         <div class="lead-intro">
           <p class="lead-description">
-            <span class="lang-zh">MMLA 研究模型如何在一道问题尚未结束时利用反馈：<strong class="policy-text">更新一组策略数值 Φ</strong>，改变后续生成；<strong class="memory-text">更新一张记忆表 M</strong>，保留后续可读取的信息。两种状态的容量有限，分别更新，后续推理共同读取。</span>
-            <span class="lang-en">MMLA studies how a model can use feedback before a problem ends: <strong class="policy-text">update numerical policy state Φ</strong> to change later generation, and <strong class="memory-text">update memory table M</strong> to retain information for later reads. Both have limited capacity and are updated separately.</span>
+            <span class="lang-zh">用一次尝试的反馈，调整后续尝试。<br />Φ 改变生成方式，M 保存可供读取的记录。</span>
+            <span class="lang-en">Feedback from one attempt can inform the next.<br /> Φ adapts generation. M retains records for later reasoning.</span>
           </p>
           <div class="lead-actions">
             <a class="button button-dark" href="https://github.com/MMLA-org/mmla-memory/blob/main/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer"><img src="assets/icons/file-text.svg" alt="" /><span class="lang-zh">阅读 v4 论文</span><span class="lang-en">Read the v4 paper</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
@@ -70,13 +66,8 @@
         </div>
         <figure class="state-study" data-path="policy" aria-labelledby="study-title">
           <figcaption class="study-heading"><span id="study-title"><span class="lang-zh">两种状态，分别更新</span><span class="lang-en">Two states. Separate updates.</span></span><span class="study-index">Φ / M</span></figcaption>
-          <div class="study-paths" role="group" data-label-zh="查看状态更新路径" data-label-en="Explore state update paths" aria-label="查看状态更新路径">
-            <button type="button" data-study-path="policy" aria-pressed="true"><span class="study-path-symbol">Φ</span><span class="lang-zh">策略路径</span><span class="lang-en">Policy path</span></button>
-            <button type="button" data-study-path="memory" aria-pressed="false"><span class="study-path-symbol">M</span><span class="lang-zh">记忆路径</span><span class="lang-en">Memory path</span></button>
-            <button type="button" id="study-replay" class="study-replay" data-label-zh="重播所选路径" data-label-en="Replay selected path" aria-label="重播所选路径"><img src="assets/icons/rotate-ccw.svg" alt="" /></button>
-          </div>
           <div class="study-map">
-            <div class="study-trigger study-policy"><span class="study-point"></span><span class="lang-zh">已到达的<br />反馈</span><span class="lang-en">Feedback<br />received</span></div>
+            <div class="study-trigger study-policy"><span class="study-point"></span><span class="lang-zh">已到达的反馈</span><span class="lang-en">Feedback received</span></div>
             <span class="study-wire study-policy study-input-wire" aria-hidden="true"><i></i></span>
             <div class="study-carrier study-policy">
               <div><strong>Φ</strong><span class="lang-zh">数值状态</span><span class="lang-en">Policy values</span></div>
@@ -84,8 +75,7 @@
               <small><span class="lang-zh">有界更新 / 保持原状</span><span class="lang-en">Bounded update / no-op</span></small>
             </div>
             <span class="study-wire study-policy study-output-wire" aria-hidden="true"><i></i></span>
-            <div class="study-reader"><span class="study-reader-symbol">Φ<span>+</span>M</span><strong><span class="lang-zh">后续推理</span><span class="lang-en">Later reasoning</span></strong><span><span class="lang-zh">读取兼容版本</span><span class="lang-en">Read compatible versions</span></span></div>
-            <div class="study-trigger study-memory"><span class="study-point"></span><span class="lang-zh">已完成的<br />片段</span><span class="lang-en">Completed<br />segment</span></div>
+            <div class="study-trigger study-memory"><span class="study-point"></span><span class="lang-zh">已完成的片段</span><span class="lang-en">Completed segment</span></div>
             <span class="study-wire study-memory study-input-wire" aria-hidden="true"><i></i></span>
             <div class="study-carrier study-memory">
               <div><strong>M</strong><span class="lang-zh">记忆表</span><span class="lang-en">Memory table</span></div>
@@ -93,6 +83,13 @@
               <small><span class="lang-zh">整行提交 / NULL</span><span class="lang-en">Whole-row commit / NULL</span></small>
             </div>
             <span class="study-wire study-memory study-output-wire" aria-hidden="true"><i></i></span>
+            <span class="study-join" aria-hidden="true"></span>
+            <div class="study-reader"><span class="study-reader-symbol">Φ<span>+</span>M</span><strong><span class="lang-zh">后续推理</span><span class="lang-en">Later reasoning</span></strong><span><span class="lang-zh">读取兼容版本</span><span class="lang-en">Read compatible versions</span></span></div>
+          </div>
+          <div class="study-paths" role="group" data-label-zh="查看状态更新路径" data-label-en="Explore state update paths" aria-label="查看状态更新路径">
+            <button type="button" data-study-path="policy" aria-pressed="true"><span class="study-path-symbol">Φ</span><span class="lang-zh">策略路径</span><span class="lang-en">Policy path</span></button>
+            <button type="button" data-study-path="memory" aria-pressed="false"><span class="study-path-symbol">M</span><span class="lang-zh">记忆路径</span><span class="lang-en">Memory path</span></button>
+            <button type="button" id="study-replay" class="study-replay" data-label-zh="重播所选路径" data-label-en="Replay selected path" aria-label="重播所选路径"><img src="assets/icons/rotate-ccw.svg" alt="" /></button>
           </div>
           <div class="study-caption">
             <p data-study-copy="policy"><span class="lang-zh">同一道题仍在进行时，反馈可调整 Φ，参与下一次生成。</span><span class="lang-en">While a problem is still open, feedback can adjust Φ for the next generation.</span></p>
