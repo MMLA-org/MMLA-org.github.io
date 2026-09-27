@@ -23,10 +23,10 @@
         </a>
         <nav id="site-nav" class="site-nav" data-label-zh="页面导航" data-label-en="Page navigation" aria-label="页面导航">
           <a href="#overview"><span class="lang-zh">概览</span><span class="lang-en">Overview</span></a>
+          <a href="#implementation"><span class="lang-zh">机制</span><span class="lang-en">Mechanisms</span></a>
           <a href="#architecture"><span class="lang-zh">架构</span><span class="lang-en">Architecture</span></a>
           <a href="#evidence"><span class="lang-zh">实验</span><span class="lang-en">Results</span></a>
           <a href="#papers"><span class="lang-zh">论文</span><span class="lang-en">Papers</span></a>
-          <a href="#implementation"><span class="lang-zh">代码</span><span class="lang-en">Code</span></a>
         </nav>
         <div class="header-controls">
           <div class="language-switch" role="group" data-label-zh="语言" data-label-en="Language" aria-label="语言">
@@ -42,37 +42,118 @@
 
     <main id="main">
       <section id="overview" class="lead-section page-width" aria-labelledby="page-title">
-        <div class="lead-main">
-          <div class="eyebrow"><span class="edition-dot"></span> ARXIV:2606.28876V4 <span class="eyebrow-divider">/</span> 14 SEP 2026</div>
+        <div class="lead-topline">
+          <p class="eyebrow"><span class="edition-dot"></span><span class="lang-zh">综合技术报告</span><span class="lang-en">Integrated technical report</span><span class="eyebrow-divider">/</span> 2026</p>
+          <a href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">ARXIV:2606.28876V4 <img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+        </div>
+        <div class="lead-heading">
           <h1 id="page-title">MMLA<span>v4</span></h1>
-          <p class="lead-title"><span class="lang-zh">记忆介导学习架构</span><span class="lang-en">Memory-Mediated Learning Architecture</span></p>
-          <p class="lead-subtitle"><span class="lang-zh">预测式双状态适应</span><span class="lang-en">Predictive Dual-State Adaptation</span></p>
+          <div><p class="lead-title"><span class="lang-zh">记忆介导学习架构</span><span class="lang-en">Memory-Mediated <br />Learning Architecture</span></p><p class="lead-subtitle"><span class="lang-zh">预测式双状态适应</span><span class="lang-en">Predictive Dual-State Adaptation</span></p></div>
+        </div>
+        <div class="lead-intro">
           <p class="lead-description">
-            <span class="lang-zh">MMLA 为模型设计了两种有界状态：策略状态 <strong>Φ</strong> 根据同一问题内的反馈更新，记忆 <strong>M</strong> 保存已完成片段中的信息。v4 讨论这两种状态如何分别更新，并供后续推理共同使用。</span>
-            <span class="lang-en">MMLA proposes two bounded states for reasoning. Policy state <strong>Φ</strong> adapts to feedback within a problem; memory <strong>M</strong> stores information from completed segments. v4 defines how they are updated separately and used in later reasoning.</span>
+            <span class="lang-zh">一次问题求解尚未结束，模型能否根据反馈调整后续推理？MMLA 提出两种独立、有界的适应状态：<strong class="policy-text">Φ 调整策略</strong>，<strong class="memory-text">M 保存记忆</strong>。两者分别更新，共同作用于后续尝试。</span>
+            <span class="lang-en">Can a model use feedback to adapt before a problem is finished? MMLA proposes two independent, bounded states: <strong class="policy-text">Φ adapts the policy</strong>; <strong class="memory-text">M retains memory</strong>. Each is updated separately, and both inform later attempts.</span>
           </p>
           <div class="lead-actions">
             <a class="button button-dark" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer"><img src="assets/icons/file-text.svg" alt="" /><span class="lang-zh">阅读 v4 论文</span><span class="lang-en">Read the v4 paper</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-            <a class="button button-text" href="#architecture"><span class="lang-zh">查看架构</span><span class="lang-en">View architecture</span><img src="assets/icons/arrow-right.svg" alt="" /></a>
+            <a class="button button-text" href="#implementation"><span class="lang-zh">理解运行机制</span><span class="lang-en">Explore the mechanism</span><img src="assets/icons/arrow-right.svg" alt="" /></a>
           </div>
         </div>
-        <aside class="lead-aside" data-label-zh="报告详情" data-label-en="Report details" aria-label="报告详情">
-          <div class="aside-rule"></div>
-          <p class="aside-label"><span class="lang-zh">综合技术报告</span><span class="lang-en">Integrated technical report</span></p>
-          <dl>
-            <div><dt><span class="lang-zh">作者</span><span class="lang-en">Authors</span></dt><dd>Junyi Zou · Avrova Donz</dd></div>
-            <div><dt><span class="lang-zh">篇幅</span><span class="lang-en">Length</span></dt><dd><span class="lang-zh">222 页</span><span class="lang-en">222 pages</span></dd></div>
-            <div><dt><span class="lang-zh">实验统计截至</span><span class="lang-en">Results through</span></dt><dd>13 Sep 2026</dd></div>
-            <div><dt>DOI</dt><dd>10.48550/arXiv.2606.28876</dd></div>
-          </dl>
-          <a class="aside-link" href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv v4 <img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-        </aside>
+        <div class="lead-meta"><span>Junyi Zou · Avrova Donz</span><span><span class="lang-zh">222 页 · 2026 年 9 月 14 日</span><span class="lang-en">222 pages · 14 Sep 2026</span></span><span><span class="lang-zh">实验统计截至 2026.09.13</span><span class="lang-en">Results through 13 Sep 2026</span></span></div>
+      </section>
+
+      <section id="implementation" class="implementation-section section-band" aria-labelledby="implementation-title">
+        <div class="page-width">
+          <div class="section-heading"><div><p class="section-index">01 / <span class="lang-zh">运行机制</span><span class="lang-en">Mechanisms</span></p><h2 id="implementation-title"><span class="lang-zh">两种状态，一次推理循环</span><span class="lang-en">Two states. One reasoning loop.</span></h2></div><p class="section-summary"><span class="lang-zh">策略决定如何利用信息，记忆决定保留哪些信息。它们在不同的时机更新。</span><span class="lang-en">Policy shapes how information is used. Memory determines what is retained. They change at different points in the loop.</span></p></div>
+          <div class="state-definitions">
+            <article class="state-definition policy-definition"><span class="state-symbol" aria-hidden="true">Φ</span><div><p class="state-kicker">POLICY STATE</p><h3><span class="lang-zh">调整后续推理的方式</span><span class="lang-en">Adapt how to reason</span></h3><p><span class="lang-zh">有界的数值载体。在同一问题内，收到反馈后更新。</span><span class="lang-en">A bounded numerical carrier, updated from feedback within the same problem.</span></p></div></article>
+            <article class="state-definition memory-definition"><span class="state-symbol" aria-hidden="true">M</span><div><p class="state-kicker">AUTHORITATIVE MEMORY</p><h3><span class="lang-zh">保留后续需要的信息</span><span class="lang-en">Retain what may be needed</span></h3><p><span class="lang-zh">固定容量的完整记忆行。片段结束后，逐事件决定是否写入。</span><span class="lang-en">Complete rows in a fixed capacity. After a segment ends, each event may lead to a write.</span></p></div></article>
+          </div>
+
+          <div id="mechanism-explorer" class="mechanism-explorer" data-step="read" data-outcome="write">
+            <div class="flow-tabs" role="tablist" data-label-zh="推理循环阶段" data-label-en="Reasoning loop stages" aria-label="推理循环阶段">
+              <button id="flow-tab-read" type="button" role="tab" aria-selected="true" aria-controls="flow-panel" tabindex="0" data-flow-step="read"><span class="flow-tab-number">01</span><span><span class="lang-zh">读取与生成</span><span class="lang-en">Read &amp; reason</span></span></button>
+              <button id="flow-tab-adapt" type="button" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1" data-flow-step="adapt"><span class="flow-tab-number">02</span><span><span class="lang-zh">反馈与策略</span><span class="lang-en">Adapt policy</span></span></button>
+              <button id="flow-tab-consolidate" type="button" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1" data-flow-step="consolidate"><span class="flow-tab-number">03</span><span><span class="lang-zh">片段与候选</span><span class="lang-en">Build a candidate</span></span></button>
+              <button id="flow-tab-publish" type="button" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1" data-flow-step="publish"><span class="flow-tab-number">04</span><span><span class="lang-zh">写入与再读</span><span class="lang-en">Commit &amp; reuse</span></span></button>
+            </div>
+            <div id="flow-panel" class="flow-panel" role="tabpanel" aria-labelledby="flow-tab-read" tabindex="0">
+              <div class="flow-narrative">
+                <div class="flow-copy-stack">
+                  <div data-flow-copy="read">
+                    <p class="flow-phase"><span class="lang-zh">一次尝试开始时</span><span class="lang-en">At the start of an attempt</span></p>
+                    <h3><span class="lang-zh">先读已有状态，<br />再生成下一步。</span><span class="lang-en">Read the current states.<br />Then reason forward.</span></h3>
+                    <p><span class="lang-zh">模型读取一组兼容的策略与记忆版本，再基于已经看到的内容进行推理。这次尝试使用固定的版本组合。</span><span class="lang-en">The model reads compatible versions of policy and memory, then reasons from what it has already observed. That pair stays fixed for the attempt.</span></p>
+                    <div class="flow-rule"><span class="rule-label"><span class="lang-zh">读取边界</span><span class="lang-en">Read boundary</span></span><span class="lang-zh">未来的答案、反馈和评估结果不在输入中。</span><span class="lang-en">Future answers, feedback, and evaluation results are unavailable.</span></div>
+                  </div>
+                  <div data-flow-copy="adapt" hidden>
+                    <p class="flow-phase policy-text"><span class="lang-zh">同一问题仍在求解中</span><span class="lang-en">While the same problem is being solved</span></p>
+                    <h3><span class="lang-zh">反馈到达后，<br />策略可以改变。</span><span class="lang-en">New feedback can<br />change the policy.</span></h3>
+                    <p><span class="lang-zh">已完成尝试的反馈可以触发对 Φ 的有界更新，也可以不更新。新的 Φ 供后续尝试读取，无需等到整道问题结束。</span><span class="lang-en">Feedback from a completed attempt may trigger a bounded update to Φ, or no update. Later attempts can use the new Φ before the whole problem ends.</span></p>
+                    <div class="flow-rule"><span class="rule-label"><span class="lang-zh">独立更新</span><span class="lang-en">Separate updates</span></span><span class="lang-zh">更新 Φ 不等于改写记忆 M，也不等于在线改写基础参数 θ。</span><span class="lang-en">Updating Φ does not rewrite memory M or the base parameters θ.</span></div>
+                  </div>
+                  <div data-flow-copy="consolidate" hidden>
+                    <p class="flow-phase memory-text"><span class="lang-zh">片段完成之后</span><span class="lang-en">After a segment ends</span></p>
+                    <h3><span class="lang-zh">把已发生的内容，<br />整理成候选记忆。</span><span class="lang-en">Turn completed events<br />into memory candidates.</span></h3>
+                    <p><span class="lang-zh">系统回看已完成片段，按顺序处理事件。神经模型针对各可行槽位提出内容，可信模块组装完整候选行，再校验字段和写入权限。</span><span class="lang-en">The system reviews the completed segment and processes its events in order. A neural model proposes content for each feasible slot; a trusted module assembles and validates the complete candidate rows.</span></p>
+                    <div class="flow-rule"><span class="rule-label"><span class="lang-zh">提交边界</span><span class="lang-en">Commit boundary</span></span><span class="lang-zh">生成候选内容并不直接改变权威记忆。</span><span class="lang-en">Proposing content does not itself change authoritative memory.</span></div>
+                  </div>
+                  <div data-flow-copy="publish" hidden>
+                    <p class="flow-phase memory-text"><span class="lang-zh">每个事件的写入决策</span><span class="lang-en">The decision for each event</span></p>
+                    <h3><span class="lang-zh">提交完整一行，<br />或者保持原样。</span><span class="lang-en">Commit one full row.<br />Or change nothing.</span></h3>
+                    <p><span class="lang-zh">控制器从可行槽位和 NULL 中选择。一次事件最多替换一行，后一个事件读取前一个事件处理后的记忆；所有事件处理完，再供后续推理使用。</span><span class="lang-en">The controller chooses a feasible slot or NULL. Each event replaces at most one row; the next event reads the resulting memory. Later reasoning reads it after all events are processed.</span></p>
+                    <div class="flow-rule"><span class="rule-label"><span class="lang-zh">容量与回滚</span><span class="lang-en">Capacity &amp; rollback</span></span><span class="lang-zh">记忆容量不增长。Φ 与 M 分别维护版本和恢复记录。</span><span class="lang-en">Memory capacity stays fixed. Φ and M keep separate versions and restore records.</span></div>
+                  </div>
+                </div>
+                <div class="flow-navigation"><span id="flow-counter">01 / 04</span><div><button id="flow-previous" class="icon-button" type="button" disabled data-label-zh="上一个阶段" data-label-en="Previous stage" aria-label="上一个阶段" title="上一个阶段"><img class="arrow-back" src="assets/icons/arrow-right.svg" alt="" /></button><button id="flow-next" class="icon-button" type="button" data-label-zh="下一个阶段" data-label-en="Next stage" aria-label="下一个阶段" title="下一个阶段"><img src="assets/icons/arrow-right.svg" alt="" /></button></div></div>
+              </div>
+              <div class="flow-visual">
+                <div class="visual-heading"><span>MMLAv4 / <span class="lang-zh">状态流</span><span class="lang-en">STATE FLOW</span></span><span class="visual-notation"><span class="policy-key">Φ</span><span class="memory-key">M</span></span></div>
+                <div class="flow-scene" data-flow-scene="read">
+                  <div class="read-pair"><div class="read-state policy-state"><span class="visual-symbol">Φ<sub>i</sub></span><span><span class="lang-zh">策略版本</span><span class="lang-en">Policy version</span></span></div><span class="pair-plus" aria-hidden="true">+</span><div class="read-state memory-state"><span class="visual-symbol">M<sub>j</sub></span><span><span class="lang-zh">记忆版本</span><span class="lang-en">Memory version</span></span></div></div>
+                  <div class="merge-connector" aria-hidden="true"><img src="assets/icons/arrow-right.svg" alt="" /></div>
+                  <div class="reasoning-node"><span class="node-eyebrow"><span class="lang-zh">因果骨干 · θ</span><span class="lang-en">CAUSAL BACKBONE · θ</span></span><strong><span class="lang-zh">当前内容 + 状态读取</span><span class="lang-en">Observed context + state reads</span></strong><div class="token-sequence" aria-label="x1, x2, ..., xt to xt+1"><span>x<sub>1</sub></span><span>x<sub>2</sub></span><span>…</span><span>x<sub>t</sub></span><img src="assets/icons/arrow-right.svg" alt="" /><span class="next-token">x<sub>t+1</sub></span></div></div>
+                  <p class="scene-caption"><span class="lang-zh">固定版本读取 · 只使用已发生的信息</span><span class="lang-en">Pinned versions · Only observed information</span></p>
+                </div>
+                <div class="flow-scene" data-flow-scene="adapt" hidden>
+                  <div class="feedback-source"><span class="event-marker"></span><span><span class="lang-zh">已收到的反馈</span><span class="lang-en">Received feedback</span></span></div>
+                  <img class="vertical-arrow" src="assets/icons/arrow-right.svg" alt="" />
+                  <div class="policy-update"><p><span class="lang-zh">有界数值更新</span><span class="lang-en">BOUNDED NUMERICAL UPDATE</span></p><div class="state-transition"><span>Φ<sub>i</sub></span><img src="assets/icons/arrow-right.svg" alt="" /><span>Φ<sub>i+1</sub></span></div><span><span class="lang-zh">或保持 Φ 不变</span><span class="lang-en">Or leave Φ unchanged</span></span></div>
+                  <div class="unchanged-states"><span><b>θ</b><span class="lang-zh">基础参数不变</span><span class="lang-en">Base unchanged</span></span><span><b>M</b><span class="lang-zh">记忆不变</span><span class="lang-en">Memory unchanged</span></span></div>
+                  <p class="scene-caption"><span class="lang-zh">下次尝试读取新的策略版本</span><span class="lang-en">The next attempt can read the new policy version</span></p>
+                </div>
+                <div class="flow-scene" data-flow-scene="consolidate" hidden>
+                  <div class="completed-segment"><span class="segment-events">e<sub>1</sub> <i></i> e<sub>2</sub> <i></i> … <i></i> e<sub>K</sub></span><span><img src="assets/icons/check.svg" alt="" /><span class="lang-zh">片段已完成</span><span class="lang-en">Segment complete</span></span></div>
+                  <ol class="assembly-steps"><li><span>01</span><div><strong><span class="lang-zh">提出内容</span><span class="lang-en">Propose content</span></strong><small><span class="lang-zh">神经提议器 · 分别针对可行槽位</span><span class="lang-en">Neural proposer · Each feasible slot</span></small></div></li><li><span>02</span><div><strong><span class="lang-zh">组装完整行</span><span class="lang-en">Assemble complete rows</span></strong><small><span class="lang-zh">可信模块 · 完整字段</span><span class="lang-en">Trusted module · Complete fields</span></small></div></li><li><span>03</span><div><strong><span class="lang-zh">校验候选</span><span class="lang-en">Validate the candidates</span></strong><small><span class="lang-zh">类型、来源与写入权限</span><span class="lang-en">Type, provenance, write permissions</span></small></div></li></ol>
+                  <p class="scene-caption"><span class="lang-zh">各槽位的候选行就绪，等待准入决策</span><span class="lang-en">Candidates are ready for the admission decision.</span></p>
+                </div>
+                <div class="flow-scene" data-flow-scene="publish" hidden>
+                  <div class="memory-choice"><span><span class="lang-zh">动作示意</span><span class="lang-en">ACTION EXAMPLE</span></span><div class="segmented" role="group" data-label-zh="记忆提交动作" data-label-en="Memory commit action" aria-label="记忆提交动作"><button type="button" data-memory-outcome="write" class="is-active" aria-pressed="true"><span class="lang-zh">写入一行</span><span class="lang-en">Write a row</span></button><button type="button" data-memory-outcome="null" aria-pressed="false">NULL</button></div></div>
+                  <div class="memory-ledger"><div class="ledger-header"><span><span class="lang-zh">权威记忆 M</span><span class="lang-en">AUTHORITATIVE MEMORY M</span></span><span><span class="lang-zh">固定容量</span><span class="lang-en">FIXED CAPACITY</span></span></div><div class="ledger-row"><span>01</span><span class="row-bars" aria-hidden="true"><i></i><i></i></span><span class="row-status"><span class="lang-zh">保留</span><span class="lang-en">Retained</span></span></div><div class="ledger-row target-row"><span>02</span><span class="row-content"><span data-outcome-copy="write"><span class="lang-zh">完整候选行</span><span class="lang-en">Complete candidate row</span></span><span data-outcome-copy="null" hidden><span class="lang-zh">原记忆行</span><span class="lang-en">Original memory row</span></span></span><span class="row-status"><span class="write-marker">↳</span><span class="null-marker">=</span></span></div><div class="ledger-row"><span>03</span><span class="row-bars" aria-hidden="true"><i></i><i></i></span><span class="row-status"><span class="lang-zh">保留</span><span class="lang-en">Retained</span></span></div><div class="ledger-continuation">…</div><div class="ledger-row"><span>N</span><span class="row-bars" aria-hidden="true"><i></i><i></i></span><span class="row-status"><span class="lang-zh">保留</span><span class="lang-en">Retained</span></span></div></div>
+                  <p class="scene-caption" data-outcome-copy="write"><span class="lang-zh">仅替换槽位 02 · 其余行保持原样</span><span class="lang-en">Only slot 02 is replaced. All other rows stay unchanged.</span></p><p class="scene-caption" data-outcome-copy="null" hidden><span class="lang-zh">NULL 不删除记忆，也不改变记忆版本。</span><span class="lang-en">NULL neither deletes memory nor changes its version.</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="flow-footnote"><span><span class="lang-zh">两条更新路径可分别发生，不要求每次都更新 Φ 或写入 M。</span><span class="lang-en">The two update paths are independent. Neither must run on every attempt.</span></span><a href="assets/papers/2606.28876v4.pdf#page=8" target="_blank" rel="noopener noreferrer"><span class="lang-zh">v4 第 2–3 节</span><span class="lang-en">v4 §§2–3</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
+          </div>
+
+          <div class="admission-section">
+            <div class="admission-copy"><p class="section-index"><span class="lang-zh">预测式记忆准入</span><span class="lang-en">Predictive memory admission</span></p><h3><span class="lang-zh">这条记忆，<br />以后用得上吗？</span><span class="lang-en">Will this memory<br />help later?</span></h3><p><span class="lang-zh">刚出现的信息未必值得保留。准入的目标，是比较“写入某个槽位”和“不写入”对后续任务的预期影响，并计入存储与更新成本。</span><span class="lang-en">Recent information is not always worth keeping. Admission aims to compare the expected effect of writing to a slot against writing nothing, including storage and update costs.</span></p><a class="section-source" href="assets/papers/2606.28876v4.pdf#page=14" target="_blank" rel="noopener noreferrer"><span class="lang-zh">v4 §3.4 · 训练目标</span><span class="lang-en">v4 §3.4 · Training objective</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
+            <div class="admission-paths">
+              <div class="admission-path training-path"><div class="path-heading"><span class="path-tag"><span class="lang-zh">离线训练</span><span class="lang-en">OFFLINE TRAINING</span></span><span><span class="lang-zh">未来分支提供监督</span><span class="lang-en">Future branches provide targets</span></span></div><div class="branch-diagram"><div class="branch-origin"><span class="lang-zh">同一历史<br />同一写入前状态</span><span class="lang-en">Same history<br />Same pre-write state</span></div><div class="branch-futures"><span>Y<sub>1</sub><span class="lang-zh">后续分支</span><span class="lang-en">Continuation</span></span><span>Y<sub>2</sub><span class="lang-zh">后续分支</span><span class="lang-en">Continuation</span></span><span>Y<sub>3</sub><span class="lang-zh">后续分支</span><span class="lang-en">Continuation</span></span></div><div class="branch-result"><span class="lang-zh">比较各动作的<br /><strong>平均风险与成本</strong></span><span class="lang-en">Compare actions by<br /><strong>mean risk and cost</strong></span></div></div></div>
+              <div class="training-boundary"><span class="boundary-cross" aria-hidden="true">×</span><span class="lang-zh">未来分支与答案不进入线上输入</span><span class="lang-en">Future branches and answers are excluded from deployment inputs</span></div>
+              <div class="admission-path deployment-path"><div class="path-heading"><span class="path-tag"><span class="lang-zh">线上决策</span><span class="lang-en">DEPLOYMENT</span></span><span><span class="lang-zh">只用已完成的历史</span><span class="lang-en">Only completed history is available</span></span></div><div class="deployment-flow"><span><span class="lang-zh">当前状态<br />已完成事件</span><span class="lang-en">Current state<br />Completed event</span></span><img src="assets/icons/arrow-right.svg" alt="" /><strong><span class="lang-zh">预测各动作的<br />未来价值</span><span class="lang-en">Predict each action's<br />future value</span></strong><img src="assets/icons/arrow-right.svg" alt="" /><span class="admission-action"><span class="lang-zh">槽位 / NULL</span><span class="lang-en">Slot / NULL</span></span></div></div>
+            </div>
+          </div>
+          <p class="mechanism-footnote"><span class="lang-zh">以上为 v4 提出的机制与训练目标。学得的预测式准入和完整双状态系统的收益仍待验证。</span><span class="lang-en">These are the mechanisms and training objectives proposed in v4. The benefits of learned predictive admission and the full dual-state system remain unverified.</span></p>
+        </div>
       </section>
 
       <section id="architecture" class="architecture-section section-band" aria-labelledby="architecture-title">
         <div class="page-width">
           <div class="section-heading architecture-heading">
-            <div><p class="section-index">01 / <span class="lang-zh">系统架构</span><span class="lang-en">Architecture</span></p><h2 id="architecture-title"><span class="lang-zh">策略更新与记忆管理</span><span class="lang-en">Policy updates and memory management</span></h2></div>
+            <div><p class="section-index">02 / <span class="lang-zh">系统架构</span><span class="lang-en">Architecture</span></p><h2 id="architecture-title"><span class="lang-zh">把两条路径放回完整架构</span><span class="lang-en">The two paths in the full architecture</span></h2></div>
             <p class="section-summary"><span class="lang-zh">策略和记忆各自维护版本、写入权限与回滚记录。一次推理读取兼容的版本组合，更新后的状态用于之后的推理。</span><span class="lang-en">Policy and memory have separate versions, write permissions, and rollback records. Each attempt reads a compatible pair; updates become available to later attempts.</span></p>
           </div>
           <div class="diagram-toolbar">
@@ -88,16 +169,16 @@
           </button>
           <div class="architecture-caption"><span><span class="lang-zh">根据 v4 第 2–3 节及图 3 绘制。</span><span class="lang-en">Based on v4 Sections 2–3 and Figure 3.</span></span><a href="assets/papers/2606.28876v4.pdf#page=10" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文图 3 · 第 10 页</span><span class="lang-en">Paper Fig. 3 · p. 10</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
           <div class="architecture-principles">
-            <article><span class="principle-number">01</span><h3><span class="lang-zh">问题内的策略更新</span><span class="lang-en">Policy adaptation within a problem</span></h3><p><span class="lang-zh">同一问题求解期间，反馈可以触发一次有界更新，也可以保持策略状态不变。后续尝试读取更新后的策略。</span><span class="lang-en">While a problem is being solved, feedback may trigger a bounded policy update or leave the state unchanged. Later attempts read the updated policy.</span></p></article>
-            <article><span class="principle-number">02</span><h3><span class="lang-zh">片段结束后的记忆写入</span><span class="lang-en">Memory updates after a segment ends</span></h3><p><span class="lang-zh">片段结束后，系统按顺序处理其中的事件。每次替换一条完整记忆行，或执行 NULL，保留原状态。</span><span class="lang-en">Once a segment ends, its events are processed in order. Each event replaces one complete memory row or takes the NULL action, preserving the existing state.</span></p></article>
-            <article><span class="principle-number">03</span><h3><span class="lang-zh">训练时的未来监督</span><span class="lang-en">Future outcomes as training signals</span></h3><p><span class="lang-zh">训练时，同一历史之后的多个分支用于估计写入动作的价值。部署时只使用当时已有的信息。</span><span class="lang-en">During training, multiple continuations of the same history are used to estimate the value of memory actions. Deployment uses only information already available.</span></p></article>
+            <article><span class="support-symbol">h<sub>t</sub></span><h3><span class="lang-zh">因果 token 状态</span><span class="lang-en">Causal token state</span></h3><p><span class="lang-zh">当前生成过程的工作状态，随 token 和尝试变化。它与跨片段保留的记忆 M 有不同的生命周期。</span><span class="lang-en">The working state of generation changes across tokens and attempts. Its lifetime differs from memory M, which persists across segments.</span></p></article>
+            <article><span class="support-symbol">B<sub>n</sub></span><h3><span class="lang-zh">片段工作区</span><span class="lang-en">Segment workspace</span></h3><p><span class="lang-zh">汇总片段内已经发生的信息，容量有界。片段结束后，系统据此构造记忆候选。</span><span class="lang-en">A bounded summary of information observed within a segment. After the segment ends, it supports the construction of memory candidates.</span></p></article>
+            <article><span class="support-symbol">θ</span><h3><span class="lang-zh">慢变基础参数</span><span class="lang-en">Slow base parameters</span></h3><p><span class="lang-zh">在预训练或离线训练中更新，与推理时可变的 Φ、M 分开管理。</span><span class="lang-en">Updated during pretraining or offline training, and managed separately from Φ and M, which can change during reasoning.</span></p></article>
           </div>
         </div>
       </section>
 
       <section id="evidence" class="evidence-section page-width" aria-labelledby="evidence-title">
         <div class="section-heading">
-          <div><p class="section-index">02 / <span class="lang-zh">实验</span><span class="lang-en">Experiments</span></p><h2 id="evidence-title"><span class="lang-zh">组件实验结果</span><span class="lang-en">Component results</span></h2></div>
+          <div><p class="section-index">03 / <span class="lang-zh">实验</span><span class="lang-en">Experiments</span></p><h2 id="evidence-title"><span class="lang-zh">组件实验结果</span><span class="lang-en">Component results</span></h2></div>
           <p class="section-summary"><span class="lang-zh">结果摘自 v4 第 5–13 节，实验记录截至 2026 年 9 月 13 日。</span><span class="lang-en">Results from Sections 5–13 of v4, covering experiments completed by 13 September 2026.</span></p>
         </div>
         <div class="evidence-stats">
@@ -128,7 +209,7 @@
 
       <section class="boundary-section section-band" aria-labelledby="boundary-title">
         <div class="page-width boundary-layout">
-          <div><p class="section-index">03 / <span class="lang-zh">研究局限</span><span class="lang-en">Limitations</span></p><h2 id="boundary-title"><span class="lang-zh">尚待验证的问题</span><span class="lang-en">Open questions</span></h2></div>
+          <div><p class="section-index">04 / <span class="lang-zh">研究局限</span><span class="lang-en">Limitations</span></p><h2 id="boundary-title"><span class="lang-zh">尚待验证的问题</span><span class="lang-en">Open questions</span></h2></div>
           <div class="boundary-copy">
             <p><span class="lang-zh">现有实验主要检验受控任务中的单个组件。自然语言记忆管理和完整 PDSA 的效果仍需验证；论文中的定理也依赖各自的假设条件。截至 v4，以下问题尚无实验证据支持：</span><span class="lang-en">The experiments test individual components under controlled conditions. Natural-language memory management and full PDSA performance remain unverified, and the theorems depend on their stated assumptions. v4 leaves three empirical questions open:</span></p>
             <ul>
@@ -142,7 +223,7 @@
       </section>
 
       <section id="papers" class="papers-section page-width" aria-labelledby="papers-title">
-        <div class="section-heading"><div><p class="section-index">04 / <span class="lang-zh">论文</span><span class="lang-en">Publications</span></p><h2 id="papers-title"><span class="lang-zh">技术报告与配套论文</span><span class="lang-en">Technical report and companion papers</span></h2></div><p class="section-summary"><span class="lang-zh">v4 汇总整体架构、理论分析和实验结果。五篇配套论文分别讨论其中的具体问题。</span><span class="lang-en">v4 brings together the architecture, theoretical analysis, and experimental results. Five companion papers develop individual parts of the theory.</span></p></div>
+        <div class="section-heading"><div><p class="section-index">05 / <span class="lang-zh">论文</span><span class="lang-en">Publications</span></p><h2 id="papers-title"><span class="lang-zh">技术报告与配套论文</span><span class="lang-en">Technical report and companion papers</span></h2></div><p class="section-summary"><span class="lang-zh">v4 汇总整体架构、理论分析和实验结果。五篇配套论文分别讨论其中的具体问题。</span><span class="lang-en">v4 brings together the architecture, theoretical analysis, and experimental results. Five companion papers develop individual parts of the theory.</span></p></div>
         <article class="featured-paper"><a class="paper-cover" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开 MMLAv4 论文 PDF" data-label-en="Open MMLAv4 PDF" aria-label="打开 MMLAv4 论文 PDF"><img src="assets/mmla-v4-cover.png" data-label-zh="MMLAv4 技术报告第一页" data-label-en="The first page of the MMLAv4 technical report" alt="MMLAv4 技术报告第一页" width="600" height="776" loading="lazy" /></a><div class="featured-paper-copy"><div class="paper-tags"><span class="lang-zh">技术报告</span><span class="lang-en">TECHNICAL REPORT</span><span>ARXIV V4</span><span>2026</span></div><h3>MMLA: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation</h3><p class="featured-authors">Junyi Zou · Avrova Donz</p><p><span class="lang-zh">222 页。介绍策略状态与记忆状态的更新规则，分析推理时训练、记忆准入和片段整合，并汇总组件实验与后训练研究的结果。</span><span class="lang-en">222 pages covering update rules for policy and memory states, reasoning-time training, memory admission, and segment consolidation, with results from component experiments and post-training studies.</span></p><div class="paper-links"><a class="button button-dark" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer"><img src="assets/icons/file-text.svg" alt="" /><span class="lang-zh">阅读 PDF</span><span class="lang-en">Read PDF</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a><a class="button button-outline" href="assets/papers/2606.28876v4.pdf" download="2606.28876v4.pdf"><img src="assets/icons/download.svg" alt="" /><span class="lang-zh">下载</span><span class="lang-en">Download</span></a><a class="button button-text" href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv <img src="assets/icons/arrow-up-right.svg" alt="" /></a></div></div></article>
         <div class="companion-head"><div><h3><span class="lang-zh">配套理论论文</span><span class="lang-en">Companion theory papers</span></h3><p><span class="lang-zh">以下为 R02 修订稿，尚待独立评审，未报告新实验。部分内容已在 v4 中更正，请以 v4 为准。</span><span class="lang-en">These R02 revisions await independent review and report no new experiments. Some details have been corrected in v4, which takes precedence.</span></p></div><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文仓库</span><span class="lang-en">Paper repository</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
         <div class="paper-list">
@@ -153,12 +234,6 @@
           <article class="paper-row"><span class="paper-number">05</span><div><span class="paper-topic">TIMING</span><h4><span class="lang-zh">完成片段整合</span><span class="lang-en">Completed-Segment Consolidation</span></h4><p>Causal Generation, Retrospective Consolidation: Completed-Segment Bidirectional Memory Without Temporal Leakage</p></div><span class="paper-pages"><span class="lang-zh">31 页</span><span class="lang-en">31 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开完成片段整合论文" data-label-en="Open Completed-Segment Consolidation paper" aria-label="打开完成片段整合论文" title="打开完成片段整合论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
         </div>
       </section>
-
-      <section id="implementation" class="implementation-section section-band" aria-labelledby="implementation-title"><div class="page-width"><div class="section-heading"><div><p class="section-index">05 / <span class="lang-zh">代码</span><span class="lang-en">Code</span></p><h2 id="implementation-title"><span class="lang-zh">PDSA 实验代码</span><span class="lang-en">PDSA experimental code</span></h2></div><p class="section-summary"><span class="lang-zh">PDSA 仓库包含记忆管理、模型接口和策略状态的实验实现，以下列出相关模块。</span><span class="lang-en">The PDSA repository contains experimental implementations of memory management, model interfaces, and policy states.</span></p></div><div class="code-list">
-        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/iclr2027/memory.py" target="_blank" rel="noopener noreferrer"><span class="code-index">01</span><span class="code-main"><strong><span class="lang-zh">记忆管理</span><span class="lang-en">Memory management</span></strong><small><span class="lang-zh">在固定容量下处理已完成的观察，支持整行提交、精确 NULL 和版本恢复。</span><span class="lang-en">Processes completed observations within a fixed capacity, with whole-row commits, exact NULL actions, and versioned restore.</span></small><code>mmla_pdsa/iclr2027/memory.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/model.py" target="_blank" rel="noopener noreferrer"><span class="code-index">02</span><span class="code-main"><strong><span class="lang-zh">模型记忆接口</span><span class="lang-en">Model memory interface</span></strong><small><span class="lang-zh">编码已完成的事件，并在训练、评估和生成时使用同一套记忆输入接口。</span><span class="lang-en">Encodes completed events and provides a shared memory input interface for training, evaluation, and generation.</span></small><code>mmla_pdsa/model.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/iclr2027/internal_phi.py" target="_blank" rel="noopener noreferrer"><span class="code-index">03</span><span class="code-main"><strong><span class="lang-zh">策略状态 Φ</span><span class="lang-en">Policy state Φ</span></strong><small><span class="lang-zh">以独立的低秩参数表示策略状态，支持参数隔离、快照和恢复。</span><span class="lang-en">Represents the policy state with separate low-rank parameters, with parameter isolation, snapshots, and restore.</span></small><code>mmla_pdsa/iclr2027/internal_phi.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
-      </div><p class="code-footnote"><span class="lang-zh">部分模块在 v4 的实验统计日期之后仍有更新，未计入上述结果。论文 PDF 单独存放于 mmla-memory 仓库。</span><span class="lang-en">Some modules have been updated since the v4 experiments; those updates are not reflected in the results above. Paper PDFs are maintained separately in mmla-memory.</span></p></div></section>
 
       <section class="citation-section page-width" aria-labelledby="citation-title"><div class="section-heading"><div><p class="section-index">06 / <span class="lang-zh">引用</span><span class="lang-en">Citation</span></p><h2 id="citation-title"><span class="lang-zh">引用 MMLAv4</span><span class="lang-en">Cite MMLAv4</span></h2></div></div><div class="citation-box"><div class="citation-top"><span>BIBTEX / ARXIV:2606.28876V4</span><div><span id="copy-status" role="status" aria-live="polite"></span><button id="copy-citation" class="toolbar-button" type="button"><img src="assets/icons/copy.svg" alt="" /><span class="lang-zh">复制</span><span class="lang-en">Copy</span></button></div></div><pre id="bibtex">@article{zou2026mmla,
   title   = {{MMLA}: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation},
@@ -172,7 +247,7 @@
 }</pre></div></section>
     </main>
 
-    <footer class="site-footer"><div class="page-width footer-inner"><div><a class="brand" href="#overview"><img src="assets/mmla-mark.svg" alt="" width="28" height="28" /><span>MMLA<span class="brand-version">v4</span></span></a><p><span class="lang-zh">记忆介导学习架构 · 2026</span><span class="lang-en">Memory-Mediated Learning Architecture · 2026</span></p></div><div class="footer-links"><a href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv v4</a><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文仓库</span><span class="lang-en">Papers</span></a><a href="https://github.com/MMLA-org/PDSA" target="_blank" rel="noopener noreferrer">PDSA</a></div></div></footer>
+    <footer class="site-footer"><div class="page-width footer-inner"><div><a class="brand" href="#overview"><img src="assets/mmla-mark.svg" alt="" width="28" height="28" /><span>MMLA<span class="brand-version">v4</span></span></a><p><span class="lang-zh">记忆介导学习架构 · 2026</span><span class="lang-en">Memory-Mediated Learning Architecture · 2026</span></p></div><div class="footer-links"><a href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv v4</a><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文仓库</span><span class="lang-en">Papers</span></a></div></div></footer>
 
     <dialog id="diagram-dialog" class="diagram-dialog" aria-labelledby="diagram-dialog-title"><div class="dialog-header"><div><span class="dialog-eyebrow">MMLAv4 / ARCHITECTURE</span><h2 id="diagram-dialog-title"><span class="lang-zh">双状态系统架构</span><span class="lang-en">Dual-state system architecture</span></h2></div><div class="dialog-tools"><button id="zoom-out" class="icon-button" type="button" data-label-zh="缩小架构图" data-label-en="Zoom out" aria-label="缩小架构图" title="缩小架构图"><img src="assets/icons/minus.svg" alt="" /></button><output id="zoom-level">100%</output><button id="zoom-in" class="icon-button" type="button" data-label-zh="放大架构图" data-label-en="Zoom in" aria-label="放大架构图" title="放大架构图"><img src="assets/icons/plus.svg" alt="" /></button><button id="zoom-reset" class="icon-button" type="button" data-label-zh="重置缩放" data-label-en="Reset zoom" aria-label="重置缩放" title="重置缩放"><img src="assets/icons/rotate-ccw.svg" alt="" /></button><span class="dialog-separator"></span><a class="icon-button" data-diagram-download="png" href="assets/mmla-v4-architecture-zh.png" download="mmla-v4-architecture-zh.png" data-label-zh="下载 PNG 架构图" data-label-en="Download PNG architecture diagram" aria-label="下载 PNG 架构图" title="下载 PNG 架构图"><img src="assets/icons/download.svg" alt="" /></a><button id="close-diagram" class="icon-button" type="button" data-label-zh="关闭架构图" data-label-en="Close diagram" aria-label="关闭架构图" title="关闭架构图"><img src="assets/icons/x.svg" alt="" /></button></div></div><div id="diagram-stage" class="diagram-stage"><img id="diagram-full-image" src="assets/mmla-v4-architecture-zh.png" data-label-zh="MMLAv4 双状态架构图" data-label-en="MMLAv4 dual-state architecture diagram" alt="MMLAv4 双状态架构图" width="1600" height="1200" /></div></dialog>
   </body>

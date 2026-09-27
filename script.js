@@ -138,6 +138,86 @@
     button.addEventListener("click", () => setLanguage(button.dataset.language, true));
   });
 
+  const flowRoot = document.querySelector("#mechanism-explorer");
+  const flowTabs = flowRoot ? [...flowRoot.querySelectorAll("[data-flow-step]")] : [];
+  const flowPanel = document.querySelector("#flow-panel");
+  const flowCopies = flowRoot ? [...flowRoot.querySelectorAll("[data-flow-copy]")] : [];
+  const flowScenes = flowRoot ? [...flowRoot.querySelectorAll("[data-flow-scene]")] : [];
+  const flowCounter = document.querySelector("#flow-counter");
+  const flowPrevious = document.querySelector("#flow-previous");
+  const flowNext = document.querySelector("#flow-next");
+  const flowSteps = ["read", "adapt", "consolidate", "publish"];
+  if (flowRoot && flowPanel && flowTabs.length) {
+    const tabsByStep = new Map(flowTabs.map((tab) => [tab.dataset.flowStep, tab]));
+    const activateFlowStep = (step) => {
+      const index = flowSteps.indexOf(step);
+      if (index < 0 || !tabsByStep.has(step)) return;
+      const focusedElement = document.activeElement;
+      flowRoot.dataset.step = step;
+      flowTabs.forEach((tab) => {
+        const selected = tab.dataset.flowStep === step;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      flowPanel.setAttribute("aria-labelledby", tabsByStep.get(step).id);
+      flowCopies.forEach((copy) => { copy.hidden = copy.dataset.flowCopy !== step; });
+      flowScenes.forEach((scene) => { scene.hidden = scene.dataset.flowScene !== step; });
+      if (flowCounter) flowCounter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(flowSteps.length).padStart(2, "0")}`;
+      if (flowPrevious) flowPrevious.disabled = index === 0;
+      if (flowNext) flowNext.disabled = index === flowSteps.length - 1;
+      if (focusedElement === flowPrevious && flowPrevious?.disabled) flowNext?.focus({ preventScroll: true });
+      if (focusedElement === flowNext && flowNext?.disabled) flowPrevious?.focus({ preventScroll: true });
+    };
+    flowTabs.forEach((tab) => {
+      tab.addEventListener("click", () => activateFlowStep(tab.dataset.flowStep));
+      tab.addEventListener("keydown", (event) => {
+        const current = flowSteps.indexOf(tab.dataset.flowStep);
+        const destinations = {
+          ArrowLeft: (current + flowSteps.length - 1) % flowSteps.length,
+          ArrowRight: (current + 1) % flowSteps.length,
+          Home: 0,
+          End: flowSteps.length - 1,
+        };
+        if (!(event.key in destinations)) return;
+        event.preventDefault();
+        const target = tabsByStep.get(flowSteps[destinations[event.key]]);
+        if (target) {
+          activateFlowStep(target.dataset.flowStep);
+          target.focus();
+        }
+      });
+    });
+    flowPrevious?.addEventListener("click", () => {
+      const index = flowSteps.indexOf(flowRoot.dataset.step);
+      if (index > 0) activateFlowStep(flowSteps[index - 1]);
+    });
+    flowNext?.addEventListener("click", () => {
+      const index = flowSteps.indexOf(flowRoot.dataset.step);
+      if (index >= 0 && index < flowSteps.length - 1) activateFlowStep(flowSteps[index + 1]);
+    });
+    activateFlowStep(flowSteps.includes(flowRoot.dataset.step) ? flowRoot.dataset.step : "read");
+  }
+
+  const memoryOutcomeButtons = flowRoot ? [...flowRoot.querySelectorAll("[data-memory-outcome]")] : [];
+  if (flowRoot && memoryOutcomeButtons.length) {
+    const updateMemoryOutcome = (outcome) => {
+      if (outcome !== "write" && outcome !== "null") return;
+      flowRoot.dataset.outcome = outcome;
+      memoryOutcomeButtons.forEach((button) => {
+        const active = button.dataset.memoryOutcome === outcome;
+        button.setAttribute("aria-pressed", String(active));
+        button.classList.toggle("is-active", active);
+      });
+      flowRoot.querySelectorAll("[data-outcome-copy]").forEach((copy) => {
+        copy.hidden = copy.dataset.outcomeCopy !== outcome;
+      });
+    };
+    memoryOutcomeButtons.forEach((button) => {
+      button.addEventListener("click", () => updateMemoryOutcome(button.dataset.memoryOutcome));
+    });
+    updateMemoryOutcome(flowRoot.dataset.outcome === "null" ? "null" : "write");
+  }
+
   if (menuToggle && siteNav) {
     menuToggle.addEventListener("click", () => {
       const open = !siteNav.classList.contains("is-open");
