@@ -1,243 +1,384 @@
 (() => {
-  const initialAnchorId = window.location.hash.slice(1);
-  const initialAnchorTarget = initialAnchorId ? document.getElementById(initialAnchorId) : null;
-  if (initialAnchorTarget) document.documentElement.classList.add("anchor-load");
-  document.documentElement.classList.add("js-ready");
+  "use strict";
 
   const body = document.body;
-  const topbar = document.querySelector(".topbar");
-  const languageToggle = document.querySelector("[data-language-toggle]");
-  const menuToggle = document.querySelector(".menu-toggle");
-  const siteNav = document.querySelector(".site-nav");
+  const languageButtons = [...document.querySelectorAll("[data-language]")];
+  const menuToggle = document.querySelector("#menu-toggle");
+  const siteNav = document.querySelector("#site-nav");
   const navLinks = siteNav ? [...siteNav.querySelectorAll('a[href^="#"]')] : [];
-  const sectionIds = navLinks
-    .map((link) => link.getAttribute("href").slice(1))
-    .filter(Boolean);
-  const navSections = sectionIds
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
+  const diagram = document.querySelector("#diagram-dialog");
+  const stage = document.querySelector("#diagram-stage");
+  const fullImage = document.querySelector("#diagram-full-image");
+  const zoomIn = document.querySelector("#zoom-in");
+  const zoomOut = document.querySelector("#zoom-out");
+  const zoomReset = document.querySelector("#zoom-reset");
+  const zoomLevel = document.querySelector("#zoom-level");
+  const copyButton = document.querySelector("#copy-citation");
+  const copyStatus = document.querySelector("#copy-status");
+  const zoomSteps = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6];
+  let zoomIndex = 2;
+  let fitWidth = 1;
+  let dialogOpener = null;
+  let previousOverflow = "";
+  let copyOutcome = "";
+  let selectedModel = "qwen";
+  let selectedLength = "extended";
 
-  const setLanguage = (language) => {
-    const nextLanguage = language === "en" ? "en" : "zh";
-    body.dataset.lang = nextLanguage;
-    document.documentElement.lang = nextLanguage === "en" ? "en" : "zh-CN";
-    try {
-      window.localStorage.setItem("mmla-language", nextLanguage);
-    } catch (_) {
-      // Local storage is optional for the static page.
-    }
+  const results = {
+    qwen: {
+      extended: { full: [0.715, 12646], dense: [0.753, 1338], bm25: [0.771, 1330], mmla: [[0.813, 0.830], 1368] },
+      natural: { full: [0.805, 1521], dense: [0.594, 425], bm25: [0.701, 430], mmla: [[0.755, 0.760], 428] },
+    },
+    llama: {
+      extended: { full: [0.666, 12024], dense: [0.621, 1300], bm25: [0.636, 1293], mmla: [[0.677, 0.684], 1325] },
+      natural: { full: [0.714, 1477], dense: [0.516, 432], bm25: [0.601, 437], mmla: [[0.659, 0.663], 434] },
+    },
   };
 
-  if (languageToggle) {
-    languageToggle.addEventListener("click", () => {
-      setLanguage(body.dataset.lang === "en" ? "zh" : "en");
-    });
+  const isEnglish = () => body.dataset.lang === "en";
+
+  function closeMenu(restoreFocus = false) {
+    if (!siteNav || !menuToggle) return;
+    const wasOpen = siteNav.classList.contains("is-open");
+    siteNav.classList.remove("is-open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    if (wasOpen && restoreFocus) menuToggle.focus();
   }
 
-  try {
-    const savedLanguage = window.localStorage.getItem("mmla-language");
-    if (savedLanguage === "en" || savedLanguage === "zh") setLanguage(savedLanguage);
-  } catch (_) {
-    // Use the Chinese default when storage is unavailable.
+  function updateResults(announce = false) {
+    const current = results[selectedModel][selectedLength];
+    const formatter = new Intl.NumberFormat(isEnglish() ? "en-US" : "zh-CN");
+    document.querySelectorAll("#results-body [data-method]").forEach((row) => {
+      const entry = current[row.dataset.method];
+      if (!entry) return;
+      const [f1, tokens] = entry;
+      const values = Array.isArray(f1) ? f1 : [f1];
+      const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+      const score = row.querySelector("[data-result-f1]");
+      const tokenCount = row.querySelector("[data-result-tokens]");
+      const fill = row.querySelector(".result-fill");
+      if (score) score.textContent = values.map((value) => value.toFixed(3)).join("\u2013");
+      if (tokenCount) tokenCount.textContent = formatter.format(tokens);
+      if (fill) fill.style.width = `${mean * 100}%`;
+    });
+    document.querySelectorAll("[data-model], [data-length]").forEach((button) => {
+      const active = button.hasAttribute("data-model")
+        ? button.dataset.model === selectedModel
+        : button.dataset.length === selectedLength;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    const model = selectedModel === "qwen" ? "Qwen2.5-14B" : "Llama-3.1-8B";
+    const context = selectedLength === "extended"
+      ? (isEnglish() ? "Extended context (8.2k words)" : "\u6269\u5c55\u4e0a\u4e0b\u6587\uff08\u7ea6 8,200 \u8bcd\uff09")
+      : (isEnglish() ? "Natural context" : "\u81ea\u7136\u4e0a\u4e0b\u6587");
+    const caption = `${model} \u00b7 ${context}`;
+    const captionElement = document.querySelector("#results-caption");
+    const status = document.querySelector("#results-status");
+    if (captionElement) captionElement.textContent = caption;
+    if (status && (announce || status.textContent)) status.textContent = caption;
   }
+
+  function updateCopyStatus() {
+    if (!copyStatus) return;
+    const messages = {
+      success: isEnglish() ? "Citation copied" : "\u5f15\u7528\u5df2\u590d\u5236",
+      error: isEnglish() ? "Copy failed" : "\u590d\u5236\u5931\u8d25",
+      pending: isEnglish() ? "Copying citation" : "\u6b63\u5728\u590d\u5236\u5f15\u7528",
+    };
+    copyStatus.textContent = messages[copyOutcome] || "";
+  }
+
+  function setLanguage(value, updateUrl = false) {
+    const language = value === "en" ? "en" : "zh";
+    body.dataset.lang = language;
+    document.documentElement.lang = language === "en" ? "en" : "zh-CN";
+    document.title = language === "en"
+      ? "MMLAv4 | Memory-Mediated Learning Architecture"
+      : "MMLAv4 | \u8bb0\u5fc6\u4ecb\u5bfc\u5b66\u4e60\u67b6\u6784";
+    languageButtons.forEach((button) => {
+      const active = button.dataset.language === language;
+      button.setAttribute("aria-pressed", String(active));
+      button.classList.toggle("is-active", active);
+    });
+    document.querySelectorAll("[data-label-zh][data-label-en]").forEach((element) => {
+      const label = language === "en" ? element.dataset.labelEn : element.dataset.labelZh;
+      element.setAttribute("aria-label", label);
+      element.setAttribute("title", label);
+      if (element.tagName === "IMG") element.alt = label;
+    });
+    document.querySelectorAll("#architecture-image, #diagram-full-image").forEach((image) => {
+      image.src = `assets/mmla-v4-architecture-${language}.png`;
+    });
+    document.querySelectorAll("[data-diagram-download]").forEach((link) => {
+      const format = link.dataset.diagramDownload;
+      if (format !== "svg" && format !== "png") return;
+      const filename = `mmla-v4-architecture-${language}.${format}`;
+      link.href = `assets/${filename}`;
+      link.download = filename;
+    });
+    try {
+      localStorage.setItem("mmla-language", language);
+    } catch (_) {
+      // Language switching also works when browser storage is unavailable.
+    }
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("lang")) {
+        url.searchParams.set("lang", language);
+        history.replaceState(history.state, "", url);
+      }
+    }
+    updateResults();
+    updateCopyStatus();
+    requestAnimationFrame(updateNavigation);
+  }
+
+  languageButtons.forEach((button) => {
+    button.addEventListener("click", () => setLanguage(button.dataset.language, true));
+  });
 
   if (menuToggle && siteNav) {
     menuToggle.addEventListener("click", () => {
-      const isOpen = siteNav.classList.toggle("is-open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      const open = !siteNav.classList.contains("is-open");
+      siteNav.classList.toggle("is-open", open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+      if (open) navLinks[0]?.focus();
     });
-    siteNav.querySelectorAll("a").forEach((link) => {
+    navLinks.forEach((link) => {
       link.addEventListener("click", () => {
-        siteNav.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
+        const wasOpen = siteNav.classList.contains("is-open");
+        closeMenu();
+        const target = document.getElementById(link.hash.slice(1));
+        if (wasOpen && target) {
+          if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
+          target.focus({ preventScroll: true });
+        }
       });
+    });
+    document.addEventListener("click", (event) => {
+      if (!siteNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
+    });
+    document.addEventListener("focusin", (event) => {
+      if (!siteNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && siteNav.classList.contains("is-open")) {
+        event.preventDefault();
+        closeMenu(true);
+      }
     });
   }
 
-  const documentGrid = document.querySelector(".document-grid");
-  document.querySelectorAll("[data-filter]").forEach((button) => {
+  function renderZoom(preserveCenter = true) {
+    if (!stage || !fullImage) return;
+    const centerX = (stage.scrollLeft + stage.clientWidth / 2) / Math.max(1, stage.scrollWidth);
+    const centerY = (stage.scrollTop + stage.clientHeight / 2) / Math.max(1, stage.scrollHeight);
+    fullImage.style.width = `${fitWidth * zoomSteps[zoomIndex]}px`;
+    fullImage.style.maxWidth = "none";
+    fullImage.style.height = "auto";
+    if (zoomLevel) zoomLevel.textContent = `${Math.round(zoomSteps[zoomIndex] * 100)}%`;
+    if (zoomIn) zoomIn.disabled = zoomIndex === zoomSteps.length - 1;
+    if (zoomOut) zoomOut.disabled = zoomIndex === 0;
+    if (zoomReset) zoomReset.disabled = zoomIndex === 2;
+    stage.scrollLeft = preserveCenter ? centerX * stage.scrollWidth - stage.clientWidth / 2 : 0;
+    stage.scrollTop = preserveCenter ? centerY * stage.scrollHeight - stage.clientHeight / 2 : 0;
+  }
+
+  function fitDiagram() {
+    if (!stage || !diagram?.open) return;
+    const style = getComputedStyle(stage);
+    fitWidth = Math.max(1, stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
+    renderZoom(false);
+  }
+
+  const openDiagram = document.querySelector("#open-diagram");
+  const previewDiagram = document.querySelector(".diagram-preview");
+  const closeDiagram = document.querySelector("#close-diagram");
+  if (diagram && stage && fullImage && openDiagram) {
+    const showDiagram = () => {
+      if (diagram.open) return;
+      dialogOpener = document.activeElement;
+      previousOverflow = body.style.overflow;
+      zoomIndex = 2;
+      diagram.showModal();
+      body.style.overflow = "hidden";
+      fitDiagram();
+    };
+    openDiagram.addEventListener("click", showDiagram);
+    previewDiagram?.addEventListener("click", showDiagram);
+    const hideDiagram = () => {
+      body.style.overflow = previousOverflow;
+      diagram.close();
+    };
+    closeDiagram?.addEventListener("click", hideDiagram);
+    diagram.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      hideDiagram();
+    });
+    diagram.addEventListener("click", (event) => {
+      if (event.target !== diagram) return;
+      const bounds = diagram.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) {
+        hideDiagram();
+      }
+    });
+    diagram.addEventListener("close", () => {
+      if (diagram.open) return;
+      body.style.overflow = previousOverflow;
+      if (dialogOpener?.isConnected) dialogOpener.focus({ preventScroll: true });
+    });
+    fullImage.addEventListener("load", fitDiagram);
+    zoomIn?.addEventListener("click", () => {
+      zoomIndex = Math.min(zoomSteps.length - 1, zoomIndex + 1);
+      renderZoom();
+    });
+    zoomOut?.addEventListener("click", () => {
+      zoomIndex = Math.max(0, zoomIndex - 1);
+      renderZoom();
+    });
+    zoomReset?.addEventListener("click", () => {
+      zoomIndex = 2;
+      renderZoom(false);
+    });
+  }
+
+  document.querySelectorAll("[data-model]").forEach((button) => {
     button.addEventListener("click", () => {
-      const filter = button.dataset.filter;
-      document.querySelectorAll("[data-filter]").forEach((item) => {
-        const active = item === button;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-pressed", String(active));
-      });
-
-      if (documentGrid) documentGrid.classList.add("is-filtering");
-      document.querySelectorAll(".doc-card").forEach((card) => {
-        const shouldShow = filter === "all" || card.dataset.category === filter;
-        card.classList.toggle("is-hiding", !shouldShow);
-      });
-
-      window.setTimeout(() => {
-        document.querySelectorAll(".doc-card").forEach((card) => {
-          const shouldShow = filter === "all" || card.dataset.category === filter;
-          card.hidden = !shouldShow;
-          card.classList.remove("is-hiding");
-        });
-        if (documentGrid) documentGrid.classList.remove("is-filtering");
-      }, 220);
+      if (!Object.hasOwn(results, button.dataset.model)) return;
+      selectedModel = button.dataset.model;
+      updateResults(true);
+    });
+  });
+  document.querySelectorAll("[data-length]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!Object.hasOwn(results[selectedModel], button.dataset.length)) return;
+      selectedLength = button.dataset.length;
+      updateResults(true);
     });
   });
 
-  const citation = document.querySelector("#bibtex");
-  const copyButton = document.querySelector("[data-copy-citation]");
-  if (citation && copyButton) {
-    copyButton.addEventListener("click", async () => {
-      const original = copyButton.innerHTML;
-      const value = citation.textContent.trim();
-      try {
-        await navigator.clipboard.writeText(value);
-      } catch (_) {
-        const helper = document.createElement("textarea");
-        helper.value = value;
-        helper.setAttribute("readonly", "");
-        helper.style.position = "fixed";
-        helper.style.opacity = "0";
-        document.body.appendChild(helper);
-        helper.select();
-        document.execCommand("copy");
-        helper.remove();
+  function fallbackCopy(value) {
+    const focused = document.activeElement;
+    const selection = window.getSelection();
+    const ranges = selection ? Array.from({ length: selection.rangeCount }, (_, index) => selection.getRangeAt(index).cloneRange()) : [];
+    const inputSelection = focused instanceof HTMLInputElement || focused instanceof HTMLTextAreaElement
+      ? { start: focused.selectionStart, end: focused.selectionEnd, direction: focused.selectionDirection }
+      : null;
+    const helper = document.createElement("textarea");
+    helper.value = value;
+    helper.readOnly = true;
+    helper.tabIndex = -1;
+    Object.assign(helper.style, { position: "fixed", top: "0", left: "-9999px", opacity: "0" });
+    body.append(helper);
+    try {
+      helper.focus({ preventScroll: true });
+      helper.select();
+      return document.execCommand("copy") === true;
+    } catch (_) {
+      return false;
+    } finally {
+      helper.remove();
+      if (focused instanceof HTMLElement) focused.focus({ preventScroll: true });
+      if (selection) {
+        selection.removeAllRanges();
+        ranges.forEach((range) => selection.addRange(range));
       }
-      copyButton.textContent = body.dataset.lang === "en" ? "Copied" : "已复制";
-      window.setTimeout(() => { copyButton.innerHTML = original; }, 1700);
-    });
-  }
-
-  const markVisible = (element) => {
-    element.classList.add("is-visible");
-  };
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries, instance) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          markVisible(entry.target);
-          instance.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08 });
-
-    document.querySelectorAll(".reveal, .reveal-stagger").forEach((element) => observer.observe(element));
-
-    if (initialAnchorTarget) {
-      initialAnchorTarget.querySelectorAll(".reveal, .reveal-stagger").forEach(markVisible);
+      if (inputSelection && inputSelection.start !== null) {
+        focused.setSelectionRange(inputSelection.start, inputSelection.end, inputSelection.direction);
+      }
     }
-  } else {
-    document.querySelectorAll(".reveal, .reveal-stagger").forEach(markVisible);
   }
 
-  const setActiveNav = (id) => {
+  copyButton?.addEventListener("click", async () => {
+    const value = document.querySelector("#bibtex")?.textContent.trim();
+    if (!value) {
+      copyOutcome = "error";
+      updateCopyStatus();
+      return;
+    }
+    const wasDisabled = copyButton.disabled;
+    const focusedBeforeCopy = document.activeElement;
+    copyButton.disabled = true;
+    copyButton.setAttribute("aria-busy", "true");
+    copyOutcome = "pending";
+    updateCopyStatus();
+    let copied = false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(value);
+          copied = true;
+        } catch (_) {
+          copied = fallbackCopy(value);
+        }
+      } else {
+        copied = fallbackCopy(value);
+      }
+    } finally {
+      copyButton.disabled = wasDisabled;
+      copyButton.removeAttribute("aria-busy");
+      copyOutcome = copied ? "success" : "error";
+      updateCopyStatus();
+      if (focusedBeforeCopy === copyButton && document.activeElement === body) {
+        copyButton.focus({ preventScroll: true });
+      }
+    }
+  });
+
+  function updateNavigation() {
+    const header = document.querySelector(".site-header, .topbar, header");
+    const offset = (header?.getBoundingClientRect().height || 72) + 24;
+    let active = navLinks[0];
     navLinks.forEach((link) => {
-      link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
+      const section = document.getElementById(link.hash.slice(1));
+      if (section && section.getBoundingClientRect().top <= offset) active = link;
     });
-  };
-
-  const updateScrollUi = () => {
-    if (topbar) topbar.classList.toggle("is-scrolled", window.scrollY > 12);
-
-    if (!navSections.length) return;
-    const offset = window.scrollY + 120;
-    let currentId = sectionIds[0];
-
-    navSections.forEach((section, index) => {
-      if (section.offsetTop <= offset) currentId = sectionIds[index];
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) active = navLinks.at(-1);
+    navLinks.forEach((link) => {
+      const current = link === active;
+      link.classList.toggle("is-active", current);
+      if (current) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
     });
+  }
 
-    setActiveNav(currentId);
-  };
+  const hashAliases = { technology: "architecture", documents: "papers", "theory-family": "papers", review: "papers", why: "overview", roadmap: "implementation" };
+  function resolveLegacyHash() {
+    const replacement = hashAliases[window.location.hash.slice(1)];
+    const target = replacement && document.getElementById(replacement);
+    if (!target) return;
+    const url = new URL(window.location.href);
+    url.hash = replacement;
+    history.replaceState(history.state, "", url);
+    requestAnimationFrame(() => target.scrollIntoView({ behavior: "instant" }));
+  }
 
-  let scrollTicking = false;
+  let scrollPending = false;
   window.addEventListener("scroll", () => {
-    if (scrollTicking) return;
-    scrollTicking = true;
-    window.requestAnimationFrame(() => {
-      updateScrollUi();
-      scrollTicking = false;
+    if (scrollPending) return;
+    scrollPending = true;
+    requestAnimationFrame(() => {
+      updateNavigation();
+      scrollPending = false;
     });
   }, { passive: true });
+  window.addEventListener("resize", () => {
+    if (menuToggle && getComputedStyle(menuToggle).display === "none") closeMenu();
+    fitDiagram();
+    updateNavigation();
+  });
+  window.addEventListener("hashchange", resolveLegacyHash);
+  window.addEventListener("load", updateNavigation, { once: true });
 
-  updateScrollUi();
-
-  const flowSequences = {
-    contract: [
-      { step: "source", duration: 920 },
-      { step: "arrow-1", duration: 480 },
-      { step: "process", duration: 920 },
-      { step: "arrow-2", duration: 480 },
-      { step: "commit", duration: 780 },
-      { step: "null", duration: 780 },
-      { step: "arrow-3", duration: 480 },
-      { step: "future", duration: 920 },
-    ],
-    loop: [
-      { step: "0", duration: 720 },
-      { step: "1", duration: 720 },
-      { step: "2", duration: 720 },
-      { step: "3", duration: 820 },
-      { step: "4", duration: 720 },
-      { step: "5", duration: 720 },
-      { step: "6", duration: 720 },
-      { step: "7", duration: 920 },
-    ],
-  };
-
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const startFlowDiagram = (diagram) => {
-    const kind = diagram.dataset.flowDiagram;
-    const sequence = flowSequences[kind];
-    if (!sequence || prefersReducedMotion || diagram.dataset.flowRunning === "true") return;
-
-    diagram.dataset.flowRunning = "true";
-    diagram.classList.add("is-live");
-    let index = 0;
-    let timerId = 0;
-    let paused = false;
-
-    const runStep = () => {
-      if (paused) return;
-      const current = sequence[index];
-      diagram.dataset.flowStep = current.step;
-      index = (index + 1) % sequence.length;
-      timerId = window.setTimeout(runStep, current.duration);
-    };
-
-    diagram._flowPause = () => {
-      paused = true;
-      window.clearTimeout(timerId);
-    };
-
-    diagram._flowResume = () => {
-      if (!paused) return;
-      paused = false;
-      runStep();
-    };
-
-    runStep();
-  };
-
-  if ("IntersectionObserver" in window && !prefersReducedMotion) {
-    const flowObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const diagram = entry.target;
-        if (entry.isIntersecting) {
-          startFlowDiagram(diagram);
-          if (diagram._flowResume) diagram._flowResume();
-        } else if (diagram._flowPause) {
-          diagram._flowPause();
-        }
-      });
-    }, { threshold: 0.28 });
-
-    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => flowObserver.observe(diagram));
-  } else {
-    document.querySelectorAll("[data-flow-diagram]").forEach((diagram) => {
-      diagram.classList.add("is-live");
-      const kind = diagram.dataset.flowDiagram;
-      const sequence = flowSequences[kind];
-      if (sequence) diagram.dataset.flowStep = sequence[0].step;
-    });
+  let savedLanguage;
+  try {
+    savedLanguage = localStorage.getItem("mmla-language");
+  } catch (_) {
+    savedLanguage = null;
   }
+  const requestedLanguage = new URL(window.location.href).searchParams.get("lang");
+  const initialLanguage = ["zh", "en"].includes(requestedLanguage) ? requestedLanguage : savedLanguage;
+  setLanguage(initialLanguage);
+  resolveLegacyHash();
 })();

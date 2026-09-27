@@ -3,806 +3,177 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#101a2e" />
-    <meta
-      name="description"
-      content="MMLA：通用人工智能（AGI）记忆层基础研究，不是 Agent 框架。查看公开文档、技术说明和目前已知的限制。"
-    />
-    <title>MMLA — Memory lets the past shape the future</title>
+    <meta name="theme-color" content="#f8f9f7" />
+    <meta name="description" content="MMLAv4 研究推理过程中的策略更新与记忆管理。本页收录系统架构、实验结果及 arXiv:2606.28876v4 技术报告。" />
+    <meta property="og:title" content="MMLAv4 | Memory-Mediated Learning Architecture" />
+    <meta property="og:description" content="MMLAv4 studies policy adaptation and memory management during reasoning. Architecture, experimental results, and the v4 technical report." />
+    <meta property="og:type" content="website" />
+    <title>MMLAv4 | 记忆介导学习架构</title>
     <link rel="icon" href="assets/mmla-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
   </head>
   <body data-lang="zh">
-    <div class="site-shell">
-      <header class="topbar">
-        <a class="brand" href="#top" aria-label="MMLA home">
-          <img src="assets/mmla-mark.svg" alt="MMLA memory-knot logo" />
-          <span>MMLA</span>
+    <a class="skip-link" href="#main"><span class="lang-zh">跳转到正文</span><span class="lang-en">Skip to content</span></a>
+    <header class="site-header">
+      <div class="header-inner page-width">
+        <a class="brand" href="#overview" aria-label="MMLAv4">
+          <img src="assets/mmla-mark.svg" alt="" width="32" height="32" />
+          <span>MMLA<span class="brand-version">v4</span></span>
         </a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-          <span class="lang-zh">菜单</span><span class="lang-en">Menu</span>
-        </button>
-        <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
-          <a href="#why"><span class="lang-zh">概览</span><span class="lang-en">Overview</span></a>
-          <a href="#technology"><span class="lang-zh">技术</span><span class="lang-en">Technology</span></a>
-          <a href="#theory-family"><span class="lang-zh">五篇理论</span><span class="lang-en">Five theories</span></a>
-          <a href="#evidence"><span class="lang-zh">证据</span><span class="lang-en">Evidence</span></a>
-          <a href="#review"><span class="lang-zh">材料分工</span><span class="lang-en">Reading map</span></a>
-          <a href="#documents"><span class="lang-zh">文档</span><span class="lang-en">Docs</span></a>
-          <a href="#roadmap"><span class="lang-zh">路线</span><span class="lang-en">Roadmap</span></a>
-          <button class="language-toggle" type="button" data-language-toggle aria-label="Switch language">
-            <span class="lang-zh">EN</span><span class="lang-en">中文</span>
-          </button>
+        <nav id="site-nav" class="site-nav" data-label-zh="页面导航" data-label-en="Page navigation" aria-label="页面导航">
+          <a href="#overview"><span class="lang-zh">概览</span><span class="lang-en">Overview</span></a>
+          <a href="#architecture"><span class="lang-zh">架构</span><span class="lang-en">Architecture</span></a>
+          <a href="#evidence"><span class="lang-zh">实验</span><span class="lang-en">Results</span></a>
+          <a href="#papers"><span class="lang-zh">论文</span><span class="lang-en">Papers</span></a>
+          <a href="#implementation"><span class="lang-zh">代码</span><span class="lang-en">Code</span></a>
         </nav>
-      </header>
+        <div class="header-controls">
+          <div class="language-switch" role="group" data-label-zh="语言" data-label-en="Language" aria-label="语言">
+            <button type="button" data-language="zh" class="is-active" aria-pressed="true">中</button>
+            <button type="button" data-language="en" aria-pressed="false">EN</button>
+          </div>
+          <button id="menu-toggle" class="icon-button menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" data-label-zh="打开菜单" data-label-en="Open menu" aria-label="打开菜单" title="打开菜单">
+            <img src="assets/icons/menu.svg" alt="" width="20" height="20" />
+          </button>
+        </div>
+      </div>
+    </header>
 
-      <main id="top">
-        <section class="hero section-shell">
-          <div class="hero-copy reveal">
-            <div class="status-pill">
-              <span class="status-dot"></span>
-              <span class="lang-zh">MMLA · 通用 AI 研究</span>
-              <span class="lang-en">MMLA · general AI research</span>
-            </div>
-            <aside class="project-clarifier reveal" aria-label="Project positioning">
-              <span class="project-clarifier-label"><span class="lang-zh">项目定位</span><span class="lang-en">WHAT THIS IS</span></span>
-              <p>
-                <span class="lang-zh">我们在做<strong>通用人工智能（AGI）</strong>的基础研究：有界记忆如何支撑持续学习与推理。MMLA 不是 Agent 产品，也不是工作流框架或插件平台——它是一层可验证的记忆规则，面向通用智能本身。</span>
-                <span class="lang-en">We are doing foundational <strong>general AI (AGI)</strong> research: how bounded memory supports continuing learning and reasoning. MMLA is not an agent product, workflow framework, or plugin platform—it is a verifiable memory layer for general intelligence itself.</span>
-              </p>
-            </aside>
-            <p class="kicker">Memory that stays under control</p>
-            <h1>
-              <span class="lang-zh">让模型记住<br /><em>真正重要的事</em></span>
-              <span class="lang-en">Help models remember<br /><em>what matters</em></span>
-            </h1>
-            <p class="hero-lede">
-              <span class="lang-zh">MMLA 研究的是通用 AI 里的记忆层：先完成当前回答，再决定什么值得留下。它不会改写已经说过的话；每次要么完整更新一条记忆，要么什么也不改。</span>
-              <span class="lang-en">MMLA studies the memory layer of general AI: finish the current answer first, then decide what is worth keeping. It never rewrites what was already said; each update either replaces one complete memory or changes nothing.</span>
-            </p>
-            <div class="hero-actions">
-              <a class="button button-primary" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_arXiv_public.pdf" target="_blank" rel="noreferrer">
-                <span class="lang-zh">在 GitHub 阅读公开稿</span><span class="lang-en">Read on GitHub</span><span class="arrow">↗</span>
-              </a>
-              <a class="button button-quiet" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer">
-                <span class="lang-zh">在 GitHub 查看报告</span><span class="lang-en">View report on GitHub</span><span class="arrow">↗</span>
-              </a>
-            </div>
-            <div class="hero-signals reveal-stagger" aria-label="MMLA design principles">
-              <div>
-                <span class="signal-index">01</span>
-                <strong><span class="lang-zh">先做完再整理</span><span class="lang-en">Finish, then review</span></strong>
-                <small><span class="lang-zh">当前任务结束后才回看</span><span class="lang-en">review only after the task segment ends</span></small>
-              </div>
-              <div>
-                <span class="signal-index">02</span>
-                <strong><span class="lang-zh">一次更新一条</span><span class="lang-en">Update one full note</span></strong>
-                <small><span class="lang-zh">不能只改半句话</span><span class="lang-en">never publish a partial update</span></small>
-              </div>
-              <div>
-                <span class="signal-index">03</span>
-                <strong><span class="lang-zh">没把握就不动</span><span class="lang-en">Keep it when unsure</span></strong>
-                <small><span class="lang-zh">证据不足就保留原记忆</span><span class="lang-en">weak evidence leaves memory unchanged</span></small>
-              </div>
-            </div>
-            <div class="hero-note">
-              <span class="note-mark">✦</span>
-              <span class="lang-zh">过去的经验可以帮助下一次回答，但不能反过来改变已经发生的回答。</span>
-              <span class="lang-en">Past experience can help the next answer, but it cannot change an answer already given.</span>
+    <main id="main">
+      <section id="overview" class="lead-section page-width" aria-labelledby="page-title">
+        <div class="lead-main">
+          <div class="eyebrow"><span class="edition-dot"></span> ARXIV:2606.28876V4 <span class="eyebrow-divider">/</span> 14 SEP 2026</div>
+          <h1 id="page-title">MMLA<span>v4</span></h1>
+          <p class="lead-title"><span class="lang-zh">记忆介导学习架构</span><span class="lang-en">Memory-Mediated Learning Architecture</span></p>
+          <p class="lead-subtitle"><span class="lang-zh">预测式双状态适应</span><span class="lang-en">Predictive Dual-State Adaptation</span></p>
+          <p class="lead-description">
+            <span class="lang-zh">MMLA 为模型设计了两种有界状态：策略状态 <strong>Φ</strong> 根据同一问题内的反馈更新，记忆 <strong>M</strong> 保存已完成片段中的信息。v4 讨论这两种状态如何分别更新，并供后续推理共同使用。</span>
+            <span class="lang-en">MMLA proposes two bounded states for reasoning. Policy state <strong>Φ</strong> adapts to feedback within a problem; memory <strong>M</strong> stores information from completed segments. v4 defines how they are updated separately and used in later reasoning.</span>
+          </p>
+          <div class="lead-actions">
+            <a class="button button-dark" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer"><img src="assets/icons/file-text.svg" alt="" /><span class="lang-zh">阅读 v4 论文</span><span class="lang-en">Read the v4 paper</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+            <a class="button button-text" href="#architecture"><span class="lang-zh">查看架构</span><span class="lang-en">View architecture</span><img src="assets/icons/arrow-right.svg" alt="" /></a>
+          </div>
+        </div>
+        <aside class="lead-aside" data-label-zh="报告详情" data-label-en="Report details" aria-label="报告详情">
+          <div class="aside-rule"></div>
+          <p class="aside-label"><span class="lang-zh">综合技术报告</span><span class="lang-en">Integrated technical report</span></p>
+          <dl>
+            <div><dt><span class="lang-zh">作者</span><span class="lang-en">Authors</span></dt><dd>Junyi Zou · Avrova Donz</dd></div>
+            <div><dt><span class="lang-zh">篇幅</span><span class="lang-en">Length</span></dt><dd><span class="lang-zh">222 页</span><span class="lang-en">222 pages</span></dd></div>
+            <div><dt><span class="lang-zh">实验统计截至</span><span class="lang-en">Results through</span></dt><dd>13 Sep 2026</dd></div>
+            <div><dt>DOI</dt><dd>10.48550/arXiv.2606.28876</dd></div>
+          </dl>
+          <a class="aside-link" href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv v4 <img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+        </aside>
+      </section>
+
+      <section id="architecture" class="architecture-section section-band" aria-labelledby="architecture-title">
+        <div class="page-width">
+          <div class="section-heading architecture-heading">
+            <div><p class="section-index">01 / <span class="lang-zh">系统架构</span><span class="lang-en">Architecture</span></p><h2 id="architecture-title"><span class="lang-zh">策略更新与记忆管理</span><span class="lang-en">Policy updates and memory management</span></h2></div>
+            <p class="section-summary"><span class="lang-zh">策略和记忆各自维护版本、写入权限与回滚记录。一次推理读取兼容的版本组合，更新后的状态用于之后的推理。</span><span class="lang-en">Policy and memory have separate versions, write permissions, and rollback records. Each attempt reads a compatible pair; updates become available to later attempts.</span></p>
+          </div>
+          <div class="diagram-toolbar">
+            <p><span class="diagram-live-dot"></span><span class="lang-zh">MMLAv4 架构</span><span class="lang-en">MMLAv4 architecture</span></p>
+            <div class="diagram-actions">
+              <button id="open-diagram" class="toolbar-button" type="button"><img src="assets/icons/maximize-2.svg" alt="" /><span class="lang-zh">放大</span><span class="lang-en">Expand</span></button>
+              <a class="toolbar-button" data-diagram-download="png" href="assets/mmla-v4-architecture-zh.png" download="mmla-v4-architecture-zh.png"><img src="assets/icons/download.svg" alt="" />PNG</a>
+              <a class="toolbar-button" data-diagram-download="svg" href="assets/mmla-v4-architecture-zh.svg" download="mmla-v4-architecture-zh.svg"><img src="assets/icons/download.svg" alt="" />SVG</a>
             </div>
           </div>
-
-          <div class="hero-visual reveal delay-1" aria-label="MMLA memory state transition">
-            <div class="visual-topline">
-              <span class="visual-kicker"><span class="lang-zh">记忆更新流程</span><span class="lang-en">MEMORY UPDATE FLOW</span></span>
-              <span class="visual-live"><i></i><span class="lang-zh">旧状态只读</span><span class="lang-en">OLD STATE READ-ONLY</span></span>
-            </div>
-            <div class="visual-summary">
-              <span>MMLA</span>
-              <strong><span class="lang-zh">一次完成的经历，只做一次谨慎的更新。</span><span class="lang-en">One finished experience leads to one careful update.</span></strong>
-            </div>
-            <div class="visual-flow">
-              <div class="visual-node visual-node-segment">
-                <span class="visual-node-index">01 / CLOSE</span>
-                <span class="visual-node-symbol">e</span>
-                <strong><span class="lang-zh">当前任务结束</span><span class="lang-en">Task segment ends</span></strong>
-                <small><span class="lang-zh">只看已经发生的内容</span><span class="lang-en">use only what already happened</span></small>
-              </div>
-              <span class="visual-connector" aria-hidden="true"></span>
-              <div class="visual-node visual-node-candidate">
-                <span class="visual-node-index">02 / ASSEMBLE</span>
-                <span class="visual-node-symbol">q</span>
-                <strong><span class="lang-zh">准备完整更新</span><span class="lang-en">Prepare a full update</span></strong>
-                <small><span class="lang-zh">清楚说明要改哪一条</span><span class="lang-en">state exactly which note would change</span></small>
-              </div>
-              <span class="visual-connector" aria-hidden="true"></span>
-              <div class="visual-node visual-node-memory">
-                <span class="visual-node-index">03 / EXPOSE</span>
-                <span class="visual-node-symbol">M</span>
-                <strong><span class="lang-zh">下一次才能读取</span><span class="lang-en">Read on the next turn</span></strong>
-                <small><span class="lang-zh">不改已经给出的回答</span><span class="lang-en">never rewrite an answer already given</span></small>
-              </div>
-            </div>
-            <div class="visual-outcome">
-              <span class="visual-outcome-label"><span class="lang-zh">最后只会有两种结果</span><span class="lang-en">THERE ARE ONLY TWO OUTCOMES</span></span>
-              <div class="visual-outcome-row">
-                <span class="visual-outcome-mark visual-outcome-commit">+</span>
-                <div><strong><span class="lang-zh">更新一条完整记忆</span><span class="lang-en">Update one full memory</span></strong><small><span class="lang-zh">替换选中的旧记录</span><span class="lang-en">replace the selected old note</span></small></div>
-              </div>
-              <span class="visual-outcome-or"><span class="lang-zh">或</span><span class="lang-en">OR</span></span>
-              <div class="visual-outcome-row">
-                <span class="visual-outcome-mark visual-outcome-null">0</span>
-                <div><strong><span class="lang-zh">什么也不改</span><span class="lang-en">Change nothing</span></strong><small><span class="lang-zh">保留现有的全部记忆</span><span class="lang-en">keep every existing memory as is</span></small></div>
-              </div>
-            </div>
-            <div class="visual-footer">
-              <span class="visual-footer-label">STATE</span>
-              <code>M<sub>old</sub></code><span>→</span><code>M<sub>new</sub></code>
-              <span class="visual-footer-copy"><span class="lang-zh">只给之后的回答使用</span><span class="lang-en">available to later answers only</span></span>
-            </div>
+          <button class="diagram-preview" type="button" data-label-zh="放大架构图" data-label-en="Expand architecture diagram" aria-label="放大架构图" title="放大架构图">
+            <img id="architecture-image" src="assets/mmla-v4-architecture-zh.png" data-label-zh="MMLAv4 架构：推理、策略更新、记忆写入和离线训练" data-label-en="MMLAv4 architecture: reasoning, policy updates, memory writes, and offline training" alt="MMLAv4 架构：推理、策略更新、记忆写入和离线训练" width="1600" height="1200" />
+          </button>
+          <div class="architecture-caption"><span><span class="lang-zh">根据 v4 第 2–3 节及图 3 绘制。</span><span class="lang-en">Based on v4 Sections 2–3 and Figure 3.</span></span><a href="assets/papers/2606.28876v4.pdf#page=10" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文图 3 · 第 10 页</span><span class="lang-en">Paper Fig. 3 · p. 10</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
+          <div class="architecture-principles">
+            <article><span class="principle-number">01</span><h3><span class="lang-zh">问题内的策略更新</span><span class="lang-en">Policy adaptation within a problem</span></h3><p><span class="lang-zh">同一问题求解期间，反馈可以触发一次有界更新，也可以保持策略状态不变。后续尝试读取更新后的策略。</span><span class="lang-en">While a problem is being solved, feedback may trigger a bounded policy update or leave the state unchanged. Later attempts read the updated policy.</span></p></article>
+            <article><span class="principle-number">02</span><h3><span class="lang-zh">片段结束后的记忆写入</span><span class="lang-en">Memory updates after a segment ends</span></h3><p><span class="lang-zh">片段结束后，系统按顺序处理其中的事件。每次替换一条完整记忆行，或执行 NULL，保留原状态。</span><span class="lang-en">Once a segment ends, its events are processed in order. Each event replaces one complete memory row or takes the NULL action, preserving the existing state.</span></p></article>
+            <article><span class="principle-number">03</span><h3><span class="lang-zh">训练时的未来监督</span><span class="lang-en">Future outcomes as training signals</span></h3><p><span class="lang-zh">训练时，同一历史之后的多个分支用于估计写入动作的价值。部署时只使用当时已有的信息。</span><span class="lang-en">During training, multiple continuations of the same history are used to estimate the value of memory actions. Deployment uses only information already available.</span></p></article>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="metric-strip section-shell reveal reveal-stagger" aria-label="MMLA at a glance">
-          <div class="metric">
-            <span class="metric-index">01</span>
-            <strong><span class="lang-zh">先完成</span><span class="lang-en">Finish first</span></strong>
-            <small><span class="lang-zh">当前任务结束后再整理</span><span class="lang-en">organize only after the task segment ends</span></small>
+      <section id="evidence" class="evidence-section page-width" aria-labelledby="evidence-title">
+        <div class="section-heading">
+          <div><p class="section-index">02 / <span class="lang-zh">实验</span><span class="lang-en">Experiments</span></p><h2 id="evidence-title"><span class="lang-zh">组件实验结果</span><span class="lang-en">Component results</span></h2></div>
+          <p class="section-summary"><span class="lang-zh">结果摘自 v4 第 5–13 节，实验记录截至 2026 年 9 月 13 日。</span><span class="lang-en">Results from Sections 5–13 of v4, covering experiments completed by 13 September 2026.</span></p>
+        </div>
+        <div class="evidence-stats">
+          <article><span class="stat-index">01 / <span class="lang-zh">记忆生命周期</span><span class="lang-en">Memory lifecycle</span></span><strong>300/300</strong><p><span class="lang-zh">三个随机种子下，各 300 条留出记录均正确执行了生命周期操作。任务使用合成数据。</span><span class="lang-en">All 300 held-out records passed the lifecycle checks for each of three seeds in synthetic tasks.</span></p><a href="assets/papers/2606.28876v4.pdf#page=20" target="_blank" rel="noopener noreferrer"><span class="lang-zh">表 7 · 第 20 页</span><span class="lang-en">Table 7 · p. 20</span></a></article>
+          <article><span class="stat-index">02 / <span class="lang-zh">类型化传输</span><span class="lang-en">Typed transport</span></span><strong>240/240</strong><p><span class="lang-zh">受控 anchor-filler 任务中，三个随机种子下各 240 条留出记录均完整匹配。</span><span class="lang-en">All 240 held-out records matched exactly for each of three seeds in the controlled anchor-filler task.</span></p><a href="assets/papers/2606.28876v4.pdf#page=25" target="_blank" rel="noopener noreferrer"><span class="lang-zh">表 9 · 第 25 页</span><span class="lang-en">Table 9 · p. 25</span></a></article>
+          <article><span class="stat-index">03 / <span class="lang-zh">多跳问答</span><span class="lang-en">Multi-hop QA</span></span><strong>+5.5–16.6</strong><p><span class="lang-zh">F1 较使用冻结隐藏表示的稠密检索基线提高 5.5–16.6 个百分点。</span><span class="lang-en">F1 increased by 5.5–16.6 points over dense retrieval using frozen hidden representations.</span></p><a href="assets/papers/2606.28876v4.pdf#page=22" target="_blank" rel="noopener noreferrer"><span class="lang-zh">第 6 节 · 第 22 页</span><span class="lang-en">§6 · p. 22</span></a></article>
+          <article class="stat-open"><span class="stat-index">04 / <span class="lang-zh">潜在状态读出</span><span class="lang-en">Latent readout</span></span><strong>0/9</strong><p><span class="lang-zh">九条训练轨迹中，没有一条在两个任务族上都达到连续事件测试的通过标准。</span><span class="lang-en">None of the nine training runs passed the continuous-event tests in both task families.</span></p><a href="assets/papers/2606.28876v4.pdf#page=33" target="_blank" rel="noopener noreferrer"><span class="lang-zh">表 14 · 第 33 页</span><span class="lang-en">Table 14 · p. 33</span></a></article>
+        </div>
+
+        <div class="results-section" aria-labelledby="results-title">
+          <div class="results-heading"><div><p class="sub-index"><span class="lang-zh">多跳问答 · 论文表 8</span><span class="lang-en">Multi-hop QA · Table 8</span></p><h3 id="results-title"><span class="lang-zh">问答 F1 与输入长度</span><span class="lang-en">F1 and prompt length</span></h3></div><a class="section-source" href="assets/papers/2606.28876v4.pdf#page=22" target="_blank" rel="noopener noreferrer"><span class="lang-zh">查看原表</span><span class="lang-en">View Table 8</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
+          <div class="result-controls">
+            <div class="segmented" role="group" data-label-zh="问答模型" data-label-en="Reader model" aria-label="问答模型"><button type="button" data-model="qwen" aria-pressed="true" class="is-active">Qwen2.5-14B</button><button type="button" data-model="llama" aria-pressed="false">Llama-3.1-8B</button></div>
+            <div class="segmented" role="group" data-label-zh="上下文长度" data-label-en="Context length" aria-label="上下文长度"><button type="button" data-length="extended" aria-pressed="true" class="is-active"><span class="lang-zh">扩展上下文</span><span class="lang-en">Extended</span></button><button type="button" data-length="natural" aria-pressed="false"><span class="lang-zh">自然上下文</span><span class="lang-en">Natural</span></button></div>
           </div>
-          <div class="metric">
-            <span class="metric-index">02</span>
-            <strong><span class="lang-zh">完整更新</span><span class="lang-en">Complete updates</span></strong>
-            <small><span class="lang-zh">内容和必要信息一起保存</span><span class="lang-en">save content and required details together</span></small>
+          <p id="results-caption" class="results-caption">Qwen2.5-14B · 扩展上下文（约 8,200 词）</p>
+          <p id="results-status" class="sr-only" aria-live="polite"></p>
+          <div class="results-table-wrap"><table class="results-table"><thead><tr><th scope="col"><span class="lang-zh">方法</span><span class="lang-en">Method</span></th><th scope="col">F1</th><th scope="col"><span class="lang-zh">平均输入 tokens</span><span class="lang-en">Avg. prompt tokens</span></th></tr></thead><tbody id="results-body">
+            <tr data-method="full"><th scope="row"><span class="lang-zh">完整上下文</span><span class="lang-en">Full context</span></th><td><span data-result-f1>0.715</span><span class="result-track"><span class="result-fill" style="width:71.5%"></span></span></td><td data-result-tokens>12,646</td></tr>
+            <tr data-method="dense"><th scope="row"><span class="lang-zh">稠密检索</span><span class="lang-en">Dense retrieval</span></th><td><span data-result-f1>0.753</span><span class="result-track"><span class="result-fill" style="width:75.3%"></span></span></td><td data-result-tokens>1,338</td></tr>
+            <tr data-method="bm25"><th scope="row">BM25</th><td><span data-result-f1>0.771</span><span class="result-track"><span class="result-fill" style="width:77.1%"></span></span></td><td data-result-tokens>1,330</td></tr>
+            <tr data-method="mmla" class="result-focus"><th scope="row"><span class="lang-zh">驻留缓存 + 归档回退</span><span class="lang-en">Resident cache + archive fallback</span></th><td><span data-result-f1>0.813–0.830</span><span class="result-track"><span class="result-fill" style="width:82.15%"></span></span></td><td data-result-tokens>1,368</td></tr>
+          </tbody></table></div>
+          <p class="results-note"><span class="lang-zh">每种上下文长度各评估 300 道留出问题。F1 区间表示三个随机种子的结果范围；输入长度为完整提示词的平均 token 数。实验保留了完整归档，表中未计入归档存储、索引、检索延迟和能耗。</span><span class="lang-en">Each length condition includes 300 held-out questions. F1 ranges cover three selector seeds; token counts are averages for the complete prompt. The experiment retains the full archive. Storage, indexing, retrieval latency, and energy are not included in the table.</span></p>
+          <p class="results-note"><span class="lang-zh">预算说明：Llama 实验未满足原先规定的词数预算；后续 Qwen 实验对每条记录执行了该约束，详见论文第 9 节。</span><span class="lang-en">Budget note: the Llama experiment did not meet the originally specified word budget. The Qwen follow-up enforced it for each record. See Section 9.</span></p>
+        </div>
+      </section>
+
+      <section class="boundary-section section-band" aria-labelledby="boundary-title">
+        <div class="page-width boundary-layout">
+          <div><p class="section-index">03 / <span class="lang-zh">研究局限</span><span class="lang-en">Limitations</span></p><h2 id="boundary-title"><span class="lang-zh">尚待验证的问题</span><span class="lang-en">Open questions</span></h2></div>
+          <div class="boundary-copy">
+            <p><span class="lang-zh">现有实验主要检验受控任务中的单个组件。自然语言记忆管理和完整 PDSA 的效果仍需验证；论文中的定理也依赖各自的假设条件。截至 v4，以下问题尚无实验证据支持：</span><span class="lang-en">The experiments test individual components under controlled conditions. Natural-language memory management and full PDSA performance remain unverified, and the theorems depend on their stated assumptions. v4 leaves three empirical questions open:</span></p>
+            <ul>
+              <li><span class="lang-zh">排除上下文和记忆的影响后，策略更新能否改善同一问题的后续推理（RTT）。</span><span class="lang-en">Whether policy updates improve later attempts on the same problem after controlling for context and memory (RTT).</span></li>
+              <li><span class="lang-zh">使用未来信息的记忆准入 oracle 能否优于基线，以及只使用历史信息的策略能否学到这一优势。</span><span class="lang-en">Whether a memory-admission oracle using future outcomes can outperform the baselines, and whether a policy using only history can learn that advantage.</span></li>
+              <li><span class="lang-zh">同时更新策略和记忆，能否产生超出两者独立效果之和的收益。</span><span class="lang-en">Whether updating policy and memory together produces a benefit beyond the sum of their individual effects.</span></li>
+            </ul>
+            <a href="assets/papers/2606.28876v4.pdf#page=3" target="_blank" rel="noopener noreferrer"><span class="lang-zh">表 1：各项研究的验证情况</span><span class="lang-en">Table 1: status of each research component</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
           </div>
-          <div class="metric">
-            <span class="metric-index">03</span>
-            <strong><span class="lang-zh">不确定就不写</span><span class="lang-en">Do not write when unsure</span></strong>
-            <small><span class="lang-zh">不清空、不删除、不留下半成品</span><span class="lang-en">no clearing, deletion, or partial changes</span></small>
-          </div>
-          <div class="metric">
-            <span class="metric-index">04</span>
-            <strong><span class="lang-zh">只能面向当下</span><span class="lang-en">Use what is known now</span></strong>
-            <small><span class="lang-zh">真实运行时不看未来答案</span><span class="lang-en">live use cannot see future answers</span></small>
-          </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="why" class="section-shell split-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">01 / <span class="lang-zh">为什么是记忆</span><span class="lang-en">WHY MEMORY</span></p>
-            <h2>
-              <span class="lang-zh">AI 不需要记住一切，<br /><em>只需要记住以后有用的事。</em></span>
-              <span class="lang-en">AI need not remember everything.<br /><em>It needs what will help later.</em></span>
-            </h2>
-          </div>
-          <div class="section-text reveal delay-1">
-            <p>
-              <span class="lang-zh">MMLA 面向的是通用智能中的记忆问题，而不是某个会调用工具的 Agent 产品。它把一次已经完成的经历，整理成少量可更新的“工作笔记”。每次保存前，它都会先问：这件事以后有用吗？该更新哪一条？没有把握时，能不能先不动？</span>
-              <span class="lang-en">MMLA addresses memory in general intelligence, not a tool-calling agent product. It turns a finished experience into a small set of editable working notes. Before saving, it asks: will this help later, which note should change, and should we leave things alone when unsure?</span>
-            </p>
-            <p>
-              <span class="lang-zh">它不是无限长的聊天记录，也不是重新训练模型。它更像一份有限的笔记：可以查看、更新和撤回，但不会无限增长。</span>
-              <span class="lang-en">It is neither an endless chat log nor model retraining. It is a limited notebook: inspectable, editable, and reversible, without growing forever.</span>
-            </p>
-            <p>
-              <span class="lang-zh">可以这样理解：当前上下文像桌上的草稿，模型参数像长期养成的习惯，MMLA 记忆像一本有限的工作笔记。草稿不一定要记进笔记；不可靠的信息也应该留在外面。</span>
-              <span class="lang-en">Think of context as notes on a desk, model weights as long-term habits, and MMLA memory as a small working notebook. Drafts and unreliable information do not have to enter that notebook.</span>
-            </p>
-            <div class="quote-card">
-              <span class="quote-mark">“</span>
-              <p>
-                <span class="lang-zh">记忆是为了帮下一次回答，不是为了篡改上一次回答。</span>
-                <span class="lang-en">Memory should help the next answer, not rewrite the last one.</span>
-              </p>
-            </div>
-          </div>
-        </section>
+      <section id="papers" class="papers-section page-width" aria-labelledby="papers-title">
+        <div class="section-heading"><div><p class="section-index">04 / <span class="lang-zh">论文</span><span class="lang-en">Publications</span></p><h2 id="papers-title"><span class="lang-zh">技术报告与配套论文</span><span class="lang-en">Technical report and companion papers</span></h2></div><p class="section-summary"><span class="lang-zh">v4 汇总整体架构、理论分析和实验结果。五篇配套论文分别讨论其中的具体问题。</span><span class="lang-en">v4 brings together the architecture, theoretical analysis, and experimental results. Five companion papers develop individual parts of the theory.</span></p></div>
+        <article class="featured-paper"><a class="paper-cover" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开 MMLAv4 论文 PDF" data-label-en="Open MMLAv4 PDF" aria-label="打开 MMLAv4 论文 PDF"><img src="assets/mmla-v4-cover.png" data-label-zh="MMLAv4 技术报告第一页" data-label-en="The first page of the MMLAv4 technical report" alt="MMLAv4 技术报告第一页" width="600" height="776" loading="lazy" /></a><div class="featured-paper-copy"><div class="paper-tags"><span class="lang-zh">技术报告</span><span class="lang-en">TECHNICAL REPORT</span><span>ARXIV V4</span><span>2026</span></div><h3>MMLA: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation</h3><p class="featured-authors">Junyi Zou · Avrova Donz</p><p><span class="lang-zh">222 页。介绍策略状态与记忆状态的更新规则，分析推理时训练、记忆准入和片段整合，并汇总组件实验与后训练研究的结果。</span><span class="lang-en">222 pages covering update rules for policy and memory states, reasoning-time training, memory admission, and segment consolidation, with results from component experiments and post-training studies.</span></p><div class="paper-links"><a class="button button-dark" href="assets/papers/2606.28876v4.pdf" target="_blank" rel="noopener noreferrer"><img src="assets/icons/file-text.svg" alt="" /><span class="lang-zh">阅读 PDF</span><span class="lang-en">Read PDF</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a><a class="button button-outline" href="assets/papers/2606.28876v4.pdf" download="2606.28876v4.pdf"><img src="assets/icons/download.svg" alt="" /><span class="lang-zh">下载</span><span class="lang-en">Download</span></a><a class="button button-text" href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv <img src="assets/icons/arrow-up-right.svg" alt="" /></a></div></div></article>
+        <div class="companion-head"><div><h3><span class="lang-zh">配套理论论文</span><span class="lang-en">Companion theory papers</span></h3><p><span class="lang-zh">以下为 R02 修订稿，尚待独立评审，未报告新实验。部分内容已在 v4 中更正，请以 v4 为准。</span><span class="lang-en">These R02 revisions await independent review and report no new experiments. Some details have been corrected in v4, which takes precedence.</span></p></div><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文仓库</span><span class="lang-en">Paper repository</span><img src="assets/icons/arrow-up-right.svg" alt="" /></a></div>
+        <div class="paper-list">
+          <article class="paper-row"><span class="paper-number">01</span><div><span class="paper-topic">POLICY / Φ</span><h4><span class="lang-zh">推理时训练</span><span class="lang-en">Reasoning-Time Training</span></h4><p>Reasoning-Time Training: Learning Before a Single Problem Ends</p></div><span class="paper-pages"><span class="lang-zh">30 页</span><span class="lang-en">30 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/RTT_Foundations.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开推理时训练论文" data-label-en="Open Reasoning-Time Training paper" aria-label="打开推理时训练论文" title="打开推理时训练论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
+          <article class="paper-row"><span class="paper-number">02</span><div><span class="paper-topic">MEMORY / M</span><h4><span class="lang-zh">原子记忆行</span><span class="lang-en">Atomic Memory Rows</span></h4><p>Atomic Memory Rows: A Bounded, Verifiable Substrate for Editable Reasoning</p></div><span class="paper-pages"><span class="lang-zh">41 页</span><span class="lang-en">41 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/Atomic_Memory_Rows.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开原子记忆行论文" data-label-en="Open Atomic Memory Rows paper" aria-label="打开原子记忆行论文" title="打开原子记忆行论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
+          <article class="paper-row"><span class="paper-number">03</span><div><span class="paper-topic">ADMISSION</span><h4><span class="lang-zh">预测式记忆准入</span><span class="lang-en">Predictive Memory Admission</span></h4><p>Learning What to Remember: Predictive Admission for Bounded Reasoning-Time Memory</p></div><span class="paper-pages"><span class="lang-zh">33 页</span><span class="lang-en">33 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/Predictive_Memory_Admission.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开预测式记忆准入论文" data-label-en="Open Predictive Memory Admission paper" aria-label="打开预测式记忆准入论文" title="打开预测式记忆准入论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
+          <article class="paper-row"><span class="paper-number">04</span><div><span class="paper-topic">DUAL STATE</span><h4><span class="lang-zh">推理时的双状态学习</span><span class="lang-en">Dual-State Learning</span></h4><p>MMLA-RTT: Dual-State Learning at Reasoning Time</p></div><span class="paper-pages"><span class="lang-zh">31 页</span><span class="lang-en">31 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_RTT_Dual_State.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开双状态论文" data-label-en="Open Dual-State paper" aria-label="打开双状态论文" title="打开双状态论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
+          <article class="paper-row"><span class="paper-number">05</span><div><span class="paper-topic">TIMING</span><h4><span class="lang-zh">完成片段整合</span><span class="lang-en">Completed-Segment Consolidation</span></h4><p>Causal Generation, Retrospective Consolidation: Completed-Segment Bidirectional Memory Without Temporal Leakage</p></div><span class="paper-pages"><span class="lang-zh">31 页</span><span class="lang-en">31 pp.</span></span><a href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noopener noreferrer" data-label-zh="打开完成片段整合论文" data-label-en="Open Completed-Segment Consolidation paper" aria-label="打开完成片段整合论文" title="打开完成片段整合论文"><img src="assets/icons/arrow-up-right.svg" alt="" /></a></article>
+        </div>
+      </section>
 
-        <section id="technology" class="section-shell technology-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">02 / <span class="lang-zh">它是怎样工作的</span><span class="lang-en">HOW IT WORKS</span></p>
-            <h2>
-              <span class="lang-zh">先完成当前任务，<br /><em>再决定要不要更新记忆。</em></span>
-              <span class="lang-en">Finish the current task.<br /><em>Then decide whether memory should change.</em></span>
-            </h2>
-            <p class="section-intro">
-              <span class="lang-zh">流程很简单：先回答，再等这一小段任务结束；然后准备可能的更新，检查它们是否可靠，最后更新一条完整记忆，或者保持原样。新记忆只会帮助之后的回答。</span>
-              <span class="lang-en">The flow is simple: answer first, wait for this task segment to end, prepare possible updates, check that they are safe, then update one complete memory or keep everything as is. New memory helps only later answers.</span>
-            </p>
-          </div>
+      <section id="implementation" class="implementation-section section-band" aria-labelledby="implementation-title"><div class="page-width"><div class="section-heading"><div><p class="section-index">05 / <span class="lang-zh">代码</span><span class="lang-en">Code</span></p><h2 id="implementation-title"><span class="lang-zh">PDSA 实验代码</span><span class="lang-en">PDSA experimental code</span></h2></div><p class="section-summary"><span class="lang-zh">PDSA 仓库包含记忆管理、模型接口和策略状态的实验实现，以下列出相关模块。</span><span class="lang-en">The PDSA repository contains experimental implementations of memory management, model interfaces, and policy states.</span></p></div><div class="code-list">
+        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/iclr2027/memory.py" target="_blank" rel="noopener noreferrer"><span class="code-index">01</span><span class="code-main"><strong><span class="lang-zh">记忆管理</span><span class="lang-en">Memory management</span></strong><small><span class="lang-zh">在固定容量下处理已完成的观察，支持整行提交、精确 NULL 和版本恢复。</span><span class="lang-en">Processes completed observations within a fixed capacity, with whole-row commits, exact NULL actions, and versioned restore.</span></small><code>mmla_pdsa/iclr2027/memory.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/model.py" target="_blank" rel="noopener noreferrer"><span class="code-index">02</span><span class="code-main"><strong><span class="lang-zh">模型记忆接口</span><span class="lang-en">Model memory interface</span></strong><small><span class="lang-zh">编码已完成的事件，并在训练、评估和生成时使用同一套记忆输入接口。</span><span class="lang-en">Encodes completed events and provides a shared memory input interface for training, evaluation, and generation.</span></small><code>mmla_pdsa/model.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+        <a href="https://github.com/MMLA-org/PDSA/blob/main/mmla_pdsa/iclr2027/internal_phi.py" target="_blank" rel="noopener noreferrer"><span class="code-index">03</span><span class="code-main"><strong><span class="lang-zh">策略状态 Φ</span><span class="lang-en">Policy state Φ</span></strong><small><span class="lang-zh">以独立的低秩参数表示策略状态，支持参数隔离、快照和恢复。</span><span class="lang-en">Represents the policy state with separate low-rank parameters, with parameter isolation, snapshots, and restore.</span></small><code>mmla_pdsa/iclr2027/internal_phi.py</code></span><img src="assets/icons/arrow-up-right.svg" alt="" /></a>
+      </div><p class="code-footnote"><span class="lang-zh">部分模块在 v4 的实验统计日期之后仍有更新，未计入上述结果。论文 PDF 单独存放于 mmla-memory 仓库。</span><span class="lang-en">Some modules have been updated since the v4 experiments; those updates are not reflected in the results above. Paper PDFs are maintained separately in mmla-memory.</span></p></div></section>
 
-          <article class="core-contract reveal" aria-labelledby="core-contract-title">
-            <div class="core-contract-head">
-              <div>
-                <span class="micro-label"><span class="lang-zh">一条记忆怎么更新</span><span class="lang-en">HOW ONE MEMORY CHANGES</span></span>
-                <h3 id="core-contract-title"><span class="lang-zh">每次只做一件事：更新一条，或什么也不改</span><span class="lang-en">Every update does one thing: replace one note or change nothing</span></h3>
-              </div>
-              <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看完整报告</span><span class="lang-en">View full report on GitHub</span> ↗</a>
-            </div>
-
-            <div class="contract-pipeline flow-diagram" data-flow-diagram="contract" aria-label="The complete MMLA state transition">
-              <div class="contract-stage contract-stage-source">
-                <span class="contract-symbol">M<sub>旧</sub></span>
-                <strong><span class="lang-zh">现有记忆</span><span class="lang-en">current memory</span></strong>
-                <small><span class="lang-zh">数量有限，可以查看和更新</span><span class="lang-en">limited, inspectable, and editable</span></small>
-              </div>
-              <span class="contract-arrow" aria-hidden="true"></span>
-              <div class="contract-stage contract-stage-process">
-                <span class="contract-symbol">e</span>
-                <strong><span class="lang-zh">一小段任务已经结束</span><span class="lang-en">a task segment has finished</span></strong>
-                <small><span class="lang-zh">只依据已经发生的内容</span><span class="lang-en">use only what has already happened</span></small>
-              </div>
-              <span class="contract-arrow" aria-hidden="true"></span>
-              <div class="contract-choice">
-                <div class="contract-choice-row contract-choice-commit">
-                  <span class="contract-symbol">替换</span>
-                  <div><strong><span class="lang-zh">更新一条完整记忆</span><span class="lang-en">save one complete new note</span></strong><small><span class="lang-zh">只替换选中的那一条</span><span class="lang-en">replace only the chosen note</span></small></div>
-                </div>
-                <div class="contract-choice-or"><span class="lang-zh">或者</span><span class="lang-en">OR</span></div>
-                <div class="contract-choice-row contract-choice-null">
-                  <span class="contract-symbol">不写</span>
-                  <div><strong><span class="lang-zh">保留全部现有记忆</span><span class="lang-en">keep all current memory</span></strong><small><span class="lang-zh">不清空、不删除、不留下半成品</span><span class="lang-en">no clearing, deletion, or partial change</span></small></div>
-                </div>
-              </div>
-              <span class="contract-arrow" aria-hidden="true"></span>
-              <div class="contract-stage contract-stage-future">
-                <span class="contract-symbol">M<sub>新</sub></span>
-                <strong><span class="lang-zh">给之后的回答使用</span><span class="lang-en">available to later answers</span></strong>
-                <small><span class="lang-zh">绝不改写已经给出的回答</span><span class="lang-en">never rewrites an answer already given</span></small>
-              </div>
-            </div>
-
-            <div class="contract-equations">
-              <div><span class="equation-label"><span class="lang-zh">写入时</span><span class="lang-en">ON COMMIT</span></span><code>M<sub>新</sub> = Replace(M<sub>旧</sub>, 目标行, 完整新行)</code></div>
-              <div><span class="equation-label"><span class="lang-zh">不写时</span><span class="lang-en">ON EXACT NULL</span></span><code>M<sub>新</sub> = M<sub>旧</sub></code></div>
-            </div>
-
-            <div class="contract-prohibitions">
-              <div><span>×</span><p><strong><span class="lang-zh">不能只改一半</span><span class="lang-en">No half-updates</span></strong><small><span class="lang-zh">内容和必要的版本、来源信息要一起保存。</span><span class="lang-en">Content and its required version and source details are saved together.</span></small></p></div>
-              <div><span>×</span><p><strong><span class="lang-zh">不能改写过去</span><span class="lang-en">No rewriting the past</span></strong><small><span class="lang-zh">已经给出的回答和当时的选择都不改变。</span><span class="lang-en">Answers and choices already made stay unchanged.</span></small></p></div>
-              <div><span>×</span><p><strong><span class="lang-zh">真实运行不能偷看未来</span><span class="lang-en">No future access in live use</span></strong><small><span class="lang-zh">上线时只能用当时已经知道的信息。</span><span class="lang-en">Live use can rely only on information known at that moment.</span></small></p></div>
-              <div><span>×</span><p><strong><span class="lang-zh">模型不能自己开权限</span><span class="lang-en">The model cannot grant itself access</span></strong><small><span class="lang-zh">版本、权限和回退信息由系统负责。</span><span class="lang-en">The system controls versions, access, and rollback details.</span></small></p></div>
-            </div>
-          </article>
-
-          <section class="state-model reveal" aria-labelledby="state-model-title">
-            <div class="subsection-head">
-              <span class="micro-label"><span class="lang-zh">别把三件事混在一起</span><span class="lang-en">KEEP THREE THINGS SEPARATE</span></span>
-              <h3 id="state-model-title"><span class="lang-zh">当前对话、保存的记忆和模型训练，不是一回事</span><span class="lang-en">The current chat, saved memory, and model training are different things</span></h3>
-              <p><span class="lang-zh">模型刚看到一句话，不等于系统已经保存它；保存一条记忆，也不等于模型被重新训练。把这些区别说清楚，才能知道一次变化到底影响了什么。</span><span class="lang-en">Seeing a sentence does not mean the system saved it; saving a memory does not retrain the model. Keeping these separate tells us what each change actually affects.</span></p>
-            </div>
-
-            <div class="state-layers">
-              <article class="state-layer state-layer-token">
-                <div class="state-layer-symbol">h<sub>t</sub></div>
-                <div><span class="state-layer-label"><span class="lang-zh">正在回答</span><span class="lang-en">WHILE ANSWERING</span></span><h4><span class="lang-zh">当前对话的临时状态</span><span class="lang-en">Temporary state for this answer</span></h4><p><span class="lang-zh">它只服务当前回答，读到的是此前已经保存的记忆，不会在说话过程中改写长期记忆。</span><span class="lang-en">It serves the current answer, reading memory saved earlier. It does not rewrite long-term memory while speaking.</span></p></div>
-              </article>
-              <article class="state-layer state-layer-segment">
-                <div class="state-layer-symbol">B</div>
-                <div><span class="state-layer-label"><span class="lang-zh">回答结束后</span><span class="lang-en">AFTER A SEGMENT ENDS</span></span><h4><span class="lang-zh">整理刚完成的内容</span><span class="lang-en">Review the finished content</span></h4><p><span class="lang-zh">这一小段结束后，系统才可以回看并判断是否需要更新。这里仍是临时工作区，不是已经保存的记忆。</span><span class="lang-en">After a segment ends, the system may review it and decide whether memory should change. This is still temporary workspace, not saved memory.</span></p></div>
-              </article>
-              <article class="state-layer state-layer-memory">
-                <div class="state-layer-symbol">M</div>
-                <div><span class="state-layer-label"><span class="lang-zh">保存下来的记忆</span><span class="lang-en">SAVED MEMORY</span></span><h4><span class="lang-zh">以后回答可以读取的工作笔记</span><span class="lang-en">Working notes later answers may read</span></h4><p><span class="lang-zh">只有这里保存的内容会影响以后的读取。每次更新都必须是一条完整记录，或者保持原样。</span><span class="lang-en">Only content saved here can affect later reads. Each update is one complete record or no change at all.</span></p></div>
-              </article>
-              <article class="state-layer state-layer-weights">
-                <div class="state-layer-symbol">θ</div>
-                <div><span class="state-layer-label"><span class="lang-zh">模型本身</span><span class="lang-en">THE MODEL ITSELF</span></span><h4><span class="lang-zh">长期训练得到的能力</span><span class="lang-en">Capabilities learned through training</span></h4><p><span class="lang-zh">保存记忆不会偷偷改动基础模型。重新训练模型是更慢、风险也不同的另一件事。</span><span class="lang-en">Saving a memory does not secretly change the base model. Retraining is a separate, slower, and differently risky operation.</span></p></div>
-              </article>
-            </div>
-
-            <div class="policy-lane">
-              <span class="policy-symbol">Φ</span>
-              <div><strong><span class="lang-zh">有些研究还会在答题时调整策略，这也要和记忆分开记录。</span><span class="lang-en">Some research also adjusts strategy during reasoning; that must be tracked separately from memory.</span></strong><p><span class="lang-zh">Φ 表示“下一次会怎样做”，M 表示“下一次能读到什么”。两者可以一起使用，但更新记忆不等于训练策略，应该分别保存版本和回退记录。</span><span class="lang-en">Φ means how the next attempt acts; M means what the next attempt can read. They may work together, but changing memory is not the same as training a strategy, so their versions and rollback records remain separate.</span></p></div>
-            </div>
-          </section>
-
-          <section class="core-loop-section reveal" aria-labelledby="core-loop-title">
-            <div class="subsection-head">
-              <span class="micro-label"><span class="lang-zh">从一段对话到一条记忆</span><span class="lang-en">FROM A CONVERSATION TO A MEMORY</span></span>
-              <h3 id="core-loop-title"><span class="lang-zh">一条信息想被记住，需要走完这几个简单步骤</span><span class="lang-en">Information must pass these simple steps before it is saved</span></h3>
-              <p><span class="lang-zh">顺序不能乱：先完成当前回答，再检查和更新记忆。这样新信息不会影响已经发生的回答。</span><span class="lang-en">The order matters: finish the current answer, then check and update memory. This keeps new information from affecting an answer already given.</span></p>
-            </div>
-
-            <div class="core-loop flow-diagram" data-flow-diagram="loop">
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">生成中</span><span class="lang-en">GENERATE</span></span>
-                <h4><span class="lang-zh">先用已有记忆回答</span><span class="lang-en">Answer using existing memory</span></h4>
-                <p><span class="lang-zh">回答过程中只读取之前已经保存的记忆。系统会留下必要的记录，方便之后知道这次回答参考了什么。</span><span class="lang-en">While answering, the system reads only memory saved earlier. It keeps the records needed to show what this answer relied on.</span></p>
-              </article>
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">片段结束</span><span class="lang-en">CLOSE</span></span>
-                <h4><span class="lang-zh">等这一段结束，再回看</span><span class="lang-en">Wait until this segment ends, then review</span></h4>
-                <p><span class="lang-zh">只有当前这小段内容明确结束，系统才能回头整理。不能用未来才会出现的内容，来决定现在是否已经结束。</span><span class="lang-en">The system may review only after this small segment clearly ends. It cannot use future text to decide whether the present segment has ended.</span></p>
-              </article>
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">整理</span><span class="lang-en">CONSOLIDATE</span></span>
-                <h4><span class="lang-zh">找出值得检查的信息</span><span class="lang-en">Find information worth checking</span></h4>
-                <p><span class="lang-zh">系统只整理已经结束的内容，把可能需要保存的事实列出来。它们按固定顺序处理，不会因为后台处理快慢而乱序。</span><span class="lang-en">The system reviews only finished content and lists facts that may be worth saving. It handles them in a fixed order, regardless of background timing.</span></p>
-              </article>
-              <article class="core-step core-step-emphasis">
-                <span class="core-step-phase"><span class="lang-zh">按顺序处理</span><span class="lang-en">HANDLE IN ORDER</span></span>
-                <h4><span class="lang-zh">后面的判断要看到前面的结果</span><span class="lang-en">Later checks see earlier results</span></h4>
-                <p><span class="lang-zh">如果前一条信息更新了记忆，后一条就基于更新后的版本继续判断；如果前一条没有更新，后一条就从原样继续。不能拿旧快照一次性做完所有决定。</span><span class="lang-en">If an earlier item changes memory, the next check uses the updated version. If it does not, the next check continues from the original. Decisions are not all made from one stale snapshot.</span></p>
-              </article>
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">准备更新草案</span><span class="lang-en">PREPARE AN UPDATE</span></span>
-                <h4><span class="lang-zh">每个可能要改的记忆，都准备一份完整草案</span><span class="lang-en">Prepare one complete draft for each possible memory change</span></h4>
-                <p><span class="lang-zh">草案不只是一句话。它必须说明：要替换哪一条旧记忆，以及替换后完整的记录应该是什么样。</span><span class="lang-en">A draft is more than a sentence. It must say which old note changes and what the complete replacement will be.</span></p>
-              </article>
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">系统补齐信息</span><span class="lang-en">SYSTEM ADDS DETAILS</span></span>
-                <h4><span class="lang-zh">模型提出内容，系统负责版本和权限</span><span class="lang-en">The model proposes content; the system controls version and access</span></h4>
-                <p><span class="lang-zh">模型可以提出要记住什么，但身份、访问范围、版本、来源和撤回方式由可信系统填写。模型不能靠生成文字给自己扩大权限。</span><span class="lang-en">The model may propose what to remember, but a trusted system fills in identity, access, version, source, and rollback details. Generated text cannot grant the model more access.</span></p>
-              </article>
-              <article class="core-step">
-                <span class="core-step-phase"><span class="lang-zh">先检查，再选择</span><span class="lang-en">CHECK, THEN CHOOSE</span></span>
-                <h4><span class="lang-zh">不安全的草案先丢掉，再和“不改”比较</span><span class="lang-en">Discard unsafe drafts, then compare the rest with no change</span></h4>
-                <p><span class="lang-zh">越权、过期、太大或彼此矛盾的草案不能使用。剩下的更新草案会和“什么也不改”放在一起比较。</span><span class="lang-en">Drafts that exceed access, are stale, too large, or inconsistent cannot be used. The rest are compared with the option to change nothing.</span></p>
-              </article>
-              <article class="core-step core-step-final">
-                <span class="core-step-phase"><span class="lang-zh">完成更新</span><span class="lang-en">SAVE THE UPDATE</span></span>
-                <h4><span class="lang-zh">一次只更新一条，之后的回答才会看到它</span><span class="lang-en">Update one note at a time; later answers can then see it</span></h4>
-                <p><span class="lang-zh">被选中的完整记录一次保存，其他记忆保持不变；如果选择不改，所有记忆都保留。当前这一段处理完后，新版本才会给之后的回答使用。</span><span class="lang-en">The chosen complete record is saved in one step while all other memory stays unchanged. If no change is chosen, everything stays as is. The new version is available only after this segment finishes.</span></p>
-              </article>
-            </div>
-          </section>
-
-          <section class="teacher-section reveal" aria-labelledby="teacher-title">
-            <div class="subsection-head">
-              <span class="micro-label"><span class="lang-zh">训练和真实使用要分开</span><span class="lang-en">KEEP TRAINING AND LIVE USE SEPARATE</span></span>
-              <h3 id="teacher-title"><span class="lang-zh">训练可以复盘结果；真实使用只能看当下</span><span class="lang-en">Training may review outcomes; live use can see only the present</span></h3>
-            </div>
-            <div class="teacher-split">
-              <article class="teacher-card teacher-card-training">
-                <span class="teacher-label"><span class="lang-zh">只存在于训练阶段</span><span class="lang-en">TRAINING ONLY</span></span>
-                <h4><span class="lang-zh">在训练中，比较不同选择后会发生什么</span><span class="lang-en">During training, compare what happens after different choices</span></h4>
-                <p><span class="lang-zh">训练时可以回头看结果，比较“更新这条”“更新另一条”和“什么也不改”后来带来的影响。这样可以教系统估计更新是否值得。</span><span class="lang-en">During training, the system may look back at outcomes and compare “update this note,” “update another,” and “change nothing.” This teaches it to estimate whether an update is worthwhile.</span></p>
-                <div class="teacher-foot"><span>✓</span><span class="lang-zh">后来的结果只用来训练</span><span class="lang-en">Later outcomes are used for training only</span></div>
-              </article>
-              <div class="teacher-divider"><span>≠</span></div>
-              <article class="teacher-card teacher-card-live">
-                <span class="teacher-label"><span class="lang-zh">真正部署时</span><span class="lang-en">LIVE DEPLOYMENT</span></span>
-                <h4><span class="lang-zh">真实使用时，只看当时已经知道的信息</span><span class="lang-en">In live use, rely only on what is known then</span></h4>
-                <p><span class="lang-zh">上线系统看不到标准答案或未来内容。它只能用眼前的信息判断要不要更新；没有足够把握时，就保持原样。</span><span class="lang-en">A live system cannot see the correct answer or future content. It can only judge from current information whether to update; without enough confidence, it keeps memory unchanged.</span></p>
-                <div class="teacher-foot"><span>✓</span><span class="lang-zh">真实系统不会带着“答案提示”运行</span><span class="lang-en">The live system runs without answer hints</span></div>
-              </article>
-            </div>
-          </section>
-
-          <section class="worked-example reveal" aria-labelledby="worked-example-title">
-            <div class="worked-example-copy">
-              <span class="micro-label"><span class="lang-zh">把核心走一遍</span><span class="lang-en">A COMPLETE WORKED EXAMPLE</span></span>
-              <h3 id="worked-example-title"><span class="lang-zh">“Alice 从巴黎搬到柏林”怎样成为一条可用的记忆？</span><span class="lang-en">How does “Alice moved from Paris to Berlin” become useful memory?</span></h3>
-              <p><span class="lang-zh">这个例子只说明更新过程，不代表实验结果。重点不只是识别出“柏林”，而是安全地更新关于 Alice 的整条记忆。</span><span class="lang-en">This example shows the update process, not an experimental result. The point is not just recognizing “Berlin,” but safely updating Alice's full memory record.</span></p>
-            </div>
-            <div class="example-timeline">
-              <article><span class="example-state"><span class="lang-zh">更新以前</span><span class="lang-en">BEFORE</span></span><h4><span class="lang-zh">记忆里写着 Alice 在巴黎</span><span class="lang-en">Memory says Alice is in Paris</span></h4><p><span class="lang-zh">旧记录包含身份、版本、来源和访问范围等必要信息。</span><span class="lang-en">The old note includes its identity, version, source, and access details.</span></p></article>
-              <article><span class="example-state"><span class="lang-zh">这一段结束</span><span class="lang-en">SEGMENT ENDS</span></span><h4><span class="lang-zh">完成内容说明 Alice 已搬到柏林</span><span class="lang-en">Finished content says Alice moved to Berlin</span></h4><p><span class="lang-zh">说出这句话时，它还只是当前对话的一部分。等这一段结束，系统才会考虑是否更新。</span><span class="lang-en">While the sentence is spoken, it is just part of the current conversation. Only after the segment ends does the system consider an update.</span></p></article>
-              <article><span class="example-state"><span class="lang-zh">准备更新</span><span class="lang-en">PREPARE UPDATE</span></span><h4><span class="lang-zh">为 Alice 准备一条完整的新记录</span><span class="lang-en">Prepare one complete new record for Alice</span></h4><p><span class="lang-zh">内容改为柏林；系统同时补齐新版本、来源和访问范围等信息。</span><span class="lang-en">The location changes to Berlin; the system also supplies a new version, source, and access details.</span></p></article>
-              <article><span class="example-state"><span class="lang-zh">最后选择</span><span class="lang-en">FINAL CHOICE</span></span><h4><span class="lang-zh">更新 Alice 的整条记忆，或者完全不改</span><span class="lang-en">Update Alice's full note, or make no change</span></h4><p><span class="lang-zh">系统会单独比较每个可能的更新。不能先改内容，之后再慢慢补齐版本或权限。</span><span class="lang-en">The system compares each possible update separately. It cannot change content first and fill in version or access details later.</span></p></article>
-            </div>
-            <div class="example-outcomes">
-              <div class="example-outcome example-outcome-commit"><strong><span class="lang-zh">如果更新</span><span class="lang-en">IF UPDATED</span></strong><p><span class="lang-zh">Alice 的巴黎记录被完整的柏林记录替换，其他记忆不变；之后的回答才会看到新记录。</span><span class="lang-en">Alice's Paris note is replaced by a complete Berlin note, while all other memory stays unchanged. Later answers can then see it.</span></p></div>
-              <div class="example-outcome example-outcome-null"><strong><span class="lang-zh">如果不改</span><span class="lang-en">IF UNCHANGED</span></strong><p><span class="lang-zh">巴黎记录原封不动地保留。它不会被清空、删除，也不会留下不完整的新版本。</span><span class="lang-en">The Paris note stays exactly as it is. It is not cleared, deleted, or replaced with a partial new version.</span></p></div>
-              <div class="example-outcome example-outcome-delete"><strong><span class="lang-zh">如果要删除</span><span class="lang-en">IF DELETED</span></strong><p><span class="lang-zh">删除也需要一条完整的新记录，清楚说明删除原因和来源。删除不是“什么也不改”。</span><span class="lang-en">Deletion also needs a complete new record that states its reason and source. Deletion is not the same as making no change.</span></p></div>
-            </div>
-          </section>
-
-          <section id="theory-family" class="theory-family-core reveal">
-            <div class="subsection-head">
-              <span class="micro-label"><span class="lang-zh">五份技术文档 / 五个实际问题</span><span class="lang-en">FIVE TECHNICAL PAPERS / FIVE PRACTICAL QUESTIONS</span></span>
-              <h3><span class="lang-zh">每篇文档都在回答：这套记忆系统怎样才算说得清、做得稳</span><span class="lang-en">Each paper answers one question needed to make the memory system clear and dependable</span></h3>
-              <p><span class="lang-zh">可以按一次更新的顺序来读：什么时候可以回看？什么算一条完整记忆？什么时候该更新？如果同时调整答题策略，怎样分清是哪一部分变了？最后，怎样证明系统真的在学习？</span><span class="lang-en">Read them in the order of an update: when may we review, what counts as a complete memory, when should it change, how do we separate memory from strategy changes, and how can we show that the system really learned?</span></p>
-            </div>
-            <div class="five-questions" aria-label="Five theory questions">
-              <a href="#theory-csbc"><span><span class="lang-zh">什么时候</span><span class="lang-en">WHEN</span></span><strong><span class="lang-zh">片段真的结束后才回看了吗？</span><span class="lang-en">Was review strictly after closure?</span></strong><small>Completed-Segment Consolidation</small></a>
-              <a href="#theory-amr"><span><span class="lang-zh">写什么</span><span class="lang-en">WHAT</span></span><strong><span class="lang-zh">候选是一整条可信记录吗？</span><span class="lang-en">Is the candidate one trusted complete row?</span></strong><small>Atomic Memory Rows</small></a>
-              <a href="#theory-pma"><span><span class="lang-zh">值不值得</span><span class="lang-en">WHETHER</span></span><strong><span class="lang-zh">替换它真的优于保持原样吗？</span><span class="lang-en">Is replacement better than exact NULL?</span></strong><small>Predictive Memory Admission</small></a>
-              <a href="#theory-dual"><span><span class="lang-zh">谁变了</span><span class="lang-en">WHICH STATE</span></span><strong><span class="lang-zh">改变的是策略 Φ，还是记忆 M？</span><span class="lang-en">Did policy Φ or memory M change?</span></strong><small>MMLA–RTT Dual State</small></a>
-              <a href="#theory-rtt"><span><span class="lang-zh">能否叫学习</span><span class="lang-en">DOES IT COUNT?</span></span><strong><span class="lang-zh">更新后的策略被同题新尝试读到了吗？</span><span class="lang-en">Did a fresh same-problem attempt read the update?</span></strong><small>RTT Foundations</small></a>
-            </div>
-          </section>
-
-          <div class="paper-core-list">
-            <article id="theory-csbc" class="paper-core-card reveal">
-              <header class="paper-core-head">
-                <div class="paper-core-mark">WHEN</div>
-                <div><p class="paper-core-kicker">Completed-Segment Bidirectional Consolidation</p><h3><span class="lang-zh">先结束，再回看：新记忆不能改写已经发生的回答</span><span class="lang-en">Finish first, then review: new memory cannot rewrite an answer already given</span></h3><p><span class="lang-zh">它说明系统什么时候可以整理一段对话，以及新记忆从什么时候开始影响后续回答。</span><span class="lang-en">It explains when the system may review a conversation segment and when new memory may affect later answers.</span></p></div>
-                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
-              </header>
-              <div class="paper-contract-grid">
-                <div><span class="paper-field"><span class="lang-zh">它处理什么</span><span class="lang-en">WHAT IT HANDLES</span></span><p><span class="lang-zh">一段明确结束的对话、按顺序得到的更新事项，以及更新从什么时候开始对以后回答生效。</span><span class="lang-en">A clearly finished conversation segment, an ordered set of update items, and the point when an update becomes available to later answers.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">输入和输出</span><span class="lang-en">INPUT AND OUTPUT</span></span><p><span class="lang-zh">输入是已经完成的内容；输出是一小组按顺序处理的更新事项。每一项最多更新一条记忆，或者什么也不改。</span><span class="lang-en">The input is finished content; the output is a small ordered set of update items. Each item can update one memory or make no change.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">它保证什么</span><span class="lang-en">WHAT IT GUARANTEES</span></span><p><span class="lang-zh">只要边界和执行规则得到遵守，新记忆就不会改变之前的回答；重复处理同一件事也不会重复更新。</span><span class="lang-en">When its boundary and execution rules are followed, new memory cannot change earlier answers, and retrying the same item cannot duplicate an update.</span></p></div>
-              </div>
-              <div class="paper-result-block">
-                <h4><span class="lang-zh">论文完成的理论工作</span><span class="lang-en">WHAT THE PAPER ESTABLISHES</span></h4>
-                <ul>
-                  <li><span class="lang-zh">把“正在回答”“这一段何时结束”“更新按什么顺序执行”分开说明。</span><span class="lang-en">Separates answering, segment closure, and the order in which updates run.</span></li>
-                  <li><span class="lang-zh">给出不改写过去、每项最多更新一次、按顺序执行的条件。</span><span class="lang-en">States conditions for no rewriting of the past, at most one update per item, and ordered execution.</span></li>
-                  <li><span class="lang-zh">要求对话片段、整理工作和等待队列都有上限，避免系统无限堆积。</span><span class="lang-en">Requires bounds on conversation segments, review work, and queues so the system cannot grow without limit.</span></li>
-                </ul>
-              </div>
-              <div class="paper-boundary-row">
-                <div><strong><span class="lang-zh">什么会出问题</span><span class="lang-en">WHAT GOES WRONG</span></strong><p><span class="lang-zh">如果系统用后面才出现的内容来决定何时结束，更新事项没有稳定编号，或把试运行的状态直接用于真实回答，这套边界就会失效。</span><span class="lang-en">The boundary fails if later content decides when a segment ended, update items lack stable identities, or trial state is used directly in live answers.</span></p></div>
-                <div><strong><span class="lang-zh">它没有证明</span><span class="lang-en">WHAT IT DOES NOT PROVE</span></strong><p><span class="lang-zh">它不保证系统理解了内容，也不保证某条记忆值得保存。它只保证“什么时候可以回看、什么时候影响以后回答”这件事说得清楚。</span><span class="lang-en">It does not guarantee understanding or that a memory is worth saving. It makes clear only when review is allowed and when memory can affect later answers.</span></p></div>
-              </div>
-            </article>
-
-            <article id="theory-amr" class="paper-core-card reveal">
-              <header class="paper-core-head">
-                <div class="paper-core-mark">WHAT</div>
-                <div><p class="paper-core-kicker">Atomic Memory Rows</p><h3><span class="lang-zh">完整记忆：保存的不是一句话，而是一条能追溯的记录</span><span class="lang-en">Complete memory: save a traceable record, not an isolated sentence</span></h3><p><span class="lang-zh">它说明 MMLA 到底把什么当作“已经记住”，以及为什么模型建议和系统权限必须分开处理。</span><span class="lang-en">It explains what MMLA counts as remembered and why model suggestions must remain separate from system permissions.</span></p></div>
-                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Atomic_Memory_Rows.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
-              </header>
-              <div class="paper-contract-grid">
-                <div><span class="paper-field"><span class="lang-zh">什么算正式记忆</span><span class="lang-en">WHAT COUNTS AS SAVED MEMORY</span></span><p><span class="lang-zh">如果一处内容会影响以后系统能读到什么、能不能访问或怎样更新，它就是正式记忆。搜索结果和缓存可以重建，但不能代替正式记录。</span><span class="lang-en">If a piece of state affects what the system can later read, access, or update, it is saved memory. Search results and caches can be rebuilt, but they cannot replace the official record.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">一条记忆里有什么</span><span class="lang-en">WHAT ONE MEMORY CONTAINS</span></span><p><span class="lang-zh">除了内容，还要有身份、版本、访问范围、来源、是否删除，以及怎样撤回等信息。它们要一起保存，才能追溯和检查。</span><span class="lang-en">Alongside content, it carries identity, version, access scope, source, deletion status, and rollback details. They are saved together so the record can be checked and traced.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">谁能写什么</span><span class="lang-en">WHO WRITES WHAT</span></span><p><span class="lang-zh">模型提出要记住的内容和修改建议；系统负责身份、权限、版本和撤回信息。最后只能完整替换一条，或者什么也不改。</span><span class="lang-en">The model proposes content and an edit; the system controls identity, access, version, and rollback details. The result is either one complete replacement or no change.</span></p></div>
-              </div>
-              <div class="paper-result-block">
-                <h4><span class="lang-zh">论文完成的理论工作</span><span class="lang-en">WHAT THE PAPER ESTABLISHES</span></h4>
-                <ul>
-                  <li><span class="lang-zh">说明记忆数量有限、一次只会更新一条，其余记忆保持不变。</span><span class="lang-en">Shows that memory stays bounded, one update changes only one record, and the rest stays unchanged.</span></li>
-                  <li><span class="lang-zh">说明版本、撤回、不同用户的访问范围和并发更新应怎样处理。</span><span class="lang-en">Explains how to handle versions, rollback, user access boundaries, and concurrent updates.</span></li>
-                  <li><span class="lang-zh">说明出现故障后，系统应恢复成完整旧记录或完整新记录，不能留下混合的半成品。</span><span class="lang-en">Explains that recovery after a failure must yield either the complete old record or the complete new record, never a mixture.</span></li>
-                </ul>
-              </div>
-              <div class="paper-boundary-row">
-                <div><strong><span class="lang-zh">哪些东西要分开</span><span class="lang-en">WHAT STAYS SEPARATE</span></strong><p><span class="lang-zh">当前对话、保存的记忆、可重建的搜索索引、外部历史记录，以及模型或策略状态，不能混为一谈。记忆数量有限，不代表外部历史可以无限免费保存。</span><span class="lang-en">Current conversation, saved memory, rebuildable search indexes, external history, and model or strategy state must stay separate. Bounded memory does not make unlimited external history free.</span></p></div>
-                <div><strong><span class="lang-zh">它没有证明</span><span class="lang-en">WHAT IT DOES NOT PROVE</span></strong><p><span class="lang-zh">记录格式正确，不等于内容一定真实、有用或容易找到。这篇不决定该记什么，也不证明系统效果已经提升。</span><span class="lang-en">A correct record format does not make content true, useful, or easy to find. This paper does not decide what to save or prove performance has improved.</span></p></div>
-              </div>
-            </article>
-
-            <article id="theory-pma" class="paper-core-card reveal">
-              <header class="paper-core-head">
-                <div class="paper-core-mark">WHETHER</div>
-                <div><p class="paper-core-kicker">Predictive Memory Admission</p><h3><span class="lang-zh">要不要更新：每条新记忆都要先胜过“保持原样”</span><span class="lang-en">Should memory change: every update must first beat keeping things as they are</span></h3><p><span class="lang-zh">它把“要不要记、该改哪一条”当成一次完整判断，而不是只看一句话和旧记忆像不像。</span><span class="lang-en">It treats “should we save this, and which note should change” as one complete decision, not a simple similarity score.</span></p></div>
-                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Predictive_Memory_Admission.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
-              </header>
-              <div class="paper-contract-grid">
-                <div><span class="paper-field"><span class="lang-zh">它比较什么</span><span class="lang-en">WHAT IT COMPARES</span></span><p><span class="lang-zh">系统把每一种可行的完整更新，与“什么也不改”放在一起比较。如果所有草案都不安全或不合法，唯一选择就是保持原样。</span><span class="lang-en">The system compares every feasible complete update with changing nothing. If all drafts are unsafe or invalid, keeping things as they are is the only option.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">为什么不能只看一个分数</span><span class="lang-en">WHY ONE SCORE IS NOT ENOUGH</span></span><p><span class="lang-zh">更新可能帮助以后，也可能带来过时信息、挤掉旧记忆和额外成本。新内容和它要替换的旧内容，必须一起判断。</span><span class="lang-en">An update may help later, but it can also introduce stale information, displace a useful note, and add cost. New content and the note it replaces must be judged together.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">训练和真实使用的区别</span><span class="lang-en">TRAINING VS. LIVE USE</span></span><p><span class="lang-zh">训练时可以根据后来的结果比较不同选择；真实使用时只能看当时的信息。不能先知道未来，再倒过来挑一个最好的更新。</span><span class="lang-en">Training may compare choices using later outcomes; live use can rely only on information available then. It cannot see the future and choose an update afterward.</span></p></div>
-              </div>
-              <div class="paper-result-block">
-                <h4><span class="lang-zh">论文完成的理论工作</span><span class="lang-en">WHAT THE PAPER ESTABLISHES</span></h4>
-                <ul>
-                  <li><span class="lang-zh">把训练时能知道的后来结果，和真实使用时只能做的预测分开。</span><span class="lang-en">Separates later outcomes available in training from predictions available in live use.</span></li>
-                  <li><span class="lang-zh">说明在条件满足时，系统可以稳定找出更好的选择，并量化判断有误时会付出多大代价。</span><span class="lang-en">Shows that, under stated conditions, the system can stably identify better choices and quantify the cost of judgment error.</span></li>
-                  <li><span class="lang-zh">给出保守规则：不确定时，优先不改；也说明数据变化和判断误差会怎样增加风险。</span><span class="lang-en">Provides a conservative rule: when uncertain, do not change memory, and explains how data shift and judgment error raise risk.</span></li>
-                </ul>
-              </div>
-              <div class="paper-boundary-row">
-                <div><strong><span class="lang-zh">什么会让它不可靠</span><span class="lang-en">WHAT MAKES IT UNRELIABLE</span></strong><p><span class="lang-zh">如果用更新之后才知道的信息给更新打分、训练数据没见过某种选择，或几个选择差别小到无法判断，结论就会变得不可靠。</span><span class="lang-en">The result becomes unreliable if updates are scored with information learned afterward, training data lacks a choice, or choices are too close to distinguish.</span></p></div>
-                <div><strong><span class="lang-zh">它没有证明</span><span class="lang-en">WHAT IT DOES NOT PROVE</span></strong><p><span class="lang-zh">它没有说系统已经学会可靠地自动更新，也没有说更新通常比不更新好。它提供的是一套遇到不确定性会退回原样的判断方法。</span><span class="lang-en">It does not say the system has already learned reliable automatic updates or that updating is usually better. It provides a decision method that falls back to no change under uncertainty.</span></p></div>
-              </div>
-            </article>
-
-            <article id="theory-dual" class="paper-core-card reveal">
-              <header class="paper-core-head">
-                <div class="paper-core-mark">WHICH</div>
-                <div><p class="paper-core-kicker">MMLA–RTT Dual State</p><h3><span class="lang-zh">两条线：下次怎么回答，和下次能读什么，要分开记录</span><span class="lang-en">Two separate lines: how the next answer acts and what it can read</span></h3><p><span class="lang-zh">它把答题策略 Φ 和保存的记忆 M 分开，避免把“换了做法”和“多了一条笔记”当成同一件事。</span><span class="lang-en">It separates answer strategy Φ from saved memory M, so a changed approach is not confused with an added note.</span></p></div>
-                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_RTT_Dual_State.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
-              </header>
-              <div class="paper-contract-grid">
-                <div><span class="paper-field">Φ / <span class="lang-zh">答题策略</span><span class="lang-en">ANSWER STRATEGY</span></span><p><span class="lang-zh">它决定下一次尝试会怎样行动，例如更偏向哪种解题方法。它由反馈驱动的训练来更新，有自己的版本和撤回方式。</span><span class="lang-en">It affects how the next attempt acts, such as which solving approach it favors. Feedback-driven training updates it, with its own versions and rollback path.</span></p></div>
-                <div><span class="paper-field">M / <span class="lang-zh">保存的记忆</span><span class="lang-en">SAVED MEMORY</span></span><p><span class="lang-zh">它决定下一次可以读到什么。它数量有限、带版本和来源，只能通过完整记录来更新。</span><span class="lang-en">It determines what the next attempt can read. It is limited, versioned, sourced, and updated only through complete records.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">一次尝试怎样使用它们</span><span class="lang-en">HOW AN ATTEMPT USES THEM</span></span><p><span class="lang-zh">一次尝试固定使用某个策略版本和某个记忆版本，避免回答做到一半发生漂移。但固定一起使用，不等于它们变成同一种东西。</span><span class="lang-en">One attempt uses a fixed strategy version and memory version so it does not drift midway through an answer. Using them together does not make them the same thing.</span></p></div>
-              </div>
-              <div class="paper-result-block">
-                <h4><span class="lang-zh">论文完成的理论工作</span><span class="lang-en">WHAT THE PAPER ESTABLISHES</span></h4>
-                <ul>
-                  <li><span class="lang-zh">为策略和记忆分别规定谁能更新、谁能读取、如何重置和如何撤回；只改记忆不算训练策略。</span><span class="lang-en">Defines separate writers, readers, resets, and rollback for strategy and memory; changing memory alone is not strategy training.</span></li>
-                  <li><span class="lang-zh">说明两者如何分别回退，以及什么情况下它们可以安全地一起使用。</span><span class="lang-en">Explains how each can roll back independently and when they can safely work together.</span></li>
-                  <li><span class="lang-zh">给出四组对照：改策略或不改、改记忆或不改，用来分辨各自带来的影响。</span><span class="lang-en">Defines four comparisons: strategy on or off, memory on or off, to separate their effects.</span></li>
-                </ul>
-              </div>
-              <div class="paper-boundary-row">
-                <div><strong><span class="lang-zh">什么时候能说“真的在学习”</span><span class="lang-en">WHEN CAN WE SAY IT LEARNED?</span></strong><p><span class="lang-zh">只有反馈真的改变了策略 Φ，改变发生在同一道题结束前，而且后一次新的尝试读到了新策略，才可以说发生了严格的推理时训练。只改记忆不能替代这条证据。</span><span class="lang-en">Only when feedback changes strategy Φ before the same problem ends and a fresh later attempt reads it can we claim strict reasoning-time training. Changing memory alone is not enough.</span></p></div>
-                <div><strong><span class="lang-zh">它没有证明</span><span class="lang-en">WHAT IT DOES NOT PROVE</span></strong><p><span class="lang-zh">分清两类状态，不等于系统已经更好。没有版本和读写记录，就不能从“答案变好了”判断到底是哪一部分带来的改变。</span><span class="lang-en">Separating the two states does not itself improve the system. Without version and read/write records, a better answer cannot show which part caused the change.</span></p></div>
-              </div>
-            </article>
-
-            <article id="theory-rtt" class="paper-core-card reveal">
-              <header class="paper-core-head">
-                <div class="paper-core-mark">COUNTS?</div>
-                <div><p class="paper-core-kicker">RTT Foundations</p><h3><span class="lang-zh">怎样才算真的在同一道题里学到了？</span><span class="lang-en">What counts as really learning within the same problem?</span></h3><p><span class="lang-zh">后一次答得更好，不一定代表系统在学习。这篇给出需要留下哪些记录，才能证明学习发生在问题结束之前。</span><span class="lang-en">A better later answer does not necessarily mean learning occurred. This paper explains which records are needed to show learning happened before the problem ended.</span></p></div>
-                <a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/RTT_Foundations.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看</span><span class="lang-en">View on GitHub</span> ↗</a>
-              </header>
-              <div class="rtt-witness" aria-label="Strict reasoning-time training witness">
-                <div><span><span class="lang-zh">同一道题还没结束</span><span class="lang-en">THE SAME PROBLEM IS STILL OPEN</span></span><p><span class="lang-zh">不是换了一道题，也不是离线训练后再测试。</span><span class="lang-en">It is not a new problem or a later offline evaluation.</span></p></div>
-                <div><span><span class="lang-zh">前一次尝试收到了反馈</span><span class="lang-en">AN EARLIER ATTEMPT GETS FEEDBACK</span></span><p><span class="lang-zh">反馈要对应到具体尝试，先后顺序能查清。</span><span class="lang-en">Feedback must be linked to a specific attempt with a checkable order.</span></p></div>
-                <div><span><span class="lang-zh">答题策略真的改变了</span><span class="lang-en">THE ANSWER STRATEGY REALLY CHANGES</span></span><p><span class="lang-zh">变化不能只是表面现象，而且要在题目结束前完成。</span><span class="lang-en">The change cannot be superficial and must finish before the problem is resolved.</span></p></div>
-                <div><span><span class="lang-zh">下一次新尝试用到了这个变化</span><span class="lang-en">A FRESH LATER ATTEMPT USES THE CHANGE</span></span><p><span class="lang-zh">不是继续同一条回答，而是一次新尝试读取更新后的版本。</span><span class="lang-en">It is not a continuation of the same answer, but a fresh attempt that reads the updated version.</span></p></div>
-              </div>
-              <div class="paper-contract-grid">
-                <div><span class="paper-field"><span class="lang-zh">它排除哪些误会</span><span class="lang-en">WHAT IT RULES OUT</span></span><p><span class="lang-zh">多搜索几次、上下文变长、只改记忆、多给一点算力或碰巧抽到更好的答案，都可能让后一次更好，但不等于系统真的在同一道题里学了。</span><span class="lang-en">More search, longer context, memory-only edits, extra compute, or a luckier sample can improve a later attempt without proving that the system learned within the same problem.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">不能把变化藏起来</span><span class="lang-en">CHANGES CANNOT BE HIDDEN</span></span><p><span class="lang-zh">如果后续回答还读取了其他发生变化的状态，就不能只把功劳算给 Φ。需要把所有真正影响回答的变化一起说明。</span><span class="lang-en">If later answers read other changed state, credit cannot go to Φ alone. Every change that truly affects the answer must be accounted for.</span></p></div>
-                <div><span class="paper-field"><span class="lang-zh">需要哪些证据</span><span class="lang-en">EVIDENCE NEEDED</span></span><p><span class="lang-zh">需要记录尝试、反馈、更新什么时候开始和结束、读了哪个版本，以及什么时候重置或停止。只看输入和输出，分不清到底是学习、搜索还是记忆变化。</span><span class="lang-en">Record attempts, feedback, when updates start and finish, which version was read, and when the system resets or stops. Inputs and outputs alone cannot separate learning from search or memory changes.</span></p></div>
-              </div>
-              <div class="paper-result-block">
-                <h4><span class="lang-zh">论文完成的理论工作</span><span class="lang-en">WHAT THE PAPER ESTABLISHES</span></h4>
-                <ul>
-                  <li><span class="lang-zh">说明相同的外在表现可能来自不同的内部过程，所以只看最后答案不能证明学习。</span><span class="lang-en">Shows that the same visible behavior can come from different internal processes, so the final answer alone cannot prove learning.</span></li>
-                  <li><span class="lang-zh">给出对照方法，例如随机开关策略更新、重置后比较结果。</span><span class="lang-en">Provides comparisons such as randomly turning strategy updates on or off and comparing after reset.</span></li>
-                  <li><span class="lang-zh">规定策略变化、撤回和停止条件，让题内学习也受资源和安全限制。</span><span class="lang-en">Sets conditions for strategy change, rollback, and stopping so within-problem learning stays resource- and safety-bounded.</span></li>
-                </ul>
-              </div>
-              <div class="paper-boundary-row">
-                <div><strong><span class="lang-zh">它和 MMLA 有什么关系</span><span class="lang-en">HOW IT RELATES TO MMLA</span></strong><p><span class="lang-zh">RTT 是判断“是否真的在学习”的额外标准，不是记忆更新的必经步骤。MMLA 可以只更新有限记忆，而不宣称发生了 RTT。</span><span class="lang-en">RTT is an additional test for whether learning really occurred, not a required memory-update step. MMLA can update limited memory without claiming RTT.</span></p></div>
-                <div><strong><span class="lang-zh">它没有证明</span><span class="lang-en">WHAT IT DOES NOT PROVE</span></strong><p><span class="lang-zh">这篇没有报告新的性能优势，也没有说满足定义就一定更准确。它做的是把定义、对照方法和安全边界说清楚。</span><span class="lang-en">This paper reports no new performance advantage and does not say that meeting the definition guarantees accuracy. It clarifies the definition, comparisons, and safety boundaries.</span></p></div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section id="evidence" class="section-shell evidence-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">03 / <span class="lang-zh">我们知道什么，还不知道什么</span><span class="lang-en">WHAT WE KNOW AND WHAT WE DO NOT</span></p>
-            <h2>
-              <span class="lang-zh">规则已经写清，<br /><em>效果还要继续验证。</em></span>
-              <span class="lang-en">The rules are clear.<br /><em>The results still need testing.</em></span>
-            </h2>
-            <p class="section-intro">
-              <span class="lang-zh">我们已经把记忆怎么保存、更新和撤回说清楚了。但这不等于系统已经能稳定找到正确记忆、读出正确内容，或带来更高效率。下面把已经完成和还待验证的部分分开写明。</span>
-              <span class="lang-en">We have explained how memory is saved, updated, and rolled back. That does not mean the system can already find the right memory, read it correctly, or work more efficiently. The sections below separate what is done from what still needs testing.</span>
-            </p>
-          </div>
-
-          <div class="evidence-grid">
-            <article class="evidence-card evidence-positive reveal">
-              <div class="evidence-card-top"><span class="evidence-icon">✓</span><span class="tag tag-validated"><span class="lang-zh">已完成</span><span class="lang-en">complete</span></span></div>
-              <h3><span class="lang-zh">记忆的基本规则已经写明</span><span class="lang-en">The basic memory rules are documented</span></h3>
-              <p><span class="lang-zh">我们已经说明一条记忆怎样出现、更新、删除和撤回，也明确规定：只有已经结束的经历才可以进入长期记忆。</span><span class="lang-en">We have documented how memory is created, updated, deleted, and rolled back, including the rule that only finished experiences may enter long-term memory.</span></p>
-              <div class="evidence-foot"><span class="lang-zh">保存、更新、撤回</span><span class="lang-en">save · update · rollback</span></div>
-            </article>
-
-            <article class="evidence-card evidence-warning reveal delay-1">
-              <div class="evidence-card-top"><span class="evidence-icon">!</span><span class="tag tag-boundary"><span class="lang-zh">边界已说清</span><span class="lang-en">boundary clear</span></span></div>
-              <h3><span class="lang-zh">现在还不能稳定地“找对并读对”</span><span class="lang-en">It cannot yet reliably “find the right memory and read it right”</span></h3>
-              <p><span class="lang-zh">现在的尝试可以跑完整个流程，但还不能稳定做到两件事：找到真正相关的记忆，并正确读出内容。这个限制没有被包装成成功。</span><span class="lang-en">Current attempts can run through the full workflow, but they cannot yet reliably do two things: find relevant memory and read its content correctly. We state that limit plainly rather than calling it a success.</span></p>
-              <div class="evidence-foot"><span class="lang-zh">找到什么 · 读出什么</span><span class="lang-en">retrieval · content</span></div>
-            </article>
-
-            <article class="evidence-card evidence-boundary reveal delay-2">
-              <div class="evidence-card-top"><span class="evidence-icon">○</span><span class="tag tag-boundary"><span class="lang-zh">尚未证明</span><span class="lang-en">not proven yet</span></span></div>
-              <h3><span class="lang-zh">自动选择和覆盖记忆还没有被证明</span><span class="lang-en">Automatic memory selection and overwrite are not proven</span></h3>
-              <p><span class="lang-zh">目前还不能说模型已经可靠地学会“什么值得记住”，也不能说它已经稳定获得更长上下文、更高效率或更低成本。提出方法，不等于已经验证成功。</span><span class="lang-en">We cannot yet say the model reliably knows what deserves memory, or that it has achieved longer context, higher efficiency, or lower cost. Proposing a method is not the same as proving it works.</span></p>
-              <div class="evidence-foot"><span class="lang-zh">理论方案 ≠ 实际效果</span><span class="lang-en">theory ≠ empirical effect</span></div>
-            </article>
-          </div>
-
-          <div class="not-yet reveal">
-            <div class="not-yet-title"><span class="not-yet-dot"></span><span class="lang-zh">目前不宣称</span><span class="lang-en">we do not claim yet</span></div>
-            <div class="not-yet-list">
-              <span><span class="lang-zh">模型已经学会自动挑选记忆</span><span class="lang-en">the model has learned automatic memory selection</span></span>
-              <span><span class="lang-zh">任何时候都能准确找到并读回记忆</span><span class="lang-en">memory can always be found and read back correctly</span></span>
-              <span><span class="lang-zh">已经带来长上下文或效率优势</span><span class="lang-en">it already provides longer context or efficiency gains</span></span>
-              <span><span class="lang-zh">理论文档已经等于实际系统效果</span><span class="lang-en">theory documents already equal system performance</span></span>
-            </div>
-          </div>
-        </section>
-
-        <section id="review" class="section-shell review-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">04 / <span class="lang-zh">从哪里开始读</span><span class="lang-en">WHERE TO START READING</span></p>
-            <h2>
-              <span class="lang-zh">不知道从哪读？<br /><em>从你关心的问题开始。</em></span>
-              <span class="lang-en">Not sure where to begin?<br /><em>Start with the question you care about.</em></span>
-            </h2>
-            <p class="section-intro">
-              <span class="lang-zh">公开稿适合先了解全貌；完整技术报告适合查看完整设计、依据和限制；五篇技术文档分别解释一个关键问题。它们互相补充，不是谁取代谁。</span>
-              <span class="lang-en">The public paper gives the overview; the full technical report covers the design, evidence, and limits; and the five technical papers each explain one key question. They complement one another rather than replace one another.</span>
-            </p>
-          </div>
-
-          <div class="review-status-board reveal">
-            <div class="review-status-item review-status-complete">
-              <span class="review-status-icon">✓</span>
-              <div><strong><span class="lang-zh">公开稿</span><span class="lang-en">Public paper</span></strong><span><span class="lang-zh">快速建立全局理解</span><span class="lang-en">build the global picture</span></span></div>
-            </div>
-            <div class="review-status-item review-status-complete">
-              <span class="review-status-icon">✓</span>
-              <div><strong><span class="lang-zh">完整技术报告</span><span class="lang-en">Full technical report</span></strong><span><span class="lang-zh">查看完整设计、依据和限制</span><span class="lang-en">read the full design, evidence, and limits</span></span></div>
-            </div>
-            <div class="review-status-item review-status-complete">
-              <span class="review-status-icon">✓</span>
-              <div><strong><span class="lang-zh">五篇技术文档</span><span class="lang-en">Five technical papers</span></strong><span><span class="lang-zh">逐个问题深入阅读</span><span class="lang-en">go deeper on one question at a time</span></span></div>
-            </div>
-          </div>
-
-          <div class="review-grid">
-            <article class="review-card reveal">
-              <span class="review-card-label"><span class="lang-zh">先看全貌</span><span class="lang-en">START WITH THE MAP</span></span>
-              <h3><span class="lang-zh">公开稿：为什么需要这种记忆层</span><span class="lang-en">Public paper: why this memory layer exists</span></h3>
-              <p><span class="lang-zh">适合第一次接触 MMLA。它先解释问题和整体做法，再说明目前哪些地方还没有答案。</span><span class="lang-en">Best for a first encounter with MMLA. It explains the problem and overall approach, then makes clear what remains unanswered.</span></p>
-            </article>
-            <article class="review-card reveal delay-1">
-              <span class="review-card-label"><span class="lang-zh">再读完整系统</span><span class="lang-en">THEN READ THE SYSTEM</span></span>
-              <h3><span class="lang-zh">技术报告：完整设计、验证方式和已知限制</span><span class="lang-en">Technical report: full design, validation, and known limits</span></h3>
-              <p><span class="lang-zh">这里有完整技术记录：系统怎么工作、怎样处理更新和撤回、训练和真实使用有什么区别，以及目前哪些效果还没有被证明。</span><span class="lang-en">This is the complete technical record: how the system works, how updates and rollback are handled, how training differs from live use, and which results are not yet proven.</span></p>
-            </article>
-            <article class="review-card reveal delay-2">
-              <span class="review-card-label"><span class="lang-zh">按问题深入</span><span class="lang-en">GO DEEPER BY QUESTION</span></span>
-              <h3><span class="lang-zh">五篇技术文档：什么时候、记什么、要不要改、怎么分清变化、怎样证明学习</span><span class="lang-en">Five papers: when to review, what to save, whether to change, how to separate changes, and how to prove learning</span></h3>
-              <p><span class="lang-zh">它们分别解释：什么时候可以回看、什么是一条完整记忆、何时该更新、策略和记忆怎样区分，以及什么证据才算真的发生了学习。</span><span class="lang-en">They explain when review is allowed, what makes a complete memory, when to update, how strategy differs from memory, and what evidence counts as real learning.</span></p>
-            </article>
-          </div>
-        </section>
-
-        <section id="documents" class="section-shell documents-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">05 / <span class="lang-zh">公开文档</span><span class="lang-en">PUBLIC DOCUMENTS</span></p>
-            <h2>
-              <span class="lang-zh">先看懂，再深入，<br /><em>每份文档各有用途。</em></span>
-              <span class="lang-en">Start with the idea,<br /><em>then follow the full record.</em></span>
-            </h2>
-            <p class="section-intro">
-              <span class="lang-zh">想先知道 MMLA 是什么，读公开稿；想看完整设计、依据和限制，读技术报告；只关心某个问题，就打开对应的技术文档。所有公开 PDF 都由 mmla-memory 仓库维护，本页链接会直接打开 GitHub。</span>
-              <span class="lang-en">Read the public paper for a quick introduction, the technical report for the full design, evidence, and limits, or a technical paper for one specific question. Public PDFs live in mmla-memory, and every link here opens GitHub directly.</span>
-            </p>
-          </div>
-
-          <div class="documents-source reveal">
-            <div class="documents-source-copy">
-              <span class="documents-source-label"><span class="lang-zh">文档源</span><span class="lang-en">SOURCE OF RECORD</span></span>
-              <strong><span class="lang-zh">当前公开版本维护在 mmla-memory</span><span class="lang-en">The current public release lives in mmla-memory</span></strong>
-            </div>
-            <a class="source-link" href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noreferrer"><span class="lang-zh">打开文档仓库</span><span class="lang-en">Open document repo</span> ↗</a>
-          </div>
-
-          <div class="doc-filters" role="group" aria-label="Filter documents">
-            <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true"><span class="lang-zh">全部</span><span class="lang-en">All</span></button>
-            <button class="filter-button" type="button" data-filter="core" aria-pressed="false"><span class="lang-zh">核心文档</span><span class="lang-en">Core docs</span></button>
-            <button class="filter-button" type="button" data-filter="formal" aria-pressed="false"><span class="lang-zh">专题文档</span><span class="lang-en">Topic docs</span></button>
-          </div>
-
-          <div class="document-grid">
-            <article class="doc-card doc-card-featured reveal" data-category="core">
-              <div class="doc-card-top"><span class="doc-type">PUBLIC ARXIV PAPER</span><span class="tag tag-submitted"><span class="lang-zh">公开稿</span><span class="lang-en">public</span></span></div>
-              <h3><span class="lang-zh">MMLA: How Memory Lets the Past Shape the Future</span><span class="lang-en">MMLA: How Memory Lets the Past Shape the Future</span></h3>
-              <p><span class="lang-zh">快速了解 MMLA：为什么 AI 需要记忆、这套规则怎样限制记忆，以及目前还没解决什么问题。</span><span class="lang-en">A quick introduction to why AI needs memory, how these rules keep it controlled, and what remains unresolved.</span></p>
-              <div class="doc-meta"><span>16 pages</span><span>·</span><span class="lang-zh">快速入门</span><span class="lang-en">quick start</span></div>
-              <div class="doc-actions"><a class="button button-small button-primary" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_arXiv_public.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a><a class="text-link" href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a></div>
-            </article>
-
-            <article class="doc-card doc-card-report reveal delay-1" data-category="core">
-              <div class="doc-card-top"><span class="doc-type"><span class="lang-zh">正式技术报告</span><span class="lang-en">FULL TECHNICAL REPORT</span></span><span class="tag tag-accepted"><span class="lang-zh">正式报告</span><span class="lang-en">official</span></span></div>
-              <h3><span class="lang-zh">MMLA 正式技术报告</span><span class="lang-en">The formal MMLA technical report</span></h3>
-              <p><span class="lang-zh">这是最完整的说明：系统怎样设计、哪些规则已经写明、有哪些证据和限制，以及为什么“提出方法”不等于“已经验证有效”。</span><span class="lang-en">The most complete account: how the system is designed, which rules are documented, what evidence and limits exist, and why proposing a method is not the same as proving it works.</span></p>
-              <div class="doc-meta"><span>196 pages</span><span>·</span><span class="lang-zh">完整技术记录</span><span class="lang-en">complete technical record</span></div>
-              <div class="doc-actions"><a class="button button-small button-outline" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_Technical_Report.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看报告</span><span class="lang-en">View report on GitHub</span> ↗</a><span class="doc-state"><span class="lang-zh">正式报告</span><span class="lang-en">official report</span></span></div>
-            </article>
-
-            <article class="doc-card reveal" data-category="formal">
-              <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
-              <h3><span class="lang-zh">RTT Foundations</span><span class="lang-en">RTT Foundations</span></h3>
-              <p><span class="lang-zh">它解释怎样才算在同一道还没解决的问题里学到了：反馈必须真的改变答题策略，后一次新尝试还要在题目结束前用到这个变化。普通重试、搜索或只改记忆都不算。</span><span class="lang-en">It explains what counts as learning within one still-open problem: feedback must actually change answer strategy, and a fresh later attempt must use that change before the problem ends. Retries, search, or memory-only edits do not count.</span></p>
-              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/RTT_Foundations.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
-            </article>
-            <article class="doc-card reveal delay-1" data-category="formal">
-              <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
-              <h3><span class="lang-zh">Atomic Memory Rows</span><span class="lang-en">Atomic Memory Rows</span></h3>
-              <p><span class="lang-zh">它解释为什么一条记忆必须连同身份、版本、权限和来源一起保存。模型只提出内容，系统负责其他信息；最后要么完整更新，要么不改。</span><span class="lang-en">It explains why a memory must carry identity, version, access, and source details with its content. The model proposes content; the system handles the rest. The result is a complete update or no change.</span></p>
-              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Atomic_Memory_Rows.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
-            </article>
-            <article class="doc-card reveal delay-2" data-category="formal">
-              <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
-              <h3><span class="lang-zh">Predictive Memory Admission</span><span class="lang-en">Predictive Memory Admission</span></h3>
-              <p><span class="lang-zh">它解释怎样在“保存、替换和不改”之间做选择：既看未来可能的帮助，也看挤掉旧记忆和额外成本的风险。真实使用时只看当下，没把握就保留原样。</span><span class="lang-en">It explains how to choose among saving, replacing, and making no change: consider future help as well as the risks of displacing old memory and adding cost. Live use sees only the present and keeps things unchanged when unsure.</span></p>
-              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Predictive_Memory_Admission.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
-            </article>
-            <article class="doc-card reveal" data-category="formal">
-              <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
-              <h3><span class="lang-zh">MMLA-RTT Dual State</span><span class="lang-en">MMLA-RTT Dual State</span></h3>
-              <p><span class="lang-zh">它把“下一次怎么答”的策略 Φ，和“下一次能读什么”的记忆 M 分开。两者由不同部分更新，也各自保留版本和撤回记录。</span><span class="lang-en">It separates strategy Φ, which affects how the next answer is made, from memory M, which affects what the next answer can read. Different components update them, and each keeps its own version and rollback record.</span></p>
-              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/MMLA_RTT_Dual_State.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
-            </article>
-            <article class="doc-card reveal delay-1" data-category="formal">
-              <div class="doc-card-top"><span class="doc-type">COMPANION DOCUMENT</span><span class="tag tag-conditional"><span class="lang-zh">理论说明</span><span class="lang-en">theory note</span></span></div>
-              <h3><span class="lang-zh">Completed-Segment Consolidation</span><span class="lang-en">Completed-Segment Consolidation</span></h3>
-              <p><span class="lang-zh">它说明为什么要把“正在生成”和“结束后整理”分开：一段内容结束后才能回看；新记忆只能帮助之后的尝试，不能改写已经发出的文字。</span><span class="lang-en">It explains why generating and after-the-fact review stay separate: review begins only after a segment ends, and new memory helps later attempts without rewriting text already emitted.</span></p>
-              <div class="doc-actions"><a class="text-link" href="https://github.com/MMLA-org/mmla-memory/blob/main/Completed_Segment_Consolidation.pdf" target="_blank" rel="noreferrer"><span class="lang-zh">在 GitHub 查看 PDF</span><span class="lang-en">View on GitHub</span> ↗</a></div>
-            </article>
-          </div>
-        </section>
-
-        <section id="roadmap" class="section-shell roadmap-section">
-          <div class="section-heading reveal">
-            <p class="eyebrow">06 / <span class="lang-zh">下一步</span><span class="lang-en">WHAT COMES NEXT</span></p>
-            <h2>
-              <span class="lang-zh">下一步很具体：<br /><em>先让系统稳定找对、读对。</em></span>
-              <span class="lang-en">The next step is concrete:<br /><em>reliably find the right memory and read it right.</em></span>
-            </h2>
-          </div>
-          <div class="roadmap reveal delay-1">
-            <div class="roadmap-line"></div>
-            <article class="roadmap-item roadmap-done">
-              <div class="roadmap-dot">01</div>
-              <div><span class="roadmap-status"><span class="lang-zh">已完成</span><span class="lang-en">complete</span></span><h3><span class="lang-zh">把记忆规则写清楚</span><span class="lang-en">Write the memory rules clearly</span></h3><p><span class="lang-zh">已经说明记忆怎样保存、更新、撤回和删除，也说明只有已经结束的经历才可以进入长期记忆。</span><span class="lang-en">The project documents how memory is saved, updated, rolled back, and deleted, and why only finished experiences may enter long-term memory.</span></p></div>
-            </article>
-            <article class="roadmap-item roadmap-done">
-              <div class="roadmap-dot">02</div>
-              <div><span class="roadmap-status"><span class="lang-zh">已完成</span><span class="lang-en">complete</span></span><h3><span class="lang-zh">把现在的限制讲明白</span><span class="lang-en">State the current limit plainly</span></h3><p><span class="lang-zh">系统设计和配套理论已经整理好，但还不能说它总能找到相关记忆并正确读出内容。</span><span class="lang-en">The system design and companion theory are documented, but it cannot yet be said to always find relevant memory and read its content correctly.</span></p></div>
-            </article>
-            <article class="roadmap-item roadmap-next">
-              <div class="roadmap-dot">03</div>
-              <div><span class="roadmap-status"><span class="lang-zh">下一步</span><span class="lang-en">next</span></span><h3><span class="lang-zh">先让系统同时做到“找对”和“读对”</span><span class="lang-en">First make it find the right memory and read it correctly</span></h3><p><span class="lang-zh">下一轮工作要把相关记忆找出来，并准确读出其中内容；两件事要一起成立，才有继续扩展的基础。</span><span class="lang-en">The next work must retrieve relevant memory and read its contents correctly; both need to work together before the system can be extended.</span></p></div>
-            </article>
-            <article class="roadmap-item roadmap-future">
-              <div class="roadmap-dot">04</div>
-              <div><span class="roadmap-status"><span class="lang-zh">更后面</span><span class="lang-en">later</span></span><h3><span class="lang-zh">再检验自动选择和覆盖</span><span class="lang-en">Then test automatic selection and overwrite</span></h3><p><span class="lang-zh">只有前面的基本能力稳定之后，才检查系统能否自动判断什么值得保存、什么时候应该替换旧记忆，以及是否真的带来帮助。</span><span class="lang-en">Only after the basics are reliable should we test whether the system can decide what to save, when to replace old memory, and whether it actually helps.</span></p></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="section-shell citation-section">
-          <div class="citation-card reveal">
-            <div>
-              <p class="eyebrow">CITE MMLA</p>
-              <h2><span class="lang-zh">把这份记录带回你的研究。</span><span class="lang-en">Take the record back to your research.</span></h2>
-              <p class="citation-copy"><span class="lang-zh">以下引用按 mmla-memory release README 中的公开题名、作者和 arXiv 信息整理；主页文件采用当前正式报告、五份配套文档和 arXiv 公开稿。</span><span class="lang-en">These entries use the public titles, authors, and arXiv details in the mmla-memory release README; the site uses the current formal report, five companion documents, and the public arXiv paper.</span></p>
-            </div>
-            <div class="bibtex-wrap">
-              <pre id="bibtex">@article{zou2026mmla,
-  title   = {MMLA: How Memory Lets the Past Shape the Future},
+      <section class="citation-section page-width" aria-labelledby="citation-title"><div class="section-heading"><div><p class="section-index">06 / <span class="lang-zh">引用</span><span class="lang-en">Citation</span></p><h2 id="citation-title"><span class="lang-zh">引用 MMLAv4</span><span class="lang-en">Cite MMLAv4</span></h2></div></div><div class="citation-box"><div class="citation-top"><span>BIBTEX / ARXIV:2606.28876V4</span><div><span id="copy-status" role="status" aria-live="polite"></span><button id="copy-citation" class="toolbar-button" type="button"><img src="assets/icons/copy.svg" alt="" /><span class="lang-zh">复制</span><span class="lang-en">Copy</span></button></div></div><pre id="bibtex">@article{zou2026mmla,
+  title   = {{MMLA}: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation},
   author  = {Zou, Junyi and Donz, Avrova},
   year    = {2026},
   eprint  = {2606.28876},
   archivePrefix = {arXiv},
-  primaryClass  = {cs.AI},
-  url     = {https://arxiv.org/abs/2606.28876}
-}
+  primaryClass  = {cs.cl},
+  note    = {Version 4},
+  url     = {https://arxiv.org/abs/2606.28876v4}
+}</pre></div></section>
+    </main>
 
-@techreport{zou2026mmlareport,
-  title  = {MMLA: How Memory Lets the Past Shape the Future},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026},
-  type   = {Technical report}
-}
+    <footer class="site-footer"><div class="page-width footer-inner"><div><a class="brand" href="#overview"><img src="assets/mmla-mark.svg" alt="" width="28" height="28" /><span>MMLA<span class="brand-version">v4</span></span></a><p><span class="lang-zh">记忆介导学习架构 · 2026</span><span class="lang-en">Memory-Mediated Learning Architecture · 2026</span></p></div><div class="footer-links"><a href="https://arxiv.org/abs/2606.28876v4" target="_blank" rel="noopener noreferrer">arXiv v4</a><a href="https://github.com/MMLA-org/mmla-memory" target="_blank" rel="noopener noreferrer"><span class="lang-zh">论文仓库</span><span class="lang-en">Papers</span></a><a href="https://github.com/MMLA-org/PDSA" target="_blank" rel="noopener noreferrer">PDSA</a></div></div></footer>
 
-@article{zou2026rtt,
-  title  = {Reasoning-Time Training: Learning Before a Single Problem Ends},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026}
-}
-
-@article{zou2026amr,
-  title  = {Atomic Memory Rows: A Bounded, Verifiable Substrate for Editable Reasoning},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026}
-}
-
-@article{zou2026pma,
-  title  = {Learning What to Remember: Predictive Admission for Bounded Reasoning-Time Memory},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026}
-}
-
-@article{zou2026dual,
-  title  = {MMLA--RTT: Dual-State Learning at Reasoning Time},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026}
-}
-
-@article{zou2026csbc,
-  title  = {Causal Generation, Retrospective Consolidation: Completed-Segment Bidirectional Memory Without Temporal Leakage},
-  author = {Zou, Junyi and Donz, Avrova},
-  year   = {2026}
-}</pre>
-              <button class="copy-button" type="button" data-copy-citation aria-live="polite"><span class="lang-zh">复制 BibTeX</span><span class="lang-en">Copy BibTeX</span></button>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="footer section-shell">
-        <div class="footer-brand"><img src="assets/mmla-mark.svg" alt="" /><span>MMLA</span></div>
-        <p><span class="lang-zh">有界记忆，公开证据，持续修订。</span><span class="lang-en">Bounded memory. Public evidence. Continuous revision.</span></p>
-        <div class="footer-links"><a href="https://github.com/MMLA-org/MMLA-org.github.io" target="_blank" rel="noreferrer">GitHub ↗</a><a href="https://arxiv.org/abs/2606.28876" target="_blank" rel="noreferrer">arXiv ↗</a><span>2026.08.17</span></div>
-      </footer>
-    </div>
-    <script src="script.js"></script>
+    <dialog id="diagram-dialog" class="diagram-dialog" aria-labelledby="diagram-dialog-title"><div class="dialog-header"><div><span class="dialog-eyebrow">MMLAv4 / ARCHITECTURE</span><h2 id="diagram-dialog-title"><span class="lang-zh">双状态系统架构</span><span class="lang-en">Dual-state system architecture</span></h2></div><div class="dialog-tools"><button id="zoom-out" class="icon-button" type="button" data-label-zh="缩小架构图" data-label-en="Zoom out" aria-label="缩小架构图" title="缩小架构图"><img src="assets/icons/minus.svg" alt="" /></button><output id="zoom-level">100%</output><button id="zoom-in" class="icon-button" type="button" data-label-zh="放大架构图" data-label-en="Zoom in" aria-label="放大架构图" title="放大架构图"><img src="assets/icons/plus.svg" alt="" /></button><button id="zoom-reset" class="icon-button" type="button" data-label-zh="重置缩放" data-label-en="Reset zoom" aria-label="重置缩放" title="重置缩放"><img src="assets/icons/rotate-ccw.svg" alt="" /></button><span class="dialog-separator"></span><a class="icon-button" data-diagram-download="png" href="assets/mmla-v4-architecture-zh.png" download="mmla-v4-architecture-zh.png" data-label-zh="下载 PNG 架构图" data-label-en="Download PNG architecture diagram" aria-label="下载 PNG 架构图" title="下载 PNG 架构图"><img src="assets/icons/download.svg" alt="" /></a><button id="close-diagram" class="icon-button" type="button" data-label-zh="关闭架构图" data-label-en="Close diagram" aria-label="关闭架构图" title="关闭架构图"><img src="assets/icons/x.svg" alt="" /></button></div></div><div id="diagram-stage" class="diagram-stage"><img id="diagram-full-image" src="assets/mmla-v4-architecture-zh.png" data-label-zh="MMLAv4 双状态架构图" data-label-en="MMLAv4 dual-state architecture diagram" alt="MMLAv4 双状态架构图" width="1600" height="1200" /></div></dialog>
   </body>
 </html>
