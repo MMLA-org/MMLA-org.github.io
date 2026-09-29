@@ -73,7 +73,9 @@ body { letter-spacing: -.015em; }
 .state-study { --study-accent: var(--blue); max-width: 880px; margin: 58px auto 0; border: 0; text-align: center; }
 .study-heading { display: flex; justify-content: center; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 400; }
 .study-index { color: #aaaab0; font-size: 13px; }
-.study-map { display: grid; grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr); grid-template-rows: 28px 24px 255px 42px auto; margin: 26px auto 0; max-width: 760px; align-items: center; }
+.study-map { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr); grid-template-rows: 28px 24px 255px 42px auto; margin: 26px auto 0; max-width: 760px; align-items: center; }
+.physics-field { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.study-map > *:not(.physics-field) { position: relative; z-index: 1; }
 .study-policy { --lane-color: var(--blue); grid-column: 1; }
 .study-memory { --lane-color: var(--green); grid-column: 3; }
 .study-trigger { grid-row: 1; display: flex; align-items: center; justify-content: center; gap: 7px; color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -84,7 +86,11 @@ body { letter-spacing: -.015em; }
 .study-input-wire { grid-row: 2; }
 .study-output-wire { grid-row: 4; width: 42px; }
 .study-output-wire::after { display: none; }
-.study-carrier { grid-row: 3; align-self: stretch; position: relative; padding: 28px 34px 22px; border: 1px solid #e7edf5; border-radius: 28px; background: linear-gradient(145deg, #fbfdff, #edf4fd); color: var(--lane-color); box-shadow: 0 18px 36px -20px #345b9738, inset 0 2px 0 #fff; transition: box-shadow 500ms var(--ease-out), border-color 500ms; }
+.study-carrier { --physics-x: 0px; --physics-y: 0px; --physics-rx: 0deg; --physics-ry: 0deg; grid-row: 3; align-self: stretch; position: relative; padding: 28px 34px 22px; overflow: hidden; isolation: isolate; border: 1px solid #e7edf5; border-radius: 28px; background: linear-gradient(145deg, #fbfdff, #edf4fd); color: var(--lane-color); box-shadow: 0 18px 36px -20px #345b9738, inset 0 2px 0 #fff, inset 0 0 0 1px #ffffff80; transform: perspective(900px) rotateX(var(--physics-rx)) rotateY(var(--physics-ry)) translate3d(var(--physics-x), var(--physics-y), 0); transform-style: preserve-3d; transition: box-shadow 500ms var(--ease-out), border-color 500ms; }
+.physics-active .study-carrier { will-change: transform; }
+.study-carrier::before { position: absolute; z-index: 0; inset: -45% -70%; background: linear-gradient(108deg, transparent 40%, #ffffffb8 47%, transparent 54%); opacity: .32; transform: translateX(-58%) rotate(8deg); pointer-events: none; content: ""; }
+.study-carrier::after { position: absolute; z-index: 0; inset: 0; border: 1px solid #ffffff70; border-radius: inherit; content: ""; pointer-events: none; }
+.study-carrier > * { position: relative; z-index: 1; }
 .study-carrier.study-memory { border-color: #e2ece8; background: linear-gradient(145deg, #fbfdfc, #ecf6f1); box-shadow: 0 18px 36px -20px #1f645038, inset 0 2px 0 #fff; }
 .study-carrier > div:first-child { display: flex; align-items: center; justify-content: center; gap: 17px; }
 .study-carrier strong { font: 76px/.95 Georgia, serif; font-weight: 400; letter-spacing: -.06em; }
@@ -125,6 +131,15 @@ body { letter-spacing: -.015em; }
 .state-study[data-path="memory"] { --study-accent: var(--green); }
 .state-study[data-path="policy"] .study-carrier.study-policy { border-color: #c3dbfa; box-shadow: 0 20px 45px -20px #2e70be45, inset 0 2px 0 #fff; }
 .state-study[data-path="memory"] .study-carrier.study-memory { border-color: #b9dccc; box-shadow: 0 20px 45px -20px #1f7f5745, inset 0 2px 0 #fff; }
+.state-study.physics-pulsing[data-path="policy"] .study-carrier.study-policy,
+.state-study.physics-pulsing[data-path="memory"] .study-carrier.study-memory { box-shadow: 0 22px 42px -18px color-mix(in srgb, var(--lane-color) 36%, transparent), inset 0 2px 0 #fff; }
+.state-study.physics-pulsing[data-path="policy"] .study-carrier.study-policy::before,
+.state-study.physics-pulsing[data-path="memory"] .study-carrier.study-memory::before { animation: study-specular-sweep 1480ms var(--ease-out) both; }
+@keyframes study-specular-sweep {
+  from { opacity: .05; transform: translateX(-58%) rotate(8deg); }
+  42% { opacity: .56; }
+  to { opacity: .12; transform: translateX(58%) rotate(8deg); }
+}
 
 /* Give each mechanism a clear beginning and space for its explanation. */
 .implementation-section, .architecture-section, .evidence-section, .papers-section, .citation-section { padding-block: 110px; }
@@ -527,5 +542,7 @@ body { letter-spacing: -.015em; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }
+  .physics-field { display: none !important; }
+  .study-carrier { transform: none !important; will-change: auto !important; }
   .paper-guide-topics > a:hover, .paper-cover, .paper-cover:hover { transform: none; }
 }

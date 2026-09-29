@@ -19,6 +19,9 @@
   };
   let activePointer = null;
   let dragOrigin = null;
+  let lastPoint = null;
+  let dragVelocity = { x: 0, y: 0 };
+  let inertiaFrame = 0;
   let moved = false;
 
   stage.tabIndex = 0;
@@ -33,6 +36,33 @@
 
   const updatePanState = () => {
     stage.classList.toggle("diagram-pan-ready", dialog.open && hasOverflow());
+  };
+
+  const stopInertia = () => {
+    if (inertiaFrame) cancelAnimationFrame(inertiaFrame);
+    inertiaFrame = 0;
+    dragVelocity = { x: 0, y: 0 };
+  };
+
+  const startInertia = () => {
+    if (reducedMotion.matches || (!dragVelocity.x && !dragVelocity.y)) return;
+    const tick = () => {
+      stage.scrollLeft += dragVelocity.x;
+      stage.scrollTop += dragVelocity.y;
+      const maxLeft = Math.max(0, stage.scrollWidth - stage.clientWidth);
+      const maxTop = Math.max(0, stage.scrollHeight - stage.clientHeight);
+      if (stage.scrollLeft <= 0 || stage.scrollLeft >= maxLeft) dragVelocity.x = 0;
+      if (stage.scrollTop <= 0 || stage.scrollTop >= maxTop) dragVelocity.y = 0;
+      dragVelocity.x *= 0.93;
+      dragVelocity.y *= 0.93;
+      if (Math.abs(dragVelocity.x) < 0.08 && Math.abs(dragVelocity.y) < 0.08) {
+        stopInertia();
+        updatePanState();
+        return;
+      }
+      inertiaFrame = requestAnimationFrame(tick);
+    };
+    inertiaFrame = requestAnimationFrame(tick);
   };
 
   const zoomByButton = (direction) => {
@@ -57,9 +87,12 @@
 
   stage.addEventListener("pointerdown", (event) => {
     if (!dialog.open || !stage.classList.contains("diagram-pan-ready")) return;
-    if (event.pointerType === "touch" || event.button !== 0 || !image.contains(event.target)) return;
+    if (event.button !== 0 || !image.contains(event.target)) return;
+    stopInertia();
     activePointer = event.pointerId;
     moved = false;
+    lastPoint = { x: event.clientX, y: event.clientY };
+    dragVelocity = { x: 0, y: 0 };
     dragOrigin = {
       x: event.clientX,
       y: event.clientY,
@@ -75,18 +108,26 @@
     if (activePointer !== event.pointerId || !dragOrigin) return;
     const dx = event.clientX - dragOrigin.x;
     const dy = event.clientY - dragOrigin.y;
+    const stepX = event.clientX - lastPoint.x;
+    const stepY = event.clientY - lastPoint.y;
     if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
     stage.scrollLeft = dragOrigin.left - dx;
     stage.scrollTop = dragOrigin.top - dy;
+    dragVelocity.x = dragVelocity.x * 0.62 - stepX * 0.38;
+    dragVelocity.y = dragVelocity.y * 0.62 - stepY * 0.38;
+    lastPoint = { x: event.clientX, y: event.clientY };
   });
 
   const finishPan = (event) => {
     if (activePointer !== event.pointerId) return;
-    if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
+    const wasMoved = moved;
     activePointer = null;
     dragOrigin = null;
+    lastPoint = null;
+    if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
     stage.classList.remove("diagram-panning");
     updatePanState();
+    if (wasMoved) startInertia();
   };
   stage.addEventListener("pointerup", finishPan);
   stage.addEventListener("pointercancel", finishPan);
@@ -127,7 +168,10 @@
   }, { passive: false });
 
   [zoomIn, zoomOut, zoomReset].forEach((button) => {
-    button.addEventListener("click", () => requestAnimationFrame(updatePanState));
+    button.addEventListener("click", () => {
+      stopInertia();
+      requestAnimationFrame(updatePanState);
+    });
   });
 
   const animateOpen = () => {
@@ -147,18 +191,24 @@
     else {
       dialog.classList.remove("diagram-interaction-visible");
       stage.classList.remove("diagram-pan-ready", "diagram-panning");
+      stopInertia();
       activePointer = null;
       dragOrigin = null;
+      lastPoint = null;
     }
   });
   observer.observe(dialog, { attributes: true, attributeFilter: ["open"] });
   dialog.addEventListener("close", () => {
     dialog.classList.remove("diagram-interaction-visible");
     stage.classList.remove("diagram-pan-ready", "diagram-panning");
+    stopInertia();
   });
   image.addEventListener("load", updatePanState);
   window.addEventListener("resize", updatePanState, { passive: true });
   reducedMotion.addEventListener?.("change", () => {
-    if (reducedMotion.matches) dialog.classList.add("diagram-interaction-visible");
+    if (reducedMotion.matches) {
+      stopInertia();
+      dialog.classList.add("diagram-interaction-visible");
+    }
   });
 })();

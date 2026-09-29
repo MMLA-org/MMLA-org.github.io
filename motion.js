@@ -8,14 +8,14 @@
     if (!node) return null;
     running.get(node)?.cancel();
     if (preference.matches || document.hidden || !node.animate) return null;
-    const animation = node.animate(frames, { duration: 360, easing: ease, ...options });
+    const animation = node.animate(frames, { duration: 440, easing: ease, ...options });
     running.set(node, animation);
     const release = () => { if (running.get(node) === animation) running.delete(node); };
     animation.finished.then(release, release);
     return animation;
   }
 
-  function enter(nodes, { distance = 8, stagger = 40, duration = 480, delay = 0 } = {}) {
+  function enter(nodes, { distance = 8, stagger = 40, duration = 560, delay = 0 } = {}) {
     [...nodes].filter(Boolean).forEach((node, i) => animate(node,
       [{ opacity: 0, transform: "translateY(" + distance + "px)" }, { opacity: 1, transform: "translateY(0)" }],
       { duration, delay: delay + Math.min(i * stagger, 180), fill: "backwards" }));
@@ -117,28 +117,29 @@
     });
     const path = study.dataset.path;
     if (path !== "policy" && path !== "memory") return;
+    document.dispatchEvent(new CustomEvent("mmla:studypulse", { detail: { path } }));
     const lane = ".study-" + path;
     const input = study.querySelector(lane + ".study-input-wire i");
     const output = study.querySelector(lane + ".study-output-wire i");
     animate(input, [{ transform: "scaleX(0)", opacity: 1, offset: 0 }, { transform: "scaleX(1)", opacity: 1, offset: .6 }, { transform: "scaleX(1)", opacity: 0, offset: 1 }],
-      { duration: 480, delay, fill: "backwards" });
+      { duration: 680, delay, fill: "backwards" });
     animate(study.querySelector(lane + ".study-trigger .study-point"),
       [{ opacity: .5, transform: "scale(.8)" }, { opacity: 1, transform: "scale(1.35)" }, { opacity: 1, transform: "scale(1)" }],
-      { duration: 480, delay, fill: "backwards" });
+      { duration: 640, delay, fill: "backwards" });
     if (path === "policy") {
       study.querySelectorAll(".study-values i").forEach((bar, i) => animate(bar,
         [{ opacity: .5, transform: "scaleY(" + (.45 + (i % 3) * .16) + ")" }, { opacity: 1, transform: "scaleY(1)" }],
-        { duration: 460, delay: delay + 160 + i * 18, fill: "backwards" }));
+        { duration: 620, delay: delay + 220 + i * 24, fill: "backwards" }));
     } else {
       animate(study.querySelector(".study-write-row"),
         [{ opacity: .25, transform: "translateX(-4px)" }, { opacity: 1, transform: "translateX(0)" }],
-        { duration: 480, delay: delay + 180, fill: "backwards" });
+        { duration: 650, delay: delay + 260, fill: "backwards" });
     }
     animate(output, [{ transform: "scaleX(0)", opacity: 1 }, { transform: "scaleX(1)", opacity: 1 }, { transform: "scaleX(1)", opacity: 0 }],
-      { duration: 440, delay: delay + 450, fill: "backwards" });
+      { duration: 620, delay: delay + 610, fill: "backwards" });
     animate(study.querySelector(".study-reader-symbol"),
       [{ opacity: .45, transform: "translateY(3px)" }, { opacity: 1, transform: "translateY(0)" }],
-      { duration: 360, delay: delay + 630, fill: "backwards" });
+      { duration: 520, delay: delay + 820, fill: "backwards" });
   }
   studyButtons.forEach(button => button.addEventListener("click", () => {
     if (!study) return;
@@ -146,7 +147,7 @@
     studyButtons.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
     study.querySelectorAll("[data-study-copy]").forEach(copy => { copy.hidden = copy.dataset.studyCopy !== study.dataset.path; });
     playStudy();
-    enter(study.querySelectorAll("[data-study-copy]:not([hidden])"), { distance: 4, duration: 260 });
+    enter(study.querySelectorAll("[data-study-copy]:not([hidden])"), { distance: 4, duration: 380 });
   }));
   document.querySelector("#study-replay")?.addEventListener("click", () => playStudy());
 
@@ -167,22 +168,22 @@
     const copy = document.querySelector('[data-flow-copy="' + step + '"]');
     const scene = document.querySelector('[data-flow-scene="' + step + '"]');
     cancelWithin(document.querySelector("#flow-panel"));
-    enter([copy], { distance: 5, duration: 300 });
+    enter([copy], { distance: 5, duration: 380 });
     const parts = {
       read: ".read-pair, .merge-connector, .reasoning-node, .scene-caption",
       adapt: ".feedback-source, .vertical-arrow, .policy-update, .unchanged-states, .scene-caption",
       consolidate: ".completed-segment, .candidate-fields > div, .scene-caption",
       publish: ".memory-choice, .memory-ledger, .scene-caption:not([hidden]), .later-read:not([hidden])",
     };
-    if (scene && parts[step]) enter(scene.querySelectorAll(parts[step]), { distance: 6, stagger: 35, duration: 360 });
+    if (scene && parts[step]) enter(scene.querySelectorAll(parts[step]), { distance: 6, stagger: 45, duration: 480 });
   });
   document.addEventListener("mmla:outcomechange", event => {
     if (!event.detail.animate) return;
     const root = document.querySelector("#mechanism-explorer");
     if (!root) return;
     const row = root.querySelector(".target-row");
-    animate(row, [{ opacity: .45 }, { opacity: 1 }], { duration: 280 });
-    enter(root.querySelectorAll('.later-read:not([hidden])'), { distance: 4, duration: 240 });
+    animate(row, [{ opacity: .45 }, { opacity: 1 }], { duration: 380 });
+    enter(root.querySelectorAll('.later-read:not([hidden])'), { distance: 4, duration: 320 });
   });
   addEventListener("resize", positionMarker);
   document.addEventListener("mmla:languagechange", () => requestAnimationFrame(positionMarker));

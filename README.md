@@ -1,6 +1,6 @@
 # MMLAv4 项目页面
 
-零依赖、可直接打开的中英双语静态网站。主入口是 [arXiv:2606.28876v4](https://arxiv.org/abs/2606.28876v4)，论文题名为 *MMLA: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation*。首页展示总体架构、机制示例和代表性组件结果；机制详解页逐篇展开 v4 与五篇配套论文，PDF 链接指向论文仓库。
+零构建、可直接打开的中英双语静态网站。主入口是 [arXiv:2606.28876v4](https://arxiv.org/abs/2606.28876v4)，论文题名为 *MMLA: Memory-Mediated Learning Architecture for Predictive Dual-State Adaptation*。首页展示总体架构、机制示例和代表性组件结果；机制详解页逐篇展开 v4 与五篇配套论文，PDF 链接指向论文仓库。
 
 ## 内容来源
 
@@ -24,6 +24,7 @@
 - `script.js`、`styles.css`：共享导航、语言切换和首页交互。
 - `design.css`：共享视觉样式及首页排版。首屏以大标题和并列的 Φ / M 状态图展开；后续章节使用浅灰背景、留白和较大的文字建立层次，中英文与移动端分别调整字号和布局。
 - `motion.js`：首页双路径动态示意、章节进入、步骤切换、图表反馈及阅读进度。动效单次播放，快速切换时取消上一段动画，并遵循系统“减少动态效果”设置。
+- `physics.js`：首页状态图的物理层。卡片使用原生弹簧缓慢回弹，路径粒子使用本地 Matter.js 0.20.0 处理阻尼、碰撞、边界和指针排斥；选中路径有一次性信号传递，空闲、离屏或系统减少动态效果时停止计算。Matter.js 的 MIT 许可见 `assets/matter-js-LICENSE`。
 - `diagram-interaction.js`、`diagram-interaction.css`：架构图拖拽、指针位置缩放、双击适配/放大及查看器转场。
 
 机制内容区分架构定义、理论条件与组件实验。首页结果选自 v4 的受控生命周期、类型化传输和扩展上下文问答，保留任务范围、原表引用与成本口径。
